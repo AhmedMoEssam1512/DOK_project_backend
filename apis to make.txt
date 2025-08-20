@@ -1,11 +1,11 @@
 create dok account {A.Essam} [done]
 admin sign in {A.Essam} [done]
+register admin account {both Essam} [done]
+accept assistant(owner) {A.Essam} [done]
+reject assistant(owner) {A.Essam} [done]
+
 
 show pending registrations * 2
-register admin account {both Essam} [done]
-accept assistant(owner)
-reject assistant(owner)
-
 student sign in
 register student account
 accept student

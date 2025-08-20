@@ -22,13 +22,34 @@ const DOK_signUp= asyncWrapper( async (req, res) => {
       permission,
       verified: true,
     });
-
     return res.status(201).json({
       status: "success" ,
       data: { message: "Teacher created successfully" }
     });
 })
 
+const rejectAssistant = asyncWrapper(async (req, res) => {
+    const { email } = req.params;
+    const assistant = await Admin.findOne({ where: { email } });
+    await Admin.destroy({ where: { email } });
+    return res.status(200).json({
+    status: "success",
+    message: `Assistant with email ${email} rejected and removed from database`
+  });
+});
+
+const acceptAssistant = asyncWrapper(async (req, res) => {
+    const { email } = req.params;
+    const assistant = await Admin.findOne({ where: { email } });
+    await Admin.update({ verified: true }, { where: { email } });
+    return res.status(200).json({
+        status: "success",
+        message: `Assistant with email ${email} accepted`
+    });
+});
+
 module.exports = {
     DOK_signUp
+    , rejectAssistant,
+    acceptAssistant
 }

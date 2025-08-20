@@ -1,0 +1,31 @@
+const sequelize = require('../config/database');
+const Admin = require('../models/admin.model.js');
+const bcrypt = require('bcrypt');
+const AppError = require('../utils/app.error');
+const asyncWrapper = require('../middleware/async.wrapper');
+
+
+const findAdmin = asyncWrapper(async (req, res, next) => {
+  const { email } = req.params;
+  const admin = await Admin.findOne({ where: { email } });
+  if (!admin) {
+    return next(new AppError('Admin not found', 404));
+  }
+  req.admin = admin; // attach found admin for later use
+  next();
+});
+
+
+
+const checkRole = asyncWrapper(async (req, res, next) => {
+  if (req.user.id !== 1) {
+    return next(new AppError('You are not authorized to perform this action', 403));
+  }
+  next();
+});
+
+
+module.exports = {
+    findAdmin,
+    checkRole
+};
