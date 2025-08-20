@@ -3,11 +3,10 @@ register admin account
 accept account
 reject account
 sign in
-add assistant
-remove assistant
+add assistant(owner)
+remove assistant(owner)
 remove student
 show pending registrations
-change role
 edit profile
 clear database
 ban student
@@ -28,3 +27,4 @@ mark submission
 post on feed
 make a session
 attend a session
+data analysis {tamer}
