@@ -1,8 +1,9 @@
 require("dotenv").config();
 const sequelize = require('./config/database'); 
 const express = require("express");
-// const httpStatusCode = require('./utils/http.status');
+const httpStatusCode = require('./utils/http.status');
 const adminRoutes = require('./routes/admin.routes');
+const dokRoutes = require('./routes/dok.routes');
 const app = express();
 app.use(express.json());
 
@@ -27,6 +28,7 @@ sequelize.sync({ alter: true })
   });
 
 app.use('/admin', adminRoutes);
+app.use('/dok', dokRoutes);
 /*
 // Global not-found handler
 app.use('*', (req, res) => {

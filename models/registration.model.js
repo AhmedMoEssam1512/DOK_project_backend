@@ -4,7 +4,7 @@ const Registration = sequelize.define('Registrations', {
   userId: { type: DataTypes.STRING, primaryKey: true },
   adminId: { type: DataTypes.STRING, primaryKey: true },
   semester: DataTypes.STRING,
-  dateAndTime: DataTypes.DATE
-}, { tableName: 'registrations', timestamps: false });
+  dateAndTime: {type : DataTypes.DATE , defaultValue: DataTypes.NOW},
+}, { tableName: 'registration', timestamps: false });
 
 module.exports = Registration;

@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
 const asyncWrapper = require('../middleware/async.wrapper');
+const jwt = require("jsonwebtoken");
 
 const TARegister = asyncWrapper(async (req, res) => {
     const { email, name, password, phoneNumber, group} = req.body;
@@ -23,6 +24,28 @@ const TARegister = asyncWrapper(async (req, res) => {
     });
 });
 
+const signIn = asyncWrapper(
+    async (req, res) => {
+        const admin = req.admin; // comes from findAndCheckAdmin
+    const adminToken = jwt.sign(
+      {
+        id: admin.adminId,
+        email: admin.email,
+        role: admin.role,
+        permission: admin.permission,
+      },
+      process.env.JWT_SECRET ,
+      { expiresIn: process.env.JWT_EXPIRATION} // Use the environment variable for expiration
+    );
+
+    res.status(200).json({
+      message: "Login successful",
+      adminToken,
+    });
+    }
+)
+
 module.exports = {
     TARegister
+    , signIn
 }

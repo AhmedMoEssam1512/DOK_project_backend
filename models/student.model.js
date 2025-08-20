@@ -6,17 +6,17 @@ const Student = sequelize.define('Student', {
     primaryKey: true, 
     autoIncrement: true  },
   studentEmail:{ type:DataTypes.STRING , unique: true, allowNull: false, validate: { isEmail: true }},
-  studentName: DataTypes.STRING,
-  password: DataTypes.STRING,
+  studentName: {type: DataTypes.STRING, allowNull: false},
+  password: {type: DataTypes.STRING, allowNull: false},
   assistantId: DataTypes.STRING,
-  group: DataTypes.STRING,
-  semester: DataTypes.STRING,
-  parentPhoneNumber: DataTypes.STRING,
-  studentPhoneNumber: DataTypes.STRING,
-  totalScore: DataTypes.INTEGER,
-  createdAt: DataTypes.DATE,
-  verified: DataTypes.BOOLEAN,
-  banned: DataTypes.BOOLEAN
+  group: {type: DataTypes.STRING, allowNull: false},
+  semester: {type: DataTypes.STRING, allowNull: false},
+  parentPhoneNumber: {type: DataTypes.STRING, allowNull: false},
+  studentPhoneNumber: {type: DataTypes.STRING, allowNull: false},
+  totalScore: {type: DataTypes.INTEGER, defaultValue: 0},
+  createdAt: {type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+  verified: {type: DataTypes.BOOLEAN, defaultValue: false},
+  banned: {type: DataTypes.BOOLEAN, defaultValue: false}
 }, {
   tableName: 'student',
   timestamps: false

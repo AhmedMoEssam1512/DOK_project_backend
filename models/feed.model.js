@@ -5,7 +5,7 @@ const Feed = sequelize.define('Feed', {
     primaryKey: true, 
     autoIncrement: true  },
   text: DataTypes.STRING,
-  dateAndTime: DataTypes.DATE,
+  dateAndTime: {type : DataTypes.DATE, defaultValue: DataTypes.NOW },
   semester: DataTypes.STRING,
   adminId: DataTypes.STRING
 }, { tableName: 'feed', timestamps: false });

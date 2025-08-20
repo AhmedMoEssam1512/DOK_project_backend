@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const httpStatus = require('../utils/http.status');
 const AppError = require('../utils/app.error');
 const asyncWrapper = require('../middleware/async.wrapper');
+const {where} = require("sequelize");
+const jwt = require("jsonwebtoken");
 
 const adminFound= asyncWrapper(async (req, res, next) => {
     const { email } = req.body;
@@ -22,7 +24,31 @@ const passwordEncryption = asyncWrapper( async (req,res,next) => {
     next();
 });
 
+const findAndCheckAdmin = asyncWrapper(async (req,res, next ) => {
+    const { email, password} = req.body;
+    const found = await Admin.findOne( {where: { email } });
+    if (!found){
+        const error = AppError.create("Email not found", 404 , httpStatus.Error);
+        return next(error)
+    }
+    const valid = await bcrypt.compare(String(password),found.password);
+    if(!valid){
+        const error = AppError.create("Invalid password", 401, httpStatus.Error);
+        return next(error);
+    }
+    const verified = found.verified;
+    if(!verified){
+        const error = AppError.create("Email not verified", 403, httpStatus.Error);
+        return next(error);
+    }
+    req.admin = found;
+    next();
+})
+
+
+
 module.exports = {
     adminFound,
     passwordEncryption,
+    findAndCheckAdmin,
 }

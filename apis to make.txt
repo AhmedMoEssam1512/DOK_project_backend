@@ -1,22 +1,22 @@
 create dok account {A.Essam} [done]
-sign in
+admin sign in {A.Essam} [done]
 
-show pending registrations
+show pending registrations * 2
 register admin account {both Essam} [done]
 accept assistant(owner)
 reject assistant(owner)
 
+student sign in
 register student account
 accept student
 reject student
 
 remove assistant(owner)
 remove student
-
+ban student
 
 edit profile
 clear database
-ban student
 delete account
 1 api for each delete
 assign group
