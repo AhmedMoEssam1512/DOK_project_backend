@@ -1,13 +1,19 @@
 create dok account {A.Essam} [done]
-register student account
-register admin account
-accept account
-reject account
 sign in
-add assistant(owner)
+
+show pending registrations
+register admin account {both Essam} [done]
+accept assistant(owner)
+reject assistant(owner)
+
+register student account
+accept student
+reject student
+
 remove assistant(owner)
 remove student
-show pending registrations
+
+
 edit profile
 clear database
 ban student
