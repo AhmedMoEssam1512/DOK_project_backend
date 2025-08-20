@@ -1,0 +1,30 @@
+register student account
+register admin account
+accept account
+reject account
+sign in
+add assistant
+remove assistant
+remove student
+show pending registrations
+change role
+edit profile
+clear database
+ban student
+delete account
+1 api for each delete
+assign group
+show group
+generate reports
+library
+leaderboard
+schedule assignment
+get active assignments
+schedule quiz
+get active quiz
+submit assignment
+submit quiz
+mark submission
+post on feed
+make a session
+attend a session
