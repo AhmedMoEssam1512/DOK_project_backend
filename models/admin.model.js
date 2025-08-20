@@ -5,9 +5,9 @@ const Admin = sequelize.define('Admin', {
     primaryKey: true, 
     autoIncrement: true  },
   email: {type:DataTypes.STRING , unique: true, allowNull: false, validate: { isEmail: true }},
-  name: DataTypes.STRING,
+  name: {type: DataTypes.STRING, allowNull: false},
   group: DataTypes.STRING,
-  password: DataTypes.STRING,
+  password: {type: DataTypes.STRING, allowNull: false},
   phoneNumber: DataTypes.STRING,
   role: DataTypes.ENUM('assistant', 'teacher'),
   permission: DataTypes.ENUM('all', 'limited')
