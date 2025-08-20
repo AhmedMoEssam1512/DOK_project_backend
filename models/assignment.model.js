@@ -1,5 +1,5 @@
 const sequelize = require('../config/database');
-const { DataTypes } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 const Assignment = sequelize.define('Assignment', {
   asslId: { type: DataTypes.INTEGER, 
     primaryKey: true, 

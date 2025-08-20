@@ -1,3 +1,4 @@
+create dok account {A.Essam} [done]
 register student account
 register admin account
 accept account
@@ -27,4 +28,4 @@ mark submission
 post on feed
 make a session
 attend a session
-data analysis {tamer}
+data analysis {Tamer}

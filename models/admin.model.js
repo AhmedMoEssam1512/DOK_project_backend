@@ -1,5 +1,5 @@
 const sequelize = require('../config/database');
-const { DataTypes } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 const Admin = sequelize.define('Admin', {
   adminId: { type: DataTypes.INTEGER, 
     primaryKey: true, 
@@ -10,7 +10,8 @@ const Admin = sequelize.define('Admin', {
   password: {type: DataTypes.STRING, allowNull: false},
   phoneNumber: DataTypes.STRING,
   role: DataTypes.ENUM('assistant', 'teacher'),
-  permission: DataTypes.ENUM('all', 'limited')
+  permission: DataTypes.ENUM('all', 'limited'),
+    verified :{type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false},
 }, {
   tableName: 'admin',
   timestamps: false

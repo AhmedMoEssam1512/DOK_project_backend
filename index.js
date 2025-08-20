@@ -1,8 +1,8 @@
 require("dotenv").config();
+const sequelize = require('./config/database'); 
 const express = require("express");
-const { sequelize } = require('./models');
-const httpStatusCode = require('./utils/http.status');
-
+// const httpStatusCode = require('./utils/http.status');
+const adminRoutes = require('./routes/admin.routes');
 const app = express();
 app.use(express.json());
 
@@ -15,12 +15,18 @@ app.use(express.json());
         console.error('❌ Unable to connect to the database:', error);
     }
 })();
-
+const PORT = process.env.PORT 
 // Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-});
+sequelize.sync({ alter: true })  
+  .then(() => {
+    console.log('✅ Database syncing');
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+  })
+  .catch(err => {
+    console.error('❌ Failed to sync DB:', err);
+  });
+
+app.use('/admin', adminRoutes);
 /*
 // Global not-found handler
 app.use('*', (req, res) => {

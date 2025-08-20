@@ -1,5 +1,5 @@
 const Error = 'Error';
-const Success = 'Succcess';
+const Success = 'Success';
 const Fail = 'Fail';
 
 module.exports = {
