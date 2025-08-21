@@ -13,8 +13,8 @@ show assistants belong to which group {Y.Essam} [done]
 show students belong to which group {Y.Essam} [done]
 remove student {A.Essam} [done]
 ban/unban student {A.Essam} [done]
+reject student {A.Essam} [done]
 
-reject student {A.Essam}  [delayed]
 
 edit profile
 show student profile
