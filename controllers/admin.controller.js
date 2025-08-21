@@ -6,6 +6,8 @@ const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
 const asyncWrapper = require('../middleware/async.wrapper');
 const jwt = require("jsonwebtoken");
+const Regection = require('../models/rejection.model.js');
+const Registration = require('../models/registration.model.js');
 
 
 const TARegister = asyncWrapper(async (req, res) => {
@@ -69,6 +71,10 @@ const verifyStudent = asyncWrapper(async (req, res) => {
   student.verified = true;
   student.assistantId = req.admin.id; // set the admin who verified
   await student.save();
+  await Regection.destroy({
+    where: { studentEmail: student.studentEmail}});
+  await Registration.destroy({
+    where: { studentEmail: student.studentEmail }});
   return res.status(200).json({ 
     status: "success",
     message: `Student ${student.studentName} verified successfully`,
@@ -125,6 +131,38 @@ const unBanStudent = asyncWrapper(async (req, res) => {
   });
 });
 
+const rejectSudent = asyncWrapper(async (req, res) => {
+  const student = req.student; // must be set earlier by studentFound
+  const adminId = req.admin.id;
+  console.log(adminId) // assuming adminId is available in req.admin
+  await Regection.create({
+    studentEmail: student.studentEmail,
+    adminId : adminId,
+    semester: student.semester,
+    dateAndTime: new Date(),
+  });
+  const reg = await Registration.findOne({
+    where: { studentEmail: student.studentEmail }
+  });
+  reg.rejectionCount += 1;
+  await reg.save();
+  const adminCount = await Admin.count({
+    where: { group: student.group }
+  });
+  console.log("adminCount : ", adminCount);
+  if (reg.rejectionCount >= adminCount) {
+    await Registration.destroy({
+      where: { studentEmail: student.studentEmail }
+    });
+    await student.destroy();
+  }
+  return res.status(200).json({
+    status: "success",
+    message: `Student ${student.studentName} rejected successfully`,
+    data: { studentEmail: student.studentEmail }
+  });
+});
+
 module.exports = {
     TARegister,
     signIn,
@@ -133,6 +171,7 @@ module.exports = {
     verifyStudent,
     removeStudent,
     banStudent,
-    unBanStudent
+    unBanStudent,
+    rejectSudent
 }
 

@@ -6,6 +6,7 @@ const httpStatus = require('../utils/http.status');
 const asyncWrapper = require('../middleware/async.wrapper');
 const jwt = require("jsonwebtoken");
 const { notifyAssistants } = require('../utils/sseClients');
+const Registration = require('../models/registration.model.js');
 
 const studentRegister = asyncWrapper(async (req, res) => {
   const {
@@ -32,6 +33,9 @@ const studentRegister = asyncWrapper(async (req, res) => {
     group,
     semester
   });
+  await Registration.create({
+    studentEmail,
+    group});
 
   // Notify only assistants in the same group
   notifyAssistants(group, {
