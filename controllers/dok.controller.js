@@ -74,10 +74,28 @@ const removeAssistant = asyncWrapper(async (req, res) => {
     })
 })
 
+const checkAssistantGroup = asyncWrapper(async (req, res) => {
+    const { group } = req.params;
+    const admin = await Admin.findAll({
+        where: { group, role: 'assistant' }
+    });
+    return res.status(200).json({
+        status: "success",
+        data: {
+            data: admin.map(admin => ({
+                name: admin.name,
+                email: admin.email
+            }))
+        }
+    });
+});
+
+
 module.exports = {
     DOK_signUp
     , rejectAssistant,
     acceptAssistant,
     showPendingRegistration,
-    removeAssistant
+    removeAssistant,
+    checkAssistantGroup
 }

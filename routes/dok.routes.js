@@ -19,4 +19,7 @@ router.route('/showPendingAssistantRegistration')
 router.route('/removeAssistant/:email')
     .delete(auth.adminProtect, dokmiddleware.checkRole, dokmiddleware.findAdmin, DOK.removeAssistant);
 
+router.route('/checkAssistantInGroup/:group')
+    .get(auth.adminProtect, dokmiddleware.checkRole, DOK.checkAssistantGroup);    
+
 module.exports = router;
