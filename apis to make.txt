@@ -3,15 +3,17 @@ admin sign in {A.Essam} [done]
 register admin account {both Essam} [done]
 accept assistant(owner) {A.Essam} [done]
 reject assistant(owner) {A.Essam} [done]
+show pending registrations assistant {Y.Essam} [done] 
+remove assistant(owner) {Y.Essam} [done]
 
 
-show pending registrations * 2
+show pending registrations student
 student sign in
 register student account
 accept student
 reject student
 
-remove assistant(owner)
+
 remove student
 ban student
 

@@ -46,10 +46,38 @@ const acceptAssistant = asyncWrapper(async (req, res) => {
         status: "success",
         message: `Assistant with email ${email} accepted`
     });
-});
+})
+
+const showPendingRegistration = asyncWrapper(async (req, res) => {
+    const admin = await Admin.findAll({
+        where: {verified : false}
+    });
+    return res.status(200).json({
+        status: "success",
+        message: `Pending registration from assistants`,
+        data: { 
+  data: admin.map(admin => ({
+      name: admin.name,
+      email: admin.email,
+      group: admin.group
+    }))
+}})})
+
+const removeAssistant = asyncWrapper(async (req, res) => {
+    const { email } = req.params;
+    const deleted = await Admin.destroy({
+        where: {email}
+    });
+    return res.status(200).json({
+        status: "success",
+        message: `Assistant with email ${email} removed successfully`
+    })
+})
 
 module.exports = {
     DOK_signUp
     , rejectAssistant,
-    acceptAssistant
+    acceptAssistant,
+    showPendingRegistration,
+    removeAssistant
 }

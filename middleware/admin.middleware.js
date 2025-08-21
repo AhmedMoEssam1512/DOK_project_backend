@@ -25,7 +25,7 @@ const passwordEncryption = asyncWrapper( async (req,res,next) => {
 });
 
 const findAndCheckAdmin = asyncWrapper(async (req,res, next ) => {
-    const { email, password} = req.body;
+    const { email, password } = req.body;
     const found = await Admin.findOne( {where: { email } });
     if (!found){
         const error = AppError.create("Email not found", 404 , httpStatus.Error);

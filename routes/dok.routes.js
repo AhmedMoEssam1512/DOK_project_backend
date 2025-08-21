@@ -13,4 +13,10 @@ router.route('/rejectAssistant/:email')
 router.route('/acceptAssistant/:email')
     .patch(protect, dokmiddleware.checkRole, dokmiddleware.findAdmin, DOK.acceptAssistant);
 
+router.route('/showPendingAssistantRegistration')
+    .get(protect, dokmiddleware.checkRole, DOK.showPendingRegistration);
+
+router.route('/removeAssistant/:email')
+    .delete(protect, dokmiddleware.checkRole, dokmiddleware.findAdmin, DOK.removeAssistant);
+
 module.exports = router;
