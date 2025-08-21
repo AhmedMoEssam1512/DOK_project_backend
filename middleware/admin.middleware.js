@@ -1,5 +1,6 @@
 const sequelize = require('../config/database');
 const Admin = require('../models/admin.model.js');
+const Student = require('../models/student.model.js');
 const bcrypt = require('bcrypt');
 const httpStatus = require('../utils/http.status');
 const AppError = require('../utils/app.error');
@@ -17,6 +18,23 @@ const adminFound= asyncWrapper(async (req, res, next) => {
     }
     next();
 })
+
+const studentFound = asyncWrapper(async (req, res, next) => {
+    const { studentEmail } = req.params;
+    const found = await Student.findOne({ where: { studentEmail } });
+    if (!found) {
+    return next(new AppError('student not found', 404));
+  }
+  if(found.group !== req.admin.group) {
+    return next(new AppError('You are not allowed to access this student', 403));
+  }
+  if (found.verified) {
+    return next(new AppError('Student already verified', 400));
+  }
+  req.student = found;
+  console.log("student found : ", studentEmail) // attach found admin for later use
+  next();
+});
 
 const passwordEncryption = asyncWrapper( async (req,res,next) => {
     const { password } = req.body;
@@ -89,5 +107,6 @@ module.exports = {
     adminFound,
     passwordEncryption,
     findAndCheckAdmin,
-    establishConnection
+    establishConnection,
+    studentFound
 }

@@ -1,5 +1,6 @@
 const sequelize = require('../config/database');
 const Admin = require('../models/admin.model.js');
+const Student = require('../models/student.model.js');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
@@ -45,7 +46,48 @@ const signIn = asyncWrapper(async (req, res, next) => {
   });
 });
 
+const showPendingRegistration = asyncWrapper(async (req, res) => {
+  const TAGroup = req.admin.group;
+    const students = await Student.findAll({
+        where: {verified : false , group: TAGroup}
+    });
+    return res.status(200).json({
+        status: "success",
+        message: `Pending registration from students`,
+        data: { 
+  data: students.map(student => ({
+      name: student.studentName,
+      email: student.studentEmail,
+      group: student.group
+    }))
+}})});
+
+const verifyStudent = asyncWrapper(async (req, res) => {
+  const student = req.student; // must be set earlier by studentFound
+  student.verified = true;
+  student.assistantId = req.admin.id; // set the admin who verified
+  await student.save();
+  return res.status(200).json({ 
+    status: "success",
+    message: `Student ${student.studentName} verified successfully`,
+    data: { studentEmail: student.studentEmail }
+  });
+});
+
+// const rejectStudent = asyncWrapper(async (req, res) => {
+//   const student = req.student; // must be set earlier by studentFound
+//   await student.destroy();
+//   return res.status(200).json({
+//     status: "success",
+//     message: `Student ${student.studentName} rejected successfully`,
+//     data: { studentEmail: student.studentEmail }
+//   });
+// });
+
 module.exports = {
     TARegister
-    , signIn
+    , signIn,
+    showPendingRegistration,
+    verifyStudent,
+    //rejectStudent
 }

@@ -13,4 +13,11 @@ router.route('/adminLogin')
 router.route('/adminSSE')
     .get(auth.adminProtect, adminMiddleWare.establishConnection);
 
+router.route('/pendingRegistrations')
+    .get(auth.adminProtect, adminControllers.showPendingRegistration);
+
+router.route('/verifyStudent/:studentEmail')
+    .patch(auth.adminProtect, adminMiddleWare.studentFound, adminControllers.verifyStudent);
+
+
 module.exports = router;

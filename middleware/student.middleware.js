@@ -26,14 +26,15 @@ const passwordEncryption = asyncWrapper( async (req,res,next) => {
 
 const findAndCheckStudent = asyncWrapper(async (req,res, next ) => {
     const { email, password} = req.body;
-    const found = await Student.findOne( {where: { email } });
+    const found = await Student.findOne( {where: { studentEmail : email } });
     if (!found){
         const error = AppError.create("Email not found", 404 , httpStatus.Error);
         return next(error)
     }
+    console.log("Student found successfully" , found.studentEmail);
     const valid = await bcrypt.compare(String(password),found.password);
     if(!valid){
-        const error = AppError.create("Invalid password", 401, httpStatus.Error);
+        const error = AppError.create("Wrong password", 401, httpStatus.Error);
         return next(error);
     }
     const verified = found.verified;
@@ -42,11 +43,12 @@ const findAndCheckStudent = asyncWrapper(async (req,res, next ) => {
         return next(error);
     }
     const banned = found.banned;
-    if (!banned){
+    if (banned){
         const error = AppError.create("Your account is banned",403,httpStatus.Error);
         return next(error);
     }
     req.student = found;
+    console.log("Student found and checked successfully");
     next();
 })
 

@@ -6,11 +6,12 @@ reject assistant(owner) {A.Essam} [done]
 show pending registrations assistant {Y.Essam} [done] 
 remove assistant(owner) {Y.Essam} [done]
 register student account {both Essam} [done]
+show pending registrations student {A.Essam} [done]
+accept student {A.Essam} [done]
+student sign in {both Essam} [done]
 
-show pending registrations student {A.Essam}
-student sign in {A.Essam}
-accept student {A.Essam}
 reject student {A.Essam}
+
 remove student {A.Essam}
 ban student {A.Essam}
 
