@@ -13,16 +13,14 @@ router.route('/adminLogin')
 router.route('/adminSSE')
     .get(auth.adminProtect, adminMiddleWare.establishConnection);
 
-<<<<<<< HEAD
 router.route('/pendingRegistrations')
     .get(auth.adminProtect, adminControllers.showPendingRegistration);
 
 router.route('/verifyStudent/:studentEmail')
     .patch(auth.adminProtect, adminMiddleWare.studentFound, adminControllers.verifyStudent);
 
-=======
 router.route('/checkStudentInGroup/:group')
     .get(auth.adminProtect, adminControllers.showStudentInGroup);    
->>>>>>> eaab40b65399b84353833f790ef8ad2ae9e6b2fb
+
 
 module.exports = router;

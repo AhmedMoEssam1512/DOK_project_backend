@@ -47,7 +47,7 @@ const signIn = asyncWrapper(async (req, res, next) => {
   });
 });
 
-<<<<<<< HEAD
+
 const showPendingRegistration = asyncWrapper(async (req, res) => {
   const TAGroup = req.admin.group;
     const students = await Student.findAll({
@@ -76,23 +76,6 @@ const verifyStudent = asyncWrapper(async (req, res) => {
   });
 });
 
-// const rejectStudent = asyncWrapper(async (req, res) => {
-//   const student = req.student; // must be set earlier by studentFound
-//   await student.destroy();
-//   return res.status(200).json({
-//     status: "success",
-//     message: `Student ${student.studentName} rejected successfully`,
-//     data: { studentEmail: student.studentEmail }
-//   });
-// });
-
-module.exports = {
-    TARegister
-    , signIn,
-    showPendingRegistration,
-    verifyStudent,
-    //rejectStudent
-=======
 const showStudentInGroup = asyncWrapper(async (req, res) => {
     const { group } = req.params;
     const student = await Student.findAll({
@@ -108,10 +91,22 @@ const showStudentInGroup = asyncWrapper(async (req, res) => {
         }
     });
 });
+// const rejectStudent = asyncWrapper(async (req, res) => {
+//   const student = req.student; // must be set earlier by studentFound
+//   await student.destroy();
+//   return res.status(200).json({
+//     status: "success",
+//     message: `Student ${student.studentName} rejected successfully`,
+//     data: { studentEmail: student.studentEmail }
+//   });
+// });
 
 module.exports = {
     TARegister
     , signIn,
-    showStudentInGroup,
->>>>>>> eaab40b65399b84353833f790ef8ad2ae9e6b2fb
+    showPendingRegistration,
+     showStudentInGroup,
+    verifyStudent,
+    //rejectStudent
 }
+
