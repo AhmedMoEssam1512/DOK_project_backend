@@ -52,6 +52,7 @@ const studentProtect = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.student = decoded; // attach payload
+    console.log("protect finished") 
     next();
   } catch (error) {
     return next(new AppError('Not authorized, token failed', 401));

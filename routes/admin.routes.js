@@ -20,7 +20,10 @@ router.route('/verifyStudent/:studentEmail')
     .patch(auth.adminProtect, adminMiddleWare.studentFound, adminControllers.verifyStudent);
 
 router.route('/checkStudentInGroup/:group')
-    .get(auth.adminProtect, adminControllers.showStudentInGroup);    
+    .get(auth.adminProtect, adminControllers.showStudentInGroup);   
+    
+router.route('/removeStudent/:studentEmail')
+    .delete(auth.adminProtect, adminMiddleWare.checkAuthurity, adminControllers.removeStudent);
 
 
 module.exports = router;

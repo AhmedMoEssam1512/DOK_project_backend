@@ -6,7 +6,7 @@ const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
 const asyncWrapper = require('../middleware/async.wrapper');
 const jwt = require("jsonwebtoken");
-const Student = require('../models/student.model.js');
+
 
 const TARegister = asyncWrapper(async (req, res) => {
     const { email, name, password, phoneNumber, group} = req.body;
@@ -91,22 +91,24 @@ const showStudentInGroup = asyncWrapper(async (req, res) => {
         }
     });
 });
-// const rejectStudent = asyncWrapper(async (req, res) => {
-//   const student = req.student; // must be set earlier by studentFound
-//   await student.destroy();
-//   return res.status(200).json({
-//     status: "success",
-//     message: `Student ${student.studentName} rejected successfully`,
-//     data: { studentEmail: student.studentEmail }
-//   });
-// });
+
+
+const removeStudent = asyncWrapper(async (req, res) => {
+  const student = req.student; // must be set earlier by studentFound
+  await student.destroy();
+  return res.status(200).json({
+    status: "success",
+    message: `Student ${student.studentName} deleted successfully`,
+    data: { studentEmail: student.studentEmail }
+  });
+});
 
 module.exports = {
-    TARegister
-    , signIn,
+    TARegister,
+    signIn,
     showPendingRegistration,
-     showStudentInGroup,
+    showStudentInGroup,
     verifyStudent,
-    //rejectStudent
+    removeStudent
 }
 
