@@ -8,3 +8,5 @@ router.route('/studentRegister')
 
 router.route('/studentLogin')
     .post(studentMiddleWare.findAndCheckStudent,studentControllers.signIn)
+
+module.exports = router;

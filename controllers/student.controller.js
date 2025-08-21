@@ -4,22 +4,42 @@ const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
 const asyncWrapper = require('../middleware/async.wrapper');
+const jwt = require("jsonwebtoken");
+const { notifyAssistants } = require('../utils/sseClients');
 
 const studentRegister = asyncWrapper(async (req, res) => {
-    const {studentEmail,studentName,password,studentPhoneNumber,parentPhoneNumber,group,semester} = req.body;
-    await Student.create({
-        studentName,
-        studentEmail,
-        password,
-        studentPhoneNumber,
-        parentPhoneNumber,
-        group,
-        semester
-    });
-    return res.status(201).json({
-        status: "success" ,
-        data: { message: "Student created successfully" }
-    });
+  const {
+    studentEmail,
+    studentName,
+    password,
+    studentPhoneNumber,
+    parentPhoneNumber,
+    group,
+    semester
+  } = req.body;
+
+  // Create the student
+  await Student.create({
+    studentName,
+    studentEmail,
+    password,
+    studentPhoneNumber,
+    parentPhoneNumber,
+    group,
+    semester
+  });
+
+  // Notify only assistants in the same group
+  notifyAssistants(group, {
+    event: "student_registered",
+    message: `New student ${studentName} registered`,
+    Student: { id : Student.studentId, studentName, studentEmail, group }
+  });
+
+  return res.status(201).json({
+    status: "success",
+    data: { message: "Student registered successfully" }
+  });
 });
 
 const signIn = asyncWrapper(async (req, res, next) => {

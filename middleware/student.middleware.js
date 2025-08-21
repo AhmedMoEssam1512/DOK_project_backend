@@ -8,8 +8,8 @@ const {where} = require("sequelize");
 const jwt = require("jsonwebtoken");
 
 const studentFound= asyncWrapper(async (req, res, next) => {
-    const { email } = req.body;
-    const found = await Student.findOne({ where: { email } });
+    const { studentEmail } = req.body;
+    const found = await Student.findOne({ where: { studentEmail } });
     if (found) {
         const error = AppError.create("Email already exists", 400, httpStatus.Error);
         return next(error);

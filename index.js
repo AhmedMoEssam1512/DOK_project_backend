@@ -4,6 +4,7 @@ const express = require("express");
 const httpStatusCode = require('./utils/http.status');
 const adminRoutes = require('./routes/admin.routes');
 const dokRoutes = require('./routes/dok.routes');
+const studentRoutes = require('./routes/student.routes');
 const app = express();
 app.use(express.json());
 
@@ -29,6 +30,7 @@ sequelize.sync({ alter: true })
 
 app.use('/admin', adminRoutes);
 app.use('/dok', dokRoutes);
+app.use('/student', studentRoutes);
 /*
 // Global not-found handler
 app.use('*', (req, res) => {

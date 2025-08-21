@@ -31,6 +31,7 @@ const signIn = asyncWrapper(async (req, res, next) => {
       id: admin.adminId,
       email: admin.email,
       role: admin.role,
+      group: admin.group,  
       permission: admin.permission,
     },
     process.env.JWT_SECRET, // 👈 must match protect middleware
