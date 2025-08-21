@@ -92,8 +92,8 @@ const checkAssistantGroup = asyncWrapper(async (req, res) => {
 
 
 module.exports = {
-    DOK_signUp
-    , rejectAssistant,
+    DOK_signUp, 
+    rejectAssistant,
     acceptAssistant,
     showPendingRegistration,
     removeAssistant,

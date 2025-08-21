@@ -25,5 +25,10 @@ router.route('/checkStudentInGroup/:group')
 router.route('/removeStudent/:studentEmail')
     .delete(auth.adminProtect, adminMiddleWare.checkAuthurity, adminControllers.removeStudent);
 
+router.route('/banStudent/:studentEmail')
+    .patch(auth.adminProtect, adminMiddleWare.checkAuthurity, adminControllers.banStudent);
+
+router.route('/unBanStudent/:studentEmail')
+    .patch(auth.adminProtect, adminMiddleWare.checkAuthurity, adminControllers.unBanStudent);
 
 module.exports = router;

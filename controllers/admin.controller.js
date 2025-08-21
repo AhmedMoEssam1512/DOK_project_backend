@@ -103,12 +103,36 @@ const removeStudent = asyncWrapper(async (req, res) => {
   });
 });
 
+const banStudent = asyncWrapper(async (req, res) => {
+  const student = req.student; // must be set earlier by studentFound
+  student.banned = true; // assuming you have a banned field
+  await student.save();
+  return res.status(200).json({
+    status: "success",
+    message: `Student ${student.studentName} deleted successfully`,
+    data: { studentEmail: student.studentEmail }
+  });
+});
+
+const unBanStudent = asyncWrapper(async (req, res) => {
+  const student = req.student; // must be set earlier by studentFound
+  student.banned = false; // assuming you have a banned field
+  await student.save();
+  return res.status(200).json({
+    status: "success",
+    message: `Student ${student.studentName} unbanned successfully`,
+    data: { studentEmail: student.studentEmail }
+  });
+});
+
 module.exports = {
     TARegister,
     signIn,
     showPendingRegistration,
     showStudentInGroup,
     verifyStudent,
-    removeStudent
+    removeStudent,
+    banStudent,
+    unBanStudent
 }
 
