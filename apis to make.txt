@@ -6,6 +6,8 @@ reject assistant(owner) {A.Essam} [done]
 show pending registrations assistant {Y.Essam} [done] 
 remove assistant(owner) {Y.Essam} [done]
 register student account {both Essam} [done]
+show assistants belong to which group {Y.Essam} [done]
+show students belong to which group {Y.Essam} [done]
 
 show pending registrations student {A.Essam}
 student sign in {A.Essam}
@@ -17,8 +19,6 @@ ban student {A.Essam}
 edit profile
 show student profile
 assign group
-show assistants belong to which group {Y.Essam} [done]
-show students belong to which group {Y.Essam} [done]
 generate reports
 library
 leaderboard
