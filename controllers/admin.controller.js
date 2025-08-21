@@ -5,6 +5,7 @@ const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
 const asyncWrapper = require('../middleware/async.wrapper');
 const jwt = require("jsonwebtoken");
+const Student = require('../models/student.model.js');
 
 const TARegister = asyncWrapper(async (req, res) => {
     const { email, name, password, phoneNumber, group} = req.body;
@@ -45,7 +46,24 @@ const signIn = asyncWrapper(async (req, res, next) => {
   });
 });
 
+const showStudentInGroup = asyncWrapper(async (req, res) => {
+    const { group } = req.params;
+    const student = await Student.findAll({
+        where: { group }
+    });
+    return res.status(200).json({
+        status: "success",
+        data: {
+            data: student.map(student => ({
+                name: student.studentName,
+                email: student.studentEmail
+            }))
+        }
+    });
+});
+
 module.exports = {
     TARegister
-    , signIn
+    , signIn,
+    showStudentInGroup,
 }

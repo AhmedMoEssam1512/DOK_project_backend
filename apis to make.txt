@@ -15,8 +15,10 @@ remove student {A.Essam}
 ban student {A.Essam}
 
 edit profile
+show student profile
 assign group
-show group
+show assistants belong to which group {Y.Essam} [done]
+show students belong to which group {Y.Essam} [done]
 generate reports
 library
 leaderboard

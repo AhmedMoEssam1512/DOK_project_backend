@@ -13,4 +13,7 @@ router.route('/adminLogin')
 router.route('/adminSSE')
     .get(auth.adminProtect, adminMiddleWare.establishConnection);
 
+router.route('/checkStudentInGroup/:group')
+    .get(auth.adminProtect, adminControllers.showStudentInGroup);    
+
 module.exports = router;
