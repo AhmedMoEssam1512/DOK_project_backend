@@ -8,7 +8,7 @@ const Student = sequelize.define('Student', {
   studentEmail:{ type:DataTypes.STRING , unique: true, allowNull: false, validate: { isEmail: true }},
   studentName: {type: DataTypes.STRING, allowNull: false},
   password: {type: DataTypes.STRING, allowNull: false},
-  assistantId: DataTypes.STRING,
+  assistantId: {type: DataTypes.STRING},
   group: {type: DataTypes.STRING, allowNull: false},
   semester: {type: DataTypes.STRING, allowNull: false},
   parentPhoneNumber: {type: DataTypes.STRING, allowNull: false},
