@@ -11,11 +11,10 @@ accept student {A.Essam} [done]
 student sign in {both Essam} [done]
 show assistants belong to which group {Y.Essam} [done]
 show students belong to which group {Y.Essam} [done]
+remove student {A.Essam} [done]
+ban/unban student {A.Essam} [done]
 
-
-reject student {A.Essam}
-remove student {A.Essam}
-ban student {A.Essam}
+reject student {A.Essam}  [delayed]
 
 edit profile
 show student profile
