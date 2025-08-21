@@ -14,6 +14,8 @@ const studentRegister = asyncWrapper(async (req, res) => {
     password,
     studentPhoneNumber,
     parentPhoneNumber,
+    parentEmail,
+    birthDate,
     group,
     semester
   } = req.body;
@@ -23,6 +25,8 @@ const studentRegister = asyncWrapper(async (req, res) => {
     studentName,
     studentEmail,
     password,
+    parentEmail,
+    birthDate,
     studentPhoneNumber,
     parentPhoneNumber,
     group,
