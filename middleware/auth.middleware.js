@@ -24,7 +24,8 @@ const adminProtect = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.admin = decoded; // attach payload
+    req.admin = decoded;
+    console.log("protect finished") // attach payload
     next();
   } catch (error) {
     return next(new AppError('Not authorized, token failed', 401));

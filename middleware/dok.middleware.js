@@ -11,16 +11,19 @@ const findAdmin = asyncWrapper(async (req, res, next) => {
   if (!admin) {
     return next(new AppError('Admin not found', 404));
   }
-  req.admin = admin; // attach found admin for later use
+  req.assistant = admin;
+  console.log("admin found") // attach found admin for later use
   next();
 });
 
 
 
 const checkRole = asyncWrapper(async (req, res, next) => {
-  if (req.user.id !== 1) {
+  if (req.admin.id !== 1) {
+    console.log(req.admin.id)
     return next(new AppError('You are not authorized to perform this action', 403));
   }
+  console.log("checkRole passed");
   next();
 });
 
