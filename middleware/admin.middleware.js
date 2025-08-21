@@ -1,6 +1,7 @@
 const sequelize = require('../config/database');
 const Admin = require('../models/admin.model.js');
 const Student = require('../models/student.model.js');
+const Regection = require('../models/rejection.model.js');
 const bcrypt = require('bcrypt');
 const httpStatus = require('../utils/http.status');
 const AppError = require('../utils/app.error');
@@ -81,6 +82,22 @@ const findAndCheckAdmin = asyncWrapper(async (req,res, next ) => {
     next();
 })
 
+const canReject = asyncWrapper(async (req, res, next) => {
+  const {studentEmail }= req.params
+  const adminId= req.admin.id;
+  console.log("email and adminId : ", studentEmail, adminId)
+  const reg = await Regection.findOne({
+    where: { studentEmail, adminId: String(adminId) }
+  });
+  console.log("reg : ", reg)
+  if (reg) {
+    return next(new AppError('Can not reject student twice', 404));
+    return next(error)
+  }
+  console.log("canReject chack done ")
+  next();
+});
+
 const establishConnection = asyncWrapper(async (req, res, next) => {
   if (!req.admin) {
     return res.status(401).json({ message: "Unauthorized: No admin found" });
@@ -126,5 +143,6 @@ module.exports = {
     findAndCheckAdmin,
     establishConnection,
     studentFound,
-    checkAuthurity
+    checkAuthurity,
+    canReject
 }

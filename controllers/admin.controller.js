@@ -155,6 +155,9 @@ const rejectSudent = asyncWrapper(async (req, res) => {
       where: { studentEmail: student.studentEmail }
     });
     await student.destroy();
+    await Regection.destroy({
+      where: { studentEmail: student.studentEmail }
+    });
   }
   return res.status(200).json({
     status: "success",
