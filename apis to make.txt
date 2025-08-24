@@ -16,6 +16,10 @@ ban/unban student {A.Essam} [done]
 reject student {A.Essam} [done]
 
 
+edit login{A.Essam}
+fix files{A.Essam}
+
+
 edit profile
 show student profile
 assign group
