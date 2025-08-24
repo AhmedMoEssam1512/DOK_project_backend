@@ -2,9 +2,9 @@ require("dotenv").config();
 const sequelize = require('./config/database'); 
 const express = require("express");
 const httpStatusCode = require('./utils/http.status');
-const adminRoutes = require('./routes/admin.routes');
-const dokRoutes = require('./routes/dok.routes');
-const studentRoutes = require('./routes/student.routes');
+const adminRoutes = require('./routes/admin_routes');
+const dokRoutes = require('./routes/dok_routes');
+const studentRoutes = require('./routes/student_routes');
 const app = express();
 app.use(express.json());
 

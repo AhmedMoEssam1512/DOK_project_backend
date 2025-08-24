@@ -1,9 +1,9 @@
 const sequelize = require('../config/database');
-const Admin = require('../models/admin.model.js');
+const Admin = require('../models/admin_model.js');
 const admins = require('../data_link/admin_data_link');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
-const asyncWrapper = require('../middleware/async.wrapper');
+const asyncWrapper = require('../middleware/asyncwrapper');
 
 const DOK_signUp= asyncWrapper( async (req, res) => {
     const { email, name, password, phonenumber, role = "teacher", permission = "all" } = req.body;

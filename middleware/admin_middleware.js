@@ -1,12 +1,12 @@
 const sequelize = require('../config/database');
-const Admin = require('../models/admin.model.js');
-const Student = require('../models/student.model.js');
-const Regection = require('../models/rejection.model.js');
+const Admin = require('../models/admin_model.js');
+const Student = require('../models/student_model.js');
+const Regection = require('../models/rejection_model.js');
 const regection = require('../data_link/admin_data_link');
 const bcrypt = require('bcrypt');
 const httpStatus = require('../utils/http.status');
 const AppError = require('../utils/app.error');
-const asyncWrapper = require('../middleware/async.wrapper');
+const asyncWrapper = require('./asyncwrapper');
 const {where} = require("sequelize");
 const jwt = require("jsonwebtoken");
 const { addClient } = require('../utils/sseClients');

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth.middleware');
-const adminControllers = require('../controllers/admin.controller');
-const adminMiddleWare = require('../middleware/admin.middleware');
+const auth = require('../middleware/auth_middleware');
+const adminControllers = require('../controllers/admin_controller');
+const adminMiddleWare = require('../middleware/admin_middleware');
 
 router.route('/adminRegister')
     .post(adminMiddleWare.adminFound,adminMiddleWare.passwordEncryption,adminControllers.TARegister);

@@ -1,9 +1,9 @@
 const sequelize = require('../config/database');
-const Admin = require('../models/admin.model');
-const Student = require('../models/student.model');
-const asyncWrapper = require('../middleware/async.wrapper');
-const Regection = require('../models/rejection.model');
-const Registration = require('../models/registration.model');
+const Admin = require('../models/admin_model');
+const Student = require('../models/student_model');
+const asyncWrapper = require('../middleware/asyncwrapper');
+const Regection = require('../models/rejection_model');
+const Registration = require('../models/registration_model');
 
 function create(email,name,password,phoneNumber,group){
     return Admin.create({

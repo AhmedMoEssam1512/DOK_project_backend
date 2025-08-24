@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
-const Admin = require('../models/admin.model');
+const Admin = require('../models/admin_model');
 const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
-const asyncWrapper = require('../middleware/async.wrapper');
+const asyncWrapper = require('./asyncwrapper');
 
 
 const adminProtect = async (req, res, next) => {

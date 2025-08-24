@@ -1,13 +1,13 @@
 const sequelize = require('../config/database');
-const Student = require('../models/student.model.js');
+const Student = require('../models/student_model.js');
 const student = require('../data_link/student_data_link');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
-const asyncWrapper = require('../middleware/async.wrapper');
+const asyncWrapper = require('../middleware/asyncwrapper');
 const jwt = require("jsonwebtoken");
 const { notifyAssistants } = require('../utils/sseClients');
-const Registration = require('../models/registration.model.js');
+const Registration = require('../models/registration_model.js');
 
 const studentRegister = asyncWrapper(async (req, res) => {
   const {

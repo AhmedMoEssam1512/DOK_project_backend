@@ -1,8 +1,8 @@
 const sequelize = require('../config/database');
-const Admin = require('../models/admin.model.js');
+const Admin = require('../models/admin_model.js');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
-const asyncWrapper = require('../middleware/async.wrapper');
+const asyncWrapper = require('./asyncwrapper');
 const admin = require('../data_link/admin_data_link');
 
 

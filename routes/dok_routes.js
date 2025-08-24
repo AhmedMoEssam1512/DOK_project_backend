@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const dokmiddleware = require('../middleware/dok.middleware');
-const DOK = require('../controllers/dok.controller.js');
-const auth = require('../middleware/auth.middleware');
+const dokmiddleware = require('../middleware/dok_middleware');
+const DOK = require('../controllers/dok_controller.js');
+const auth = require('../middleware/auth_middleware');
 
 router.route('/signUp')
     .post(DOK.DOK_signUp);
