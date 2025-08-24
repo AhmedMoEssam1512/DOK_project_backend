@@ -2,7 +2,7 @@ const sequelize = require('../config/database');
 const Admin = require('../models/admin_model');
 const Student = require('../models/student_model');
 const asyncWrapper = require('../middleware/asyncwrapper');
-const Regection = require('../models/rejection_model');
+const Rejection = require('../models/rejection_model');
 const Registration = require('../models/registration_model');
 
 function create(email,name,password,phoneNumber,group){
@@ -22,12 +22,12 @@ function findAdminByEmail(email){
 }
 
 function findByEmailAndId(studentEmail,id){
-    return Regection.findOne({where: { studentEmail, adminId: String(id) } })
+    return Rejection.findOne({where: { studentEmail, adminId: String(id) } })
 }
 
 
 function Destroy (email){
-    return Regection.destroy({
+    return Rejection.destroy({
         where: { studentEmail: email   }
     })
 }
@@ -46,7 +46,7 @@ function showPendingAdminRegistration(){
 }
 
 function createRejection(studentEmail,adminId,studentSemester){
-    Regection.create({
+    Rejection.create({
         studentEmail: studentEmail,
         adminId : adminId,
         semester: studentSemester,

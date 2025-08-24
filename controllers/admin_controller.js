@@ -84,7 +84,7 @@ const banStudent = asyncWrapper(async (req, res) => {
   await student.save();
   return res.status(200).json({
     status: "success",
-    message: `Student ${student.studentName} deleted successfully`,
+    message: `Student ${student.studentName} banned successfully`,
     data: { studentEmail: student.studentEmail }
   });
 });
