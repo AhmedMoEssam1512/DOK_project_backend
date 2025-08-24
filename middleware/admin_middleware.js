@@ -75,7 +75,7 @@ const canReject = asyncWrapper(async (req, res, next) => {
   const {studentEmail }= req.params
   const adminId= req.admin.id;
   console.log("email and adminId : ", studentEmail, adminId)
-  const reg = await regection.findByEmailAndId(email,adminId);
+  const reg = await regection.findByEmailAndId(studentEmail,adminId);
   console.log("reg : ", reg)
   if (reg) {
     return next(new AppError('Can not reject student twice', 404));
