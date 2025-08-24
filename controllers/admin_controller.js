@@ -104,16 +104,16 @@ const rejectSudent = asyncWrapper(async (req, res) => {
   const student = req.student; // must be set earlier by studentFound
   const adminId = req.admin.id;
   console.log(adminId) // assuming adminId is available in req.admin
-  await regection.createRejection(student.studentEmail,adminId,student.semester);
-  const reg = await registration.findRegistration(student.studentEmail);
-  reg.rejectionCount += 1;
-  await reg.save();
+  await rejection.createRejection(student.studentEmail,adminId,student.semester);
+  const rej = await registration.findRegistration(student.studentEmail);
+  rej.rejectionCount += 1;
+  await rej.save();
   const adminCount = await admin.Count(student.group);
   console.log("adminCount : ", adminCount);
-  if (reg.rejectionCount >= adminCount) {
+  if (rej.rejectionCount >= adminCount) {
     await registration.registrationDestroy(student.studentEmail);
     await student.destroy();
-    await regection.Destroy(student.studentEmail);
+    await rejection.Destroy(student.studentEmail);
   }
   return res.status(200).json({
     status: "success",
