@@ -3,15 +3,16 @@ const Admin = require('../models/admin.model.js');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
 const asyncWrapper = require('../middleware/async.wrapper');
+const admin = require('../data_link/admin_data_link');
 
 
 const findAdmin = asyncWrapper(async (req, res, next) => {
   const { email } = req.params;
-  const admin = await Admin.findOne({ where: { email } });
-  if (!admin) {
+  const admins = await admin.findAdminByEmail(email);
+  if (!admins) {
     return next(new AppError('Admin not found', 404));
   }
-  req.assistant = admin;
+  req.assistant = admins;
   console.log("admin found") // attach found admin for later use
   next();
 });

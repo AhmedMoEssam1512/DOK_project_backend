@@ -2,6 +2,7 @@ const sequelize = require('../config/database');
 const Admin = require('../models/admin.model.js');
 const Student = require('../models/student.model.js');
 const Regection = require('../models/rejection.model.js');
+const regection = require('../data_link/admin_data_link');
 const bcrypt = require('bcrypt');
 const httpStatus = require('../utils/http.status');
 const AppError = require('../utils/app.error');
@@ -9,10 +10,12 @@ const asyncWrapper = require('../middleware/async.wrapper');
 const {where} = require("sequelize");
 const jwt = require("jsonwebtoken");
 const { addClient } = require('../utils/sseClients');
+const student = require('../data_link/student_data_link.js');
+const admin = require('../data_link/admin_data_link.js');
 
 const adminFound= asyncWrapper(async (req, res, next) => {
     const { email } = req.body;
-    const found = await Admin.findOne({ where: { email } });
+    const found = await admin.findAdminByEmail(email);
     if (found) {
         const error = AppError.create("Email already exists", 400, httpStatus.Error);
         return next(error);
@@ -22,7 +25,7 @@ const adminFound= asyncWrapper(async (req, res, next) => {
 
 const studentFound = asyncWrapper(async (req, res, next) => {
     const { studentEmail } = req.params;
-    const found = await Student.findOne({ where: { studentEmail } });
+    const found = await student.findStudentByEmail(studentEmail);
     if (!found) {
     return next(new AppError('student not found', 404));
   }
@@ -47,7 +50,7 @@ const passwordEncryption = asyncWrapper( async (req,res,next) => {
 const checkAuthurity = asyncWrapper(async (req, res, next) => {
     const admin = req.admin; // must be set earlier by findAndCheckAdmin
    const { studentEmail } = req.params;
-    const found = await Student.findOne({ where: { studentEmail } });
+    const found = await student.findStudentByEmail(studentEmail);
     if (!found) {
     return next(new AppError('student not found', 404));
   }
@@ -63,7 +66,7 @@ const checkAuthurity = asyncWrapper(async (req, res, next) => {
 
 const findAndCheckAdmin = asyncWrapper(async (req,res, next ) => {
     const { email, password } = req.body;
-    const found = await Admin.findOne( {where: { email } });
+    const found = await admin.findAdminByEmail(email);
     if (!found){
         const error = AppError.create("Email not found", 404 , httpStatus.Error);
         return next(error)
@@ -86,9 +89,7 @@ const canReject = asyncWrapper(async (req, res, next) => {
   const {studentEmail }= req.params
   const adminId= req.admin.id;
   console.log("email and adminId : ", studentEmail, adminId)
-  const reg = await Regection.findOne({
-    where: { studentEmail, adminId: String(adminId) }
-  });
+  const reg = await regection.findByEmailAndId(email,adminId);
   console.log("reg : ", reg)
   if (reg) {
     return next(new AppError('Can not reject student twice', 404));
