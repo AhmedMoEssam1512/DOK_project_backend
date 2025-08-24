@@ -7,21 +7,17 @@ const httpStatus = require('../utils/http.status');
 const asyncWrapper = require('../middleware/async.wrapper');
 const jwt = require("jsonwebtoken");
 const Regection = require('../models/rejection.model.js');
+const regection = require('../data_link/admin_data_link');
 const Registration = require('../models/registration.model.js');
-
+const registration = require('../data_link/admin_data_link');
+const admin = require('../data_link/admin_data_link.js');
+const student = require('../data_link/student_data_link.js');
 
 const TARegister = asyncWrapper(async (req, res) => {
     const { email, name, password, phoneNumber, group} = req.body;
     const encryptedPassword = await bcrypt.hash(String(password), 10);
-    await Admin.create({
-        email,
-        name,
-        password,
-        phoneNumber,
-        group,
-        role: "assistant",
-        permission:"limited",
-    });
+    await admin.create(email,name,password,phoneNumber,group);
+
     return res.status(201).json({
         status: "success" ,
         data: { message: "Assistant created successfully" }
@@ -52,9 +48,7 @@ const signIn = asyncWrapper(async (req, res, next) => {
 
 const showPendingRegistration = asyncWrapper(async (req, res) => {
   const TAGroup = req.admin.group;
-    const students = await Student.findAll({
-        where: {verified : false , group: TAGroup}
-    });
+    const students = await admin.findNotVerifiedStudentsByTaGroup(TAGroup);
     return res.status(200).json({
         status: "success",
         message: `Pending registration from students`,
@@ -71,10 +65,8 @@ const verifyStudent = asyncWrapper(async (req, res) => {
   student.verified = true;
   student.assistantId = req.admin.id; // set the admin who verified
   await student.save();
-  await Regection.destroy({
-    where: { studentEmail: student.studentEmail}});
-  await Registration.destroy({
-    where: { studentEmail: student.studentEmail }});
+  await regection.Destroy( student.studentEmail);
+  await registration.registrationDestroy(student.studentEmail);
   return res.status(200).json({ 
     status: "success",
     message: `Student ${student.studentName} verified successfully`,
@@ -84,9 +76,7 @@ const verifyStudent = asyncWrapper(async (req, res) => {
 
 const showStudentInGroup = asyncWrapper(async (req, res) => {
     const { group } = req.params;
-    const student = await Student.findAll({
-        where: { group }
-    });
+    const student = await student.showStudentInGroup(group);
     return res.status(200).json({
         status: "success",
         data: {
@@ -135,29 +125,16 @@ const rejectSudent = asyncWrapper(async (req, res) => {
   const student = req.student; // must be set earlier by studentFound
   const adminId = req.admin.id;
   console.log(adminId) // assuming adminId is available in req.admin
-  await Regection.create({
-    studentEmail: student.studentEmail,
-    adminId : adminId,
-    semester: student.semester,
-    dateAndTime: new Date(),
-  });
-  const reg = await Registration.findOne({
-    where: { studentEmail: student.studentEmail }
-  });
+  await regection.createRegection(student.studentEmail,adminId,student.semester);
+  const reg = await registration.findRegistration(student.studentEmail);
   reg.rejectionCount += 1;
   await reg.save();
-  const adminCount = await Admin.count({
-    where: { group: student.group }
-  });
+  const adminCount = await admin.Count(student.group);
   console.log("adminCount : ", adminCount);
   if (reg.rejectionCount >= adminCount) {
-    await Registration.destroy({
-      where: { studentEmail: student.studentEmail }
-    });
+    await registration.registrationDestroy(student.studentEmail);
     await student.destroy();
-    await Regection.destroy({
-      where: { studentEmail: student.studentEmail }
-    });
+    await regection.Destroy(student.studentEmail);
   }
   return res.status(200).json({
     status: "success",

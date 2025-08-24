@@ -1,5 +1,6 @@
 const sequelize = require('../config/database');
 const Student = require('../models/student.model.js');
+const student = require('../data_link/student_data_link');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
@@ -22,7 +23,7 @@ const studentRegister = asyncWrapper(async (req, res) => {
   } = req.body;
 
   // Create the student
-  await Student.create({
+  await student.createStudent(
     studentName,
     studentEmail,
     password,
@@ -32,10 +33,8 @@ const studentRegister = asyncWrapper(async (req, res) => {
     parentPhoneNumber,
     group,
     semester
-  });
-  await Registration.create({
-    studentEmail,
-    group});
+  );
+  await student.registerStudent(studentEmail, group);
 
   // Notify only assistants in the same group
   notifyAssistants(group, {
@@ -51,11 +50,11 @@ const studentRegister = asyncWrapper(async (req, res) => {
 });
 
 const signIn = asyncWrapper(async (req, res, next) => {
-    const student = req.student; // must be set earlier by findAndCheckAdmin
+    const studentReq = req.student; // must be set earlier by findAndCheckAdmin
     const studentToken = jwt.sign(
         {
-            id: student.studentId,
-            email: student.studentEmail,
+            id: studentReq.studentId,
+            email: studentReq.studentEmail,
         },
         process.env.JWT_SECRET, // 👈 must match protect middleware
         { expiresIn: process.env.JWT_EXPIRATION } // fallback if not set

@@ -1,15 +1,15 @@
 const sequelize = require('../config/database');
-const Student = require('../models/student.model.js');
 const bcrypt = require('bcrypt');
 const httpStatus = require('../utils/http.status');
 const AppError = require('../utils/app.error');
 const asyncWrapper = require('../middleware/async.wrapper');
 const {where} = require("sequelize");
 const jwt = require("jsonwebtoken");
+const student = require('../data_link/student_data_link');
 
 const studentFound= asyncWrapper(async (req, res, next) => {
     const { studentEmail } = req.body;
-    const found = await Student.findOne({ where: { studentEmail } });
+    const found = await student.findStudentByEmail(studentEmail);
     if (found) {
         const error = AppError.create("Email already exists", 400, httpStatus.Error);
         return next(error);
@@ -26,7 +26,7 @@ const passwordEncryption = asyncWrapper( async (req,res,next) => {
 
 const findAndCheckStudent = asyncWrapper(async (req,res, next ) => {
     const { email, password} = req.body;
-    const found = await Student.findOne( {where: { studentEmail : email } });
+    const found = await student.findStudentByEmail(email);
     if (!found){
         const error = AppError.create("Email not found", 404 , httpStatus.Error);
         return next(error)

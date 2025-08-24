@@ -1,5 +1,6 @@
 const sequelize = require('../config/database');
 const Admin = require('../models/admin.model.js');
+const admins = require('../data_link/admin_data_link');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
 const asyncWrapper = require('../middleware/async.wrapper');
@@ -30,8 +31,8 @@ const DOK_signUp= asyncWrapper( async (req, res) => {
 
 const rejectAssistant = asyncWrapper(async (req, res) => {
     const { email } = req.params;
-    const assistant = await Admin.findOne({ where: { email } });
-    await Admin.destroy({ where: { email } });
+    const assistant = await admins.findAdminByEmail(email);
+    await admins.removeAssistant( email  );
     return res.status(200).json({
     status: "success",
     message: `Assistant with email ${email} rejected and removed from database`
@@ -40,8 +41,8 @@ const rejectAssistant = asyncWrapper(async (req, res) => {
 
 const acceptAssistant = asyncWrapper(async (req, res) => {
     const { email } = req.params;
-    const assistant = await Admin.findOne({ where: { email } });
-    await Admin.update({ verified: true }, { where: { email } });
+    const assistant = await admins.findAdminByEmail( email );
+    await admins.verifyAssistant( email );
     return res.status(200).json({
         status: "success",
         message: `Assistant with email ${email} accepted`
@@ -49,9 +50,7 @@ const acceptAssistant = asyncWrapper(async (req, res) => {
 })
 
 const showPendingRegistration = asyncWrapper(async (req, res) => {
-    const admin = await Admin.findAll({
-        where: {verified : false}
-    });
+    const admin = await admins.showPendingAdminRegistration();
     return res.status(200).json({
         status: "success",
         message: `Pending registration from assistants`,
@@ -65,9 +64,7 @@ const showPendingRegistration = asyncWrapper(async (req, res) => {
 
 const removeAssistant = asyncWrapper(async (req, res) => {
     const { email } = req.params;
-    const deleted = await Admin.destroy({
-        where: {email}
-    });
+    const deleted = await admins.removeAssistant(email);
     return res.status(200).json({
         status: "success",
         message: `Assistant with email ${email} removed successfully`
@@ -76,9 +73,7 @@ const removeAssistant = asyncWrapper(async (req, res) => {
 
 const checkAssistantGroup = asyncWrapper(async (req, res) => {
     const { group } = req.params;
-    const admin = await Admin.findAll({
-        where: { group, role: 'assistant' }
-    });
+    const admin = await admins.checkAssistantGroup( group );
     return res.status(200).json({
         status: "success",
         data: {
