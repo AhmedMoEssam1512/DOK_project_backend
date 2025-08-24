@@ -7,7 +7,7 @@ const httpStatus = require('../utils/http.status');
 const asyncWrapper = require('../middleware/asyncwrapper');
 const jwt = require("jsonwebtoken");
 const Regection = require('../models/rejection_model.js');
-const regection = require('../data_link/admin_data_link');
+const rejection = require('../data_link/admin_data_link');
 const Registration = require('../models/registration_model.js');
 const registration = require('../data_link/admin_data_link');
 const admin = require('../data_link/admin_data_link.js');
@@ -45,7 +45,7 @@ const verifyStudent = asyncWrapper(async (req, res) => {
   student.verified = true;
   student.assistantId = req.admin.id; // set the admin who verified
   await student.save();
-  await regection.Destroy( student.studentEmail);
+  await rejection.Destroy( student.studentEmail);
   await registration.registrationDestroy(student.studentEmail);
   return res.status(200).json({ 
     status: "success",
