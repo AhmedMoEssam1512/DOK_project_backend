@@ -6,23 +6,23 @@ const asyncWrapper = require('../middleware/async.wrapper');
 const {where} = require("sequelize");
 const jwt = require("jsonwebtoken");
 const student = require('../data_link/student_data_link');
+const admin = require('../data_link/admin_data_link.js');
 
 const studentFound= asyncWrapper(async (req, res, next) => {
-    const { studentEmail } = req.body;
-    const found = await student.findStudentByEmail(studentEmail);
-    if (found) {
+    const {studentEmail } = req.body;
+    const adFound = await admin.findAdminByEmail(studentEmail);
+    if (adFound) {
+        const error = AppError.create("Email already exists", 400, httpStatus.Error);
+        return next(error);
+    }
+    const stdFound = await student.findStudentByEmail(studentEmail);
+    if (stdFound) {
         const error = AppError.create("Email already exists", 400, httpStatus.Error);
         return next(error);
     }
     next();
 })
 
-const passwordEncryption = asyncWrapper( async (req,res,next) => {
-    const { password } = req.body;
-    const encryptedPassword = await bcrypt.hash(String(password),10);
-    req.body.password = encryptedPassword;
-    next();
-});
 
 const findAndCheckStudent = asyncWrapper(async (req,res, next ) => {
     const { email, password} = req.body;
@@ -54,7 +54,6 @@ const findAndCheckStudent = asyncWrapper(async (req,res, next ) => {
 
 
 module.exports = {
-    studentFound,
-    passwordEncryption,
     findAndCheckStudent,
+    studentFound
 }
