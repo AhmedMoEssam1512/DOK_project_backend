@@ -1,5 +1,4 @@
 create dok account {A.Essam} [done]
-admin sign in {A.Essam} [done]
 register admin account {both Essam} [done]
 accept assistant(owner) {A.Essam} [done]
 reject assistant(owner) {A.Essam} [done]
@@ -8,18 +7,17 @@ remove assistant(owner) {Y.Essam} [done]
 register student account {both Essam} [done]
 show pending registrations student {A.Essam} [done]
 accept student {A.Essam} [done]
-student sign in {both Essam} [done]
 show assistants belong to which group {Y.Essam} [done]
 show students belong to which group {Y.Essam} [done]
 remove student {A.Essam} [done]
 ban/unban student {A.Essam} [done]
 reject student {A.Essam} [done]
+edit login{A.Essam} [done]
 
-edit login{A.Essam}
+make a new file for sse connections
 
-
-
-edit profile
+edit student profile
+edit admin profile
 show student profile
 assign group
 generate reports
