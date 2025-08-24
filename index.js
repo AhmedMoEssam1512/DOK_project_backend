@@ -5,6 +5,7 @@ const httpStatusCode = require('./utils/http.status');
 const adminRoutes = require('./routes/admin_routes');
 const dokRoutes = require('./routes/dok_routes');
 const studentRoutes = require('./routes/student_routes');
+const logInRoute = require('./routes/logIn_route');
 const app = express();
 app.use(express.json());
 
@@ -31,6 +32,7 @@ sequelize.sync({ alter: true })
 app.use('/admin', adminRoutes);
 app.use('/dok', dokRoutes);
 app.use('/student', studentRoutes);
+app.use('/login', logInRoute);
 /*
 // Global not-found handler
 app.use('*', (req, res) => {

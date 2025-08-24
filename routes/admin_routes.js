@@ -7,9 +7,6 @@ const adminMiddleWare = require('../middleware/admin_middleware');
 router.route('/adminRegister')
     .post(adminMiddleWare.adminFound,adminMiddleWare.passwordEncryption,adminControllers.TARegister);
 
-router.route('/adminLogin')
-    .post(adminMiddleWare.findAndCheckAdmin, adminControllers.signIn);
-
 router.route('/adminSSE')
     .get(auth.adminProtect, adminMiddleWare.establishConnection);
 

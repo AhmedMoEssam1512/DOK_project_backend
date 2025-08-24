@@ -7,7 +7,4 @@ const adminMiddleWare = require('../middleware/admin_middleware');
 router.route('/studentRegister')
     .post(studentMiddleWare.studentFound,adminMiddleWare.passwordEncryption,studentControllers.studentRegister);
 
-router.route('/studentLogin')
-    .post(studentMiddleWare.findAndCheckStudent,studentControllers.signIn)
-
 module.exports = router;

@@ -69,26 +69,7 @@ const checkAuthurity = asyncWrapper(async (req, res, next) => {
     next();
 });
 
-const findAndCheckAdmin = asyncWrapper(async (req,res, next ) => {
-    const { email, password } = req.body;
-    const found = await admin.findAdminByEmail(email);
-    if (!found){
-        const error = AppError.create("Email not found", 404 , httpStatus.Error);
-        return next(error)
-    }
-    const valid = await bcrypt.compare(String(password),found.password);
-    if(!valid){
-        const error = AppError.create("Invalid password", 401, httpStatus.Error);
-        return next(error);
-    }
-    const verified = found.verified;
-    if(!verified){
-        const error = AppError.create("Email not verified", 403, httpStatus.Error);
-        return next(error);
-    }
-    req.admin = found;
-    next();
-})
+
 
 const canReject = asyncWrapper(async (req, res, next) => {
   const {studentEmail }= req.params
@@ -146,7 +127,6 @@ const establishConnection = asyncWrapper(async (req, res, next) => {
 module.exports = {
     adminFound,
     passwordEncryption,
-    findAndCheckAdmin,
     establishConnection,
     studentFound,
     checkAuthurity,

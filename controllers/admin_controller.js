@@ -24,26 +24,6 @@ const TARegister = asyncWrapper(async (req, res) => {
     });
 });
 
-const signIn = asyncWrapper(async (req, res, next) => {
-  const admin = req.admin; // must be set earlier by findAndCheckAdmin
-  const adminToken = jwt.sign(
-    {
-      id: admin.adminId,
-      email: admin.email,
-      role: admin.role,
-      group: admin.group,  
-      permission: admin.permission,
-    },
-    process.env.JWT_SECRET, // 👈 must match protect middleware
-    { expiresIn: process.env.JWT_EXPIRATION } // fallback if not set
-  );
-
-  res.status(200).json({
-    status: "success",
-    message: "Login successful",
-    token: adminToken, // standardized key name
-  });
-});
 
 
 const showPendingRegistration = asyncWrapper(async (req, res) => {
@@ -145,7 +125,6 @@ const rejectSudent = asyncWrapper(async (req, res) => {
 
 module.exports = {
     TARegister,
-    signIn,
     showPendingRegistration,
     showStudentInGroup,
     verifyStudent,

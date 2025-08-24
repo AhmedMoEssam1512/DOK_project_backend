@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const { notifyAssistants } = require('../utils/sseClients');
 const Registration = require('../models/registration_model.js');
 
+
 const studentRegister = asyncWrapper(async (req, res) => {
   const {
     studentEmail,
@@ -49,25 +50,8 @@ const studentRegister = asyncWrapper(async (req, res) => {
   });
 });
 
-const signIn = asyncWrapper(async (req, res, next) => {
-    const studentReq = req.student; // must be set earlier by findAndCheckAdmin
-    const studentToken = jwt.sign(
-        {
-            id: studentReq.studentId,
-            email: studentReq.studentEmail,
-        },
-        process.env.JWT_SECRET, // 👈 must match protect middleware
-        { expiresIn: process.env.JWT_EXPIRATION } // fallback if not set
-    );
 
-    res.status(200).json({
-        status: "success",
-        message: "Login successful",
-        token: studentToken, // standardized key name
-    });
-});
 
 module.exports = {
     studentRegister,
-    signIn,
 }
