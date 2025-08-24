@@ -45,7 +45,7 @@ function showPendingAdminRegistration(){
     });
 }
 
-function createRegection(studentEmail,adminId,studentSemester){
+function createRejection(studentEmail,adminId,studentSemester){
     Regection.create({
         studentEmail: studentEmail,
         adminId : adminId,
@@ -83,6 +83,11 @@ function findNotVerifiedStudentsByTaGroup(TAGroup){
         where: {verified : false , group: TAGroup}});
 }
 
+function findVerifiedStudentsByTaGroup(TAGroup){
+    return Student.findAll({
+        where: {verified : true , group: TAGroup}});
+}
+
 function Count(group){
     return Admin.count({
         where: { group: group }
@@ -98,10 +103,11 @@ module.exports={
     findByEmailAndId,
     Destroy,
     registrationDestroy,
-    createRegection,
+    createRejection,
     findRegistration,
     verifyAssistant,
     showPendingAdminRegistration,
     removeAssistant,
     checkAssistantGroup,
+    findVerifiedStudentsByTaGroup
 }

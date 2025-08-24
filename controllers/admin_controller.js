@@ -55,18 +55,17 @@ const verifyStudent = asyncWrapper(async (req, res) => {
 });
 
 const showStudentInGroup = asyncWrapper(async (req, res) => {
-    const { group } = req.params;
-    const student = await student.showStudentInGroup(group);
+    const TAGroup = req.admin.group;
+    const students = await admin.findVerifiedStudentsByTaGroup(TAGroup);
     return res.status(200).json({
         status: "success",
-        data: {
-            data: student.map(student => ({
-                name: student.studentName,
-                email: student.studentEmail
-            }))
-        }
-    });
-});
+        message: `Students in group ${TAGroup}`,
+        data: { 
+  data: students.map(student => ({
+      name: student.studentName,
+      email: student.studentEmail,
+    }))
+}})});
 
 
 const removeStudent = asyncWrapper(async (req, res) => {
@@ -105,7 +104,7 @@ const rejectSudent = asyncWrapper(async (req, res) => {
   const student = req.student; // must be set earlier by studentFound
   const adminId = req.admin.id;
   console.log(adminId) // assuming adminId is available in req.admin
-  await regection.createRegection(student.studentEmail,adminId,student.semester);
+  await regection.createRejection(student.studentEmail,adminId,student.semester);
   const reg = await registration.findRegistration(student.studentEmail);
   reg.rejectionCount += 1;
   await reg.save();

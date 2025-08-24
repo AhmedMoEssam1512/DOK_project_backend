@@ -10,12 +10,6 @@ function findStudentByEmail(studentEmail){
     return Student.findOne({where : { studentEmail } })
 }
 
-function showStudentInGroup(group){
-    return Student.findAll({
-        where: { group }
-    });
-}
-
 function registerStudent(studentEmail, group){
     return Registration.create({
         studentEmail,
@@ -40,7 +34,6 @@ function createStudent(studentName,studentEmail,password,parentEmail,birthDate,
 
 module.exports={
     findStudentByEmail,
-    showStudentInGroup,
     createStudent,
     registerStudent
 }
