@@ -13,6 +13,8 @@ remove student {A.Essam} [done]
 ban/unban student {A.Essam} [done]
 reject student {A.Essam} [done]
 edit login{A.Essam} [done]
+post on feed {Y.Essam} [done]
+make a session {Y.Essam} [done]
 
 make a new file for sse connections
 
@@ -30,9 +32,7 @@ get active quiz
 submit assignment
 submit quiz
 mark submission
-post on feed
-make a session
-attend a session
+attend a session {Y.Essam} [Will do later]
 data analysis {Tamer}
 clear database
 delete account
