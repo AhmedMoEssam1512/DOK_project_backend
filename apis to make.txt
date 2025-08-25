@@ -16,21 +16,20 @@ edit login{A.Essam} [done]
 post on feed {both Essam} [done]
 make a session {Y.Essam} [done]
 show my admin profile (student) {A.Essam} [done]
-show my profile(student/admin) {A.Essan} [done]
-show student profile(admin) {A.Essan} [done]
+show my profile(student/admin) {A.Essam} [done]
+show student profile(admin) {A.Essam} [done]
+attend a session {Y.Essam} [done]
 
 
-assign group(owner) {A.Essan}
+assign group(owner) {A.Essam}
 
 
 schedule assignment
-get active assignments
 schedule quiz
 get active quiz
 submit assignment
 submit quiz
 mark submission
-attend a session {Y.Essam} [Will do later]
 view feed {Y.Essam}
 generate reports {Tamer}
 library {Mustafa}
