@@ -82,14 +82,29 @@ const showMyProfile = asyncWrapper(async (req, res) => {
         parentPhoneNumber: studentProfile.parentPhoneNumber,
         parentEmail: studentProfile.parentEmail,
         group : studentProfile.group,
-        semester: studentProfile.semester
+        semester: studentProfile.semester,
+        totalScore: studentProfile.totalScore
        }
   });
 });
+
+const attendSession = asyncWrapper(async (req, res, next) => {
+    const { sessionId } = req.params;
+    const decoded = jwt.verify(req.headers.authorization.split(' ')[1], process.env.JWT_SECRET);
+    const studentId = decoded.id;
+    const studentSem = await student.findStudentById(studentId);
+    const sem = studentSem.semester;
+    await student.createAttendance(studentId, sessionId, sem);
+
+    return res.status(200).json({
+        status: "success",
+        data: { message: "Attendance recorded successfully" }
+    })});
 
 
 module.exports = {
     studentRegister,
     showMyAdminProfile,
-    showMyProfile
+    showMyProfile,
+    attendSession
 }

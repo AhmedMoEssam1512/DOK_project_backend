@@ -188,7 +188,8 @@ const showStudentProfile= asyncWrapper(async (req, res) => {
       parentPhoneNumber: studentProfile.parentPhoneNumber,
       parentEmail: studentProfile.parentEmail,
       group : studentProfile.group,
-      semester: studentProfile.semester
+      semester: studentProfile.semester,
+      totalScore: studentProfile.totalScore
     }
   });
 });

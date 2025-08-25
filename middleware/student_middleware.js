@@ -23,11 +23,22 @@ const studentFound= asyncWrapper(async (req, res, next) => {
     next();
 })
 
+const attendedSessionBefore = asyncWrapper(async (req, res, next) => {
+    const { sessionId } = req.params;
+    const decoded = jwt.verify(req.headers.authorization.split(' ')[1], process.env.JWT_SECRET);
+    const studentId = decoded.id;  
+    console.log("Nope");
+    const attendanceRecord = await student.findAttendanceByStudentAndSession(studentId, sessionId);
+    console.log("Yes");
+    if (attendanceRecord) {
+        const error = AppError.create("Student has already attended or is currently attending this session", 400, httpStatus.Error);
+        return next(error);
+    }
+    next();
+})
 
 
-
-
-module.exports = {
-   
-    studentFound
+module.exports = {   
+    studentFound,
+    attendedSessionBefore
 }

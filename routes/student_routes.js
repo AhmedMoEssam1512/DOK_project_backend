@@ -3,6 +3,7 @@ const router = express.Router();
 const studentControllers = require('../controllers/student_controller');
 const studentMiddleWare = require('../middleware/student_middleware');
 const adminMiddleWare = require('../middleware/admin_middleware');
+const sessionMiddleWare = require('../middleware/session_middleware');
 const auth = require('../middleware/auth_middleware');
 const { establishStudentConnection } = require('../controllers/SSE_connection');
 
@@ -17,5 +18,8 @@ router.route('/showMyAdminProfile')
 
 router.route('/showMyProfile')
     .get(auth.studentProtect, studentControllers.showMyProfile);
+
+router.route('/attendSession/:sessionId')
+    .post(auth.studentProtect, sessionMiddleWare.sessionFound, studentMiddleWare.attendedSessionBefore,  studentControllers.attendSession);    
 
 module.exports = router;
