@@ -17,13 +17,15 @@ post on feed {Y.Essam} [done]
 make a session {Y.Essam} [done]
 
 
-edit student profile
-edit admin profile
-show student profile
-assign group
+edit student profile {A.Essan}
+edit admin profile {A.Essan}
+show student profile {A.Essan}
+assign group(owner) {A.Essan}
+
+
 generate reports
-library
-leaderboard
+library {Mustafa}
+leaderboard {Mustafa}
 schedule assignment
 get active assignments
 schedule quiz
