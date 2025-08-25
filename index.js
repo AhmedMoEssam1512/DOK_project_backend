@@ -45,13 +45,26 @@ app.use('*', (req, res) => {
 
 // Global error handler
 app.use((error, req, res, next) => {
-    if(error.name === "ValidationError"){
-        error.statusMessage = httpStatusCode.Error;
-        error.statusCode = 400;
-        error.message = "Invalid email format";
+  if (error.name === "ValidationError") {
+    error.statusMessage = httpStatusCode.Error;
+    error.statusCode = 400;
+    error.message = "Invalid email format";
+  }
+
+  // If response already started (like SSE), don’t try to send JSON
+  if (res.headersSent) {
+    if (req.headers.accept === "text/event-stream") {
+      // Send error as an SSE event
+      res.write(`event: error\ndata: ${JSON.stringify({ error: error.message })}\n\n`);
+      return res.end();
     }
-    res.status(error.statusCode || 400).json({
-        status: error.statusMessage,
-        data: { message: error.message }
-    });
+    return res.end(); // fallback if not SSE but headers already sent
+  }
+
+  // Normal REST API error response
+  res.status(error.statusCode || 400).json({
+    status: error.statusMessage || httpStatusCode.Error,
+    data: { message: error.message }
+  });
 });
+

@@ -132,14 +132,33 @@ const createSession = asyncWrapper(async (req, res) => {
     data: { message: "Session created successfully" }
   })});
 
-  const postOnFeed = asyncWrapper(async (req, res) => {
-    const { text, semester } = req.body;
-    const adminId = req.admin.id;
-    await feed.createPost(text, semester, adminId);
-    return res.status(201).json({
-      status: "success",
-      data: { message: "Post created & submitted successfully" }
-    })});
+const postOnFeed = asyncWrapper(async (req, res) => {
+  const { text, semester } = req.body;
+  const adminId = req.admin.id;
+  const adminGroup = req.admin.group; // 👈 "all" or specific group
+
+  // Create the post
+  const newPost = await feed.createPost(text, semester, adminId);
+
+  // Notify students
+  notifyStudents(adminGroup, {
+    event: "feed_posted",
+    message: `New feed post from admin ${req.admin.name}`,
+    post: {
+      id: newPost.id,
+      text: newPost.text,
+      semester: newPost.semester,
+      group: adminGroup,
+      adminId: newPost.adminId,
+      createdAt: newPost.createdAt,
+    },
+  });
+
+  return res.status(201).json({
+    status: "success",
+    data: { message: "Post created & submitted successfully" }
+  });
+});
 
 module.exports = {
     TARegister,

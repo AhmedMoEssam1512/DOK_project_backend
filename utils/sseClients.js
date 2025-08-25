@@ -6,8 +6,14 @@ const sseClients = [];
 /**
  * Add a new SSE client with role & group
  */
-function addClient(res, role, group) {
-  const client = { res, role, group };
+function addAdminClient(res,email, name, role, group) {
+  const client = { res,email, name, role, group };
+  sseClients.push(client);
+  return client;
+}
+
+function addStudentClient(res,email, name,  group) {
+  const client = { res,email, name, role: "student", group };
   sseClients.push(client);
   return client;
 }
@@ -43,4 +49,18 @@ function notifyAssistants(group, payload) {
   });
 }
 
-module.exports = { addClient, removeClient, notifyAssistants };
+function notifyStudents(group, payload) {
+  const data = `event: ${payload.event}\ndata: ${JSON.stringify(payload)}\n\n`;
+
+  if (group === "all") {
+    // Broadcast to every student
+    studentClients.forEach(c => c.res.write(data));
+  } else {
+    // Only send to matching group
+    studentClients
+      .filter(c => c.group === group)
+      .forEach(c => c.res.write(data));
+  }
+}
+
+module.exports = { addAdminClient, removeClient, notifyAssistants, addStudentClient, notifyStudents };
