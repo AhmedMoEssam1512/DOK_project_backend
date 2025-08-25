@@ -3,12 +3,13 @@ const router = express.Router();
 const auth = require('../middleware/auth_middleware');
 const adminControllers = require('../controllers/admin_controller');
 const adminMiddleWare = require('../middleware/admin_middleware');
+const { establishAdminConnection } = require('../controllers/SSE_connection');
 
 router.route('/adminRegister')
     .post(adminMiddleWare.adminFound,adminMiddleWare.passwordEncryption,adminControllers.TARegister);
 
 router.route('/adminSSE')
-    .get(auth.adminProtect, adminMiddleWare.establishConnection);
+    .get(auth.adminProtect, establishAdminConnection);
 
 router.route('/pendingRegistrations')
     .get(auth.adminProtect, adminControllers.showPendingRegistration);
