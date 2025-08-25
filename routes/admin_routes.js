@@ -31,4 +31,10 @@ router.route('/banStudent/:studentEmail')
 router.route('/unBanStudent/:studentEmail')
     .patch(auth.adminProtect, adminMiddleWare.checkAuthurity, adminControllers.unBanStudent);
 
+router.route('/createSession')
+    .post(auth.adminProtect, adminControllers.createSession);
+
+    router.route('/postOnFeed')
+    .post(auth.adminProtect, adminControllers.postOnFeed);
+
 module.exports = router;

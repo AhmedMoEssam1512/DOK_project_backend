@@ -12,6 +12,7 @@ const Registration = require('../models/registration_model.js');
 const registration = require('../data_link/admin_data_link');
 const admin = require('../data_link/admin_data_link.js');
 const student = require('../data_link/student_data_link.js');
+const feed = require('../data_link/admin_data_link.js');
 
 const TARegister = asyncWrapper(async (req, res) => {
     const { email, name, password, phoneNumber, group} = req.body;
@@ -122,6 +123,24 @@ const rejectSudent = asyncWrapper(async (req, res) => {
   });
 });
 
+const createSession = asyncWrapper(async (req, res) => {
+  const { number, semester, dateAndTime, link } = req.body;
+  const adminId = req.admin.id;
+  await admin.createSession(number, semester, dateAndTime, adminId, link);
+  return res.status(201).json({
+    status: "success",
+    data: { message: "Session created successfully" }
+  })});
+
+  const postOnFeed = asyncWrapper(async (req, res) => {
+    const { text, semester } = req.body;
+    const adminId = req.admin.id;
+    await feed.createPost(text, semester, adminId);
+    return res.status(201).json({
+      status: "success",
+      data: { message: "Post created & submitted successfully" }
+    })});
+
 module.exports = {
     TARegister,
     showPendingRegistration,
@@ -130,6 +149,8 @@ module.exports = {
     removeStudent,
     banStudent,
     unBanStudent,
-    rejectSudent
+    rejectSudent,
+    createSession,
+    postOnFeed
 }
 

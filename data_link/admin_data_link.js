@@ -4,6 +4,8 @@ const Student = require('../models/student_model');
 const asyncWrapper = require('../middleware/asyncwrapper');
 const Rejection = require('../models/rejection_model');
 const Registration = require('../models/registration_model');
+const Session = require('../models/session_model');
+const Feed = require('../models/feed_model');
 
 function create(email,name,password,phoneNumber,group){
     return Admin.create({
@@ -71,6 +73,15 @@ function removeAssistant(email){
     });
 }
 
+function createSession(number, semester, dateAndTime, adminId, link) {
+    return Session.create({
+        number,
+        semester,
+        dateAndTime,
+        adminId,
+        link
+    })};
+
 function checkAssistantGroup(group){
     return Admin.findAll({
         where: { group, role: 'assistant' }
@@ -87,6 +98,15 @@ function findVerifiedStudentsByTaGroup(TAGroup){
     return Student.findAll({
         where: {verified : true , group: TAGroup}});
 }
+
+function createPost(text,semester,adminId){
+    return Feed.create({
+        text,
+        semester,
+        adminId
+    });
+}
+
 
 function Count(group){
     return Admin.count({
@@ -109,5 +129,7 @@ module.exports={
     showPendingAdminRegistration,
     removeAssistant,
     checkAssistantGroup,
-    findVerifiedStudentsByTaGroup
+    findVerifiedStudentsByTaGroup,
+    createSession,
+    createPost
 }
