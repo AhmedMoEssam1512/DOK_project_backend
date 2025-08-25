@@ -32,8 +32,13 @@ function createStudent(studentName,studentEmail,password,parentEmail,birthDate,
     });
 };
 
+function findStudentById(studentId){
+    return Student.findOne({where : { studentId } })
+}
+
 module.exports={
     findStudentByEmail,
     createStudent,
-    registerStudent
+    registerStudent,
+    findStudentById
 }

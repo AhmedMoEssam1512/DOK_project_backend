@@ -1,6 +1,7 @@
 const sequelize = require('../config/database');
 const Student = require('../models/student_model.js');
 const student = require('../data_link/student_data_link');
+const admin = require('../data_link/admin_data_link.js');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
@@ -50,8 +51,25 @@ const studentRegister = asyncWrapper(async (req, res) => {
   });
 });
 
+const showMyAdminProfile = asyncWrapper(async (req, res) => {
+  const studentId = req.student.id;
+  const found= await student.findStudentById(studentId);
+  const adminId= found.assistantId;
+  const adminProfile = await admin.findTAById(adminId);
+  return res.status(200).json({
+      status: "success",
+      data: { 
+        id: adminProfile.adminId,
+        adminName: adminProfile.name,
+        adminEmail: adminProfile.email,
+        PhoneNumber: adminProfile.phoneNumber,
+        group : adminProfile.group
+       }
+  });
+});
 
 
 module.exports = {
     studentRegister,
+    showMyAdminProfile
 }
