@@ -160,6 +160,39 @@ const postOnFeed = asyncWrapper(async (req, res) => {
   });
 });
 
+const showMyProfile = asyncWrapper(async (req, res) => {
+  const adminId = req.admin.id;
+  const adminProfile = await admin.findAdminById(adminId);
+  return res.status(200).json({
+    status: "success",
+    data: {
+      id : adminProfile.adminId,
+      adminName: adminProfile.name,
+      adminEmail: adminProfile.email,
+      PhoneNumber: adminProfile.phoneNumber,
+      group : adminProfile.group
+    }
+  });
+});
+
+const showStudentProfile= asyncWrapper(async (req, res) => {
+  const studentProfile = req.student; // must be set earlier by studentFound
+  return res.status(200).json({
+    status: "success",
+    data: {
+      id: studentProfile.studentId,
+      studentName: studentProfile.studentName,
+      studentEmail: studentProfile.studentEmail,
+      birthDate: studentProfile.birthDate,
+      studentPhoneNumber: studentProfile.studentPhoneNumber,
+      parentPhoneNumber: studentProfile.parentPhoneNumber,
+      parentEmail: studentProfile.parentEmail,
+      group : studentProfile.group,
+      semester: studentProfile.semester
+    }
+  });
+});
+
 module.exports = {
     TARegister,
     showPendingRegistration,
@@ -170,6 +203,8 @@ module.exports = {
     unBanStudent,
     rejectSudent,
     createSession,
-    postOnFeed
+    postOnFeed,
+    showMyProfile,
+    showStudentProfile
 }
 

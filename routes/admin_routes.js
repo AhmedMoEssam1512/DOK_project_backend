@@ -38,4 +38,10 @@ router.route('/createSession')
 router.route('/postOnFeed')
     .post(auth.adminProtect, adminControllers.postOnFeed);
 
+router.route('/showMyProfile')
+    .get(auth.adminProtect, adminControllers.showMyProfile);
+
+router.route('/showStudentProfile/:studentId')
+    .get(auth.adminProtect,adminMiddleWare.checkAuthurityByID ,adminControllers.showStudentProfile);
+
 module.exports = router;

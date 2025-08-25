@@ -69,7 +69,22 @@ const checkAuthurity = asyncWrapper(async (req, res, next) => {
     next();
 });
 
-
+const checkAuthurityByID = asyncWrapper(async (req, res, next) => {
+    const admin = req.admin; // must be set earlier by findAndCheckAdmin
+   const { studentId } = req.params;
+    const found = await student.findStudentById(studentId);
+    if (!found) {
+    return next(new AppError('student not found', 404));
+  }
+  if(String(found.assistantId) !== String(req.admin.id) && req.admin.id !== 1) {
+    console.log("found.assistantId : ", found.assistantId)
+    console.log("req.admin.id : ", req.admin.id)
+    return next(new AppError('You are not allowed to access this student', 403));
+  }
+  req.student = found;
+  console.log("student found : ", studentId)
+    next();
+});
 
 const canReject = asyncWrapper(async (req, res, next) => {
   const {studentEmail }= req.params
@@ -92,5 +107,6 @@ module.exports = {
     passwordEncryption,
     studentFound,
     checkAuthurity,
+    checkAuthurityByID,
     canReject
 }

@@ -114,7 +114,7 @@ function Count(group){
     });
 }
 
-function findTAById(adminID ){
+function findAdminById(adminID ){
     return Admin.findOne({
         where: { adminId: adminID }
     });
@@ -138,5 +138,5 @@ module.exports={
     findVerifiedStudentsByTaGroup,
     createSession,
     createPost,
-    findTAById
+    findAdminById
 }

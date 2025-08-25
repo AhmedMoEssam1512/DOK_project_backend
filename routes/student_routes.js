@@ -15,4 +15,7 @@ router.route('/studentSSEConnection')
 router.route('/showMyAdminProfile')
     .get(auth.studentProtect, studentControllers.showMyAdminProfile);
 
+router.route('/showMyProfile')
+    .get(auth.studentProtect, studentControllers.showMyProfile);
+
 module.exports = router;

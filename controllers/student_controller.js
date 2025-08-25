@@ -55,7 +55,7 @@ const showMyAdminProfile = asyncWrapper(async (req, res) => {
   const studentId = req.student.id;
   const found= await student.findStudentById(studentId);
   const adminId= found.assistantId;
-  const adminProfile = await admin.findTAById(adminId);
+  const adminProfile = await admin.findAdminById(adminId);
   return res.status(200).json({
       status: "success",
       data: { 
@@ -68,8 +68,28 @@ const showMyAdminProfile = asyncWrapper(async (req, res) => {
   });
 });
 
+const showMyProfile = asyncWrapper(async (req, res) => {
+  const studentId = req.student.id;
+  const studentProfile = await student.findStudentById(studentId);
+  return res.status(200).json({
+      status: "success",
+      data: { 
+        id: studentProfile.studentId,
+        studentName: studentProfile.studentName,
+        studentEmail: studentProfile.studentEmail,
+        birthDate: studentProfile.birthDate,
+        studentPhoneNumber: studentProfile.studentPhoneNumber,
+        parentPhoneNumber: studentProfile.parentPhoneNumber,
+        parentEmail: studentProfile.parentEmail,
+        group : studentProfile.group,
+        semester: studentProfile.semester
+       }
+  });
+});
+
 
 module.exports = {
     studentRegister,
-    showMyAdminProfile
+    showMyAdminProfile,
+    showMyProfile
 }
