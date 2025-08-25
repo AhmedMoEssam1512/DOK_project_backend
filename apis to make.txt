@@ -16,7 +16,6 @@ edit login{A.Essam} [done]
 post on feed {Y.Essam} [done]
 make a session {Y.Essam} [done]
 
-make a new file for sse connections
 
 edit student profile
 edit admin profile

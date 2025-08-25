@@ -35,7 +35,7 @@ router.route('/unBanStudent/:studentEmail')
 router.route('/createSession')
     .post(auth.adminProtect, adminControllers.createSession);
 
-    router.route('/postOnFeed')
+router.route('/postOnFeed')
     .post(auth.adminProtect, adminControllers.postOnFeed);
 
 module.exports = router;
