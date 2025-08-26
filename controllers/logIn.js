@@ -27,10 +27,12 @@ const logIn = asyncWrapper(async (req, res, next) => {
         role: adminUser.role,
         group: adminUser.group,
         permission: adminUser.permission,
+        type: "admin",
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRATION }
     );
+    console.log("Admin logged in:", adminUser.email);
 
     return res.status(200).json({
       status: "success",
@@ -59,10 +61,13 @@ const logIn = asyncWrapper(async (req, res, next) => {
       {
         id: studentUser.studentId,
         email: studentUser.studentEmail,
+        type: "student",
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRATION }
     );
+
+    console.log("Student logged in:", studentUser.studentEmail);
 
     return res.status(200).json({
       status: "success",
