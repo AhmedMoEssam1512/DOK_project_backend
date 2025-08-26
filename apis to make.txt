@@ -19,6 +19,7 @@ show my admin profile (student) {A.Essam} [done]
 show my profile(student/admin) {A.Essam} [done]
 show student profile(admin) {A.Essam} [done]
 attend a session {Y.Essam} [done]
+view feed {Y.Essam} [done]
 
 
 assign group(owner) {A.Essam}
@@ -30,7 +31,6 @@ get active quiz
 submit assignment
 submit quiz
 mark submission
-view feed {Y.Essam}
 generate reports {Tamer}
 library {Mustafa}
 leaderboard {Mustafa}
