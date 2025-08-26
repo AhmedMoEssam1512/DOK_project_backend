@@ -8,11 +8,11 @@ const admin = require('../data_link/admin_data_link');
 
 const findAdmin = asyncWrapper(async (req, res, next) => {
   const { email } = req.params;
-  const admins = await admin.findAdminByEmail(email);
-  if (!admins) {
+  const assistant = await admin.findAdminByEmail(email);
+  if (!assistant) {
     return next(new AppError('Admin not found', 404));
   }
-  req.assistant = admins;
+  req.assistant = assistant;
   console.log("admin found") // attach found admin for later use
   next();
 });

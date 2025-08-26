@@ -22,4 +22,7 @@ router.route('/removeAssistant/:email')
 router.route('/checkAssistantInGroup/:group')
     .get(auth.adminProtect, dokmiddleware.checkRole, DOK.checkAssistantGroup);    
 
+router.route('/assignGroupToAssistant/:id')
+    .patch(auth.adminProtect, dokmiddleware.checkRole, DOK.assignGroupToAssistant);
+
 module.exports = router;

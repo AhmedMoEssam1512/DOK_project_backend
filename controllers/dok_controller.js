@@ -85,6 +85,20 @@ const checkAssistantGroup = asyncWrapper(async (req, res) => {
     });
 });
 
+const assignGroupToAssistant = asyncWrapper(async (req, res) => {
+    const { id } = req.params;
+    const { group } = req.body;
+    const assistant = await admins.findAdminById(id);
+    if (!assistant) {
+        return next(new AppError('Assistant not found', 404));
+    }
+    assistant.group = group;
+    await assistant.save();
+    return res.status(200).json({
+        status: "success",
+        message: `Group ${group} assigned to assistant ${assistant.name} successfully`
+    });
+});
 
 module.exports = {
     DOK_signUp, 
@@ -92,5 +106,6 @@ module.exports = {
     acceptAssistant,
     showPendingRegistration,
     removeAssistant,
-    checkAssistantGroup
+    checkAssistantGroup,
+    assignGroupToAssistant
 }
