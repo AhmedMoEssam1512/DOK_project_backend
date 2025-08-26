@@ -8,6 +8,13 @@ function getAllFeeds(){
     });
 }
 
+function getFeedByAssistantIdAndSemester(adminId, semester){
+    return feed.findAll({
+        where: { adminId, semester},
+        order: [['dateAndTime', 'DESC']]
+    });
+}
+
 function destroyOldFeeds(cutoffDate){
     return feed.destroy({
         where: {
@@ -20,5 +27,6 @@ function destroyOldFeeds(cutoffDate){
 
 module.exports = {
     getAllFeeds,
-    destroyOldFeeds
+    destroyOldFeeds,
+    getFeedByAssistantIdAndSemester
 };

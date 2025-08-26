@@ -13,6 +13,7 @@ const registration = require('../data_link/admin_data_link');
 const admin = require('../data_link/admin_data_link.js');
 const student = require('../data_link/student_data_link.js');
 const feed = require('../data_link/admin_data_link.js');
+const sse = require('../utils/sseClients.js');
 
 const TARegister = asyncWrapper(async (req, res) => {
     const { email, name, password, phoneNumber, group} = req.body;
@@ -135,15 +136,17 @@ const createSession = asyncWrapper(async (req, res) => {
 const postOnFeed = asyncWrapper(async (req, res) => {
   const { text, semester } = req.body;
   const adminId = req.admin.id;
+  const adminRecord = await admin.findAdminById(adminId);
+  const adminName = adminRecord.name; 
   const adminGroup = req.admin.group; // 👈 "all" or specific group
 
   // Create the post
   const newPost = await feed.createPost(text, semester, adminId);
 
   // Notify students
-  notifyStudents(adminGroup, {
+  sse.notifyStudents(adminGroup, {
     event: "feed_posted",
-    message: `New feed post from admin ${req.admin.name}`,
+    message: `New feed post from admin ${adminName}`,
     post: {
       id: newPost.id,
       text: newPost.text,

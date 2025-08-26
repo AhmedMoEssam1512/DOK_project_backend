@@ -4,6 +4,7 @@ const studentControllers = require('../controllers/student_controller');
 const studentMiddleWare = require('../middleware/student_middleware');
 const adminMiddleWare = require('../middleware/admin_middleware');
 const sessionMiddleWare = require('../middleware/session_middleware');
+const feedMiddleware = require('../middleware/feed_middleware');
 const auth = require('../middleware/auth_middleware');
 const { establishStudentConnection } = require('../controllers/SSE_connection');
 
@@ -21,5 +22,8 @@ router.route('/showMyProfile')
 
 router.route('/attendSession/:sessionId')
     .post(auth.studentProtect, sessionMiddleWare.sessionFound, studentMiddleWare.attendedSessionBefore,  studentControllers.attendSession);    
+
+router.route('/getMyFeed')
+    .get(auth.studentProtect,feedMiddleware.deletePostsGreaterThan14Days , studentControllers.getMyFeed);    
 
 module.exports = router;

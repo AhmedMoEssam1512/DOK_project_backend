@@ -50,17 +50,23 @@ function notifyAssistants(group, payload) {
 }
 
 function notifyStudents(group, payload) {
-  const data = `event: ${payload.event}\ndata: ${JSON.stringify(payload)}\n\n`;
+  const message =
+    `event: ${payload.event || "message"}\n` +
+    `data: ${JSON.stringify(payload)}\n\n`;
 
-  if (group === "all") {
-    // Broadcast to every student
-    studentClients.forEach(c => c.res.write(data));
-  } else {
-    // Only send to matching group
-    studentClients
-      .filter(c => c.group === group)
-      .forEach(c => c.res.write(data));
-  }
+  sseClients.forEach((client) => {
+    if (
+      client.role === "student" &&
+      (group === "all" || client.group === group)
+    ) {
+      try {
+        client.res.write(message);
+      } catch (err) {
+        removeClient(client.res);
+        client.res.end();
+      }
+    }
+  });
 }
 
 module.exports = { addAdminClient, removeClient, notifyAssistants, addStudentClient, notifyStudents };

@@ -2,6 +2,7 @@ const sequelize = require('../config/database');
 const Student = require('../models/student_model.js');
 const student = require('../data_link/student_data_link');
 const admin = require('../data_link/admin_data_link.js');
+const feed = require('../data_link/feed_data_link.js');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
@@ -101,10 +102,27 @@ const attendSession = asyncWrapper(async (req, res, next) => {
         data: { message: "Attendance recorded successfully" }
     })});
 
+    const getMyFeed = asyncWrapper(async (req, res, next) => {
+      const studentId = req.student.id;
+      const studentProfile = await student.findStudentById(studentId);
+      const assistantId = studentProfile.assistantId;
+      const semester = studentProfile.semester;
+      const feeds = await feed.getFeedByAssistantIdAndSemester(assistantId, semester);
+      if (!feeds || feeds.length === 0) {
+          return next(new AppError("No feed found for your assistant", httpStatus.NOT_FOUND));
+      }
+      return res.status(200).json({
+          status: "success",
+          results: feeds.length,
+          data: { feeds }
+      })
+  });
+
 
 module.exports = {
     studentRegister,
     showMyAdminProfile,
     showMyProfile,
-    attendSession
+    attendSession,
+    getMyFeed
 }
