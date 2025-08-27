@@ -13,4 +13,10 @@ router.route('/getAllQuizzes')
 router.route('/getQuizById/:quizId')
     .get(auth.protect, quizMiddleWare.quizExists,quizMiddleWare.canSeeQuiz ,quizControllers.getQuizById);
 
+router.route('/startQuiz/:quizId')
+    .get(auth.adminProtect, quizMiddleWare.quizExists,quizMiddleWare.canAccessQuiz ,quizControllers.startQuiz);
+
+router.route('/getActiveQuiz')
+    .get(auth.protect, quizMiddleWare.activeQuizExists, quizMiddleWare.canAccessActiveQuiz ,quizControllers.getActiveQuiz);   
+    
 module.exports = router;

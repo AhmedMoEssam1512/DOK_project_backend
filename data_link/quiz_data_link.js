@@ -35,10 +35,14 @@ function getQuizById(quizId) {
     return Quiz.findByPk(quizId);
 }
 
+function updateQuizDate(quizId, newDate) {
+    return Quiz.update({ date: newDate }, { where: { quizId } });
+}
 
 module.exports = {
      createQuiz,
     getAllQuizzes,
     getAllQuizzesForGroup,
-    getQuizById
+    getQuizById,
+    updateQuizDates
 };

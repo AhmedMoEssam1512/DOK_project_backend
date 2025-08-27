@@ -8,6 +8,7 @@ const admin = require('../data_link/admin_data_link.js');
 const student = require('../data_link/student_data_link.js');
 const Admin = require('../models/admin_model.js');
 const Student = require('../models/student_model.js');
+const { getCache } = require("../utils/cache");
 
 const checkFields = asyncWrapper(async (req, res, next) => {
     const {mark,quizPdf,date,semester,durationInMin} = req.body;
@@ -66,6 +67,21 @@ const quizExists = asyncWrapper(async (req, res, next) => {
     next();
 });
 
+const canAccessQuiz = asyncWrapper(async (req, res, next) => {
+    const userGroup = req.admin.group;
+    const quizData = req.quizData;
+    const publisher = await admin.findAdminById(quizData.publisher);
+    if (!publisher) {
+        return next(new AppError("Publisher not found", httpStatus.NOT_FOUND));
+    }
+
+    if (publisher.group !== 'all' && publisher.group !== userGroup&& userGroup !== 'all') {
+        return next(new AppError("You do not have permission to access this quiz", httpStatus.FORBIDDEN));
+    }
+    console.log("User has permission to access the quiz");
+    next();
+});
+
 const canSeeQuiz = asyncWrapper(async (req, res, next) => {
     const userGroup = req.user.group;
     const quizData = req.quizData;
@@ -81,9 +97,36 @@ const canSeeQuiz = asyncWrapper(async (req, res, next) => {
     next();
 });
 
+const activeQuizExists = asyncWrapper(async (req, res, next) => {
+    const activeQuiz = await getCache("activeQuiz");
+    if (!activeQuiz) {
+        return next(new AppError("No active quiz found", httpStatus.NOT_FOUND));
+    }
+    req.activeQuiz = activeQuiz;
+    next();
+});
+
+const canAccessActiveQuiz = asyncWrapper(async (req, res, next) => {
+    const userGroup = req.user.group;
+    const activeQuiz = req.activeQuiz;
+    const publisher = await admin.findAdminById(activeQuiz.publisher);
+    if (!publisher) {
+        return next(new AppError("Publisher not found", httpStatus.NOT_FOUND));
+    }
+
+    if (publisher.group !== 'all' && publisher.group !== userGroup&& userGroup !== 'all') {
+        return next(new AppError("You do not have permission to access this active quiz", httpStatus.FORBIDDEN));
+    }
+    console.log("User has permission to access the active quiz");
+    next();
+});
+
 module.exports = {
     checkFields,
     getGroup,
     quizExists ,
-    canSeeQuiz    
+    canSeeQuiz ,
+    canAccessQuiz ,
+    activeQuizExists ,
+    canAccessActiveQuiz 
 };
