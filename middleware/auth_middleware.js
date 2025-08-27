@@ -24,8 +24,11 @@ const adminProtect = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.type !== 'admin') {
+      return next(new AppError('Not authorized as admin', 401));
+    }
     req.admin = decoded;
-    console.log("protect finished") // attach payload
+    console.log("admin protect finished") // attach payload
     next();
   } catch (error) {
     return next(new AppError('Not authorized, token failed', 401));
@@ -51,8 +54,11 @@ const studentProtect = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.type !== 'student') {
+      return next(new AppError('Not authorized as student', 401));
+    }
     req.student = decoded; // attach payload
-    console.log("protect finished") 
+    console.log("student protect finished") 
     next();
   } catch (error) {
     return next(new AppError('Not authorized, token failed', 401));

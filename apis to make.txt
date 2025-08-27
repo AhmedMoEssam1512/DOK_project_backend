@@ -20,21 +20,32 @@ show my profile(student/admin) {A.Essam} [done]
 show student profile(admin) {A.Essam} [done]
 attend a session {Y.Essam} [done]
 view feed {Y.Essam} [done]
+assign group(owner) {A.Essam} [done]
 
 
-assign group(owner) {A.Essam}
+
+el arba3:
+    schedule quiz
+    get active quiz
+    submit quiz
+
+el 5amees:
+    schedule assignment
+    submit assignment
+    mark submission
+
+el gom3a:
+    todo list apis
 
 
-schedule assignment
-schedule quiz
-get active quiz
-submit assignment
-submit quiz
-mark submission
-generate reports {Tamer}
 library {Mustafa}
 leaderboard {Mustafa}
 data analysis {Tamer}
+generate reports {Tamer}
+
+
 clear database
 delete account
 1 api for each delete
+
+any extra api asked by the frontend
