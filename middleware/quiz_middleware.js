@@ -55,7 +55,35 @@ const getGroup = asyncWrapper(async (req, res, next) => {
     next();
 });
 
+const quizExists = asyncWrapper(async (req, res, next) => {
+    const { quizId } = req.params;
+    const quizData = await quiz.getQuizById(quizId);
+    if (!quizData) {
+        return next(new AppError("Quiz not found", httpStatus.NOT_FOUND));
+    }
+    console.log("Quiz found:", quizData);
+    req.quizData = quizData;
+    next();
+});
+
+const canSeeQuiz = asyncWrapper(async (req, res, next) => {
+    const userGroup = req.user.group;
+    const quizData = req.quizData;
+    const publisher = await admin.findAdminById(quizData.publisher);
+    if (!publisher) {
+        return next(new AppError("Publisher not found", httpStatus.NOT_FOUND));
+    }
+
+    if (publisher.group !== 'all' && publisher.group !== userGroup&& userGroup !== 'all') {
+        return next(new AppError("You do not have permission to view this quiz", httpStatus.FORBIDDEN));
+    }
+    console.log("User has permission to view the quiz");
+    next();
+});
+
 module.exports = {
     checkFields,
-    getGroup     
+    getGroup,
+    quizExists ,
+    canSeeQuiz    
 };

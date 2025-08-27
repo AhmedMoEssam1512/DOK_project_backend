@@ -33,7 +33,16 @@ const getAllQuizzes = asyncWrapper(async (req, res) => {
     });
 });
 
+const getQuizById = asyncWrapper(async (req, res, next) => {
+    const quizData = req.quizData;
+    return res.status(200).json({
+        status: "success",
+        data: { quizData }
+    });
+});
+
 module.exports = {
     createQuiz  ,
-    getAllQuizzes
+    getAllQuizzes,
+    getQuizById
 };

@@ -10,4 +10,7 @@ router.route('/createQuiz')
 router.route('/getAllQuizzes')
     .get(auth.protect,quizMiddleWare.getGroup ,quizControllers.getAllQuizzes);
 
+router.route('/getQuizById/:quizId')
+    .get(auth.protect, quizMiddleWare.quizExists,quizMiddleWare.canSeeQuiz ,quizControllers.getQuizById);
+
 module.exports = router;

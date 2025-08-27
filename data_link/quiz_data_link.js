@@ -31,9 +31,14 @@ async function getAllQuizzesForGroup(group) {
   });
 }
 
+function getQuizById(quizId) {
+    return Quiz.findByPk(quizId);
+}
+
 
 module.exports = {
      createQuiz,
     getAllQuizzes,
-    getAllQuizzesForGroup
+    getAllQuizzesForGroup,
+    getQuizById
 };
