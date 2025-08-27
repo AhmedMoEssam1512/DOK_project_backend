@@ -98,10 +98,20 @@ const canSeeQuiz = asyncWrapper(async (req, res, next) => {
 });
 
 const activeQuizExists = asyncWrapper(async (req, res, next) => {
-    const activeQuiz = await getCache("activeQuiz");
+    const userGroup = req.user.group;
+
+    // Try to fetch quiz for user's group
+    let activeQuiz = await getCache(`activeQuiz:${userGroup}`);
+
+    // If not found, try the "all" group quiz
+    if (!activeQuiz) {
+        activeQuiz = await getCache("activeQuiz:all");
+    }
+
     if (!activeQuiz) {
         return next(new AppError("No active quiz found", httpStatus.NOT_FOUND));
     }
+
     req.activeQuiz = activeQuiz;
     next();
 });
@@ -110,16 +120,17 @@ const canAccessActiveQuiz = asyncWrapper(async (req, res, next) => {
     const userGroup = req.user.group;
     const activeQuiz = req.activeQuiz;
     const publisher = await admin.findAdminById(activeQuiz.publisher);
-    if (!publisher) {
-        return next(new AppError("Publisher not found", httpStatus.NOT_FOUND));
-    }
 
-    if (publisher.group !== 'all' && publisher.group !== userGroup&& userGroup !== 'all') {
+    // publisher group is already baked into how the quiz was cached
+    // so here you just check group compatibility
+    if (userGroup !== 'all' && publisher.group !== userGroup && publisher.group !== 'all') {
         return next(new AppError("You do not have permission to access this active quiz", httpStatus.FORBIDDEN));
     }
-    console.log("User has permission to access the active quiz");
+
+    console.log(`✅ User from group ${userGroup} can access quiz for group ${activeQuiz.publisherGroup}`);
     next();
 });
+
 
 module.exports = {
     checkFields,

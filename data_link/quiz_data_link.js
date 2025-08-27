@@ -35,7 +35,7 @@ function getQuizById(quizId) {
     return Quiz.findByPk(quizId);
 }
 
-function updateQuizDate(quizId, newDate) {
+function updateQuizDates(quizId, newDate) {
     return Quiz.update({ date: newDate }, { where: { quizId } });
 }
 

@@ -54,20 +54,25 @@ const getQuizById = asyncWrapper(async (req, res, next) => {
 
 const startQuiz = asyncWrapper(async (req, res, next) => {
     const { quizId } = req.params;
+    const adminGroup = req.admin.group;
 
     // update quiz date to now
-    const updated = await quiz.updateQuizDate(quizId, new Date());
-    console.log("Update result:", updated);  // 👈 check how many rows got updated
+    await quiz.updateQuizDates(quizId, new Date());
 
     const quizData = await quiz.getQuizById(quizId);
-    console.log("Fetched after update:", quizData); // 👈 confirm new date is stored
 
-    // cache it
-    setCache("activeQuiz", quizData, quizData.durationInMin * 60+600);
+    // cache key based on group
+    const cacheKey = `activeQuiz:${adminGroup}`;
+
+    // store quiz in cache
+    setCache(cacheKey, quizData, (quizData.durationInMin * 60) + 600);
 
     return res.status(200).json({
         status: "success",
-        data: { message: "Quiz started and cached", quiz: quizData }
+        data: { 
+            message: `Quiz started for group ${adminGroup} and cached`, 
+            quiz: quizData 
+        }
     });
 });
 
