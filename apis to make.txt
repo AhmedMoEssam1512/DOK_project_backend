@@ -28,18 +28,18 @@ start a quiz {A.Essam} [done]
 get active quiz {A.Essam} [done]
 
 
-el arba3:     
-    submit quiz
 
 el 5amees:
-    schedule assignment
-    get all assignments
-    get assignment
-    submit assignment
-    mark submission
+    submit quiz {A.Essam}
+    schedule assignment {A.Essam}
+    get all assignments {A.Essam}
+    get assignment {A.Essam}
+    submit assignment {A.Essam}
+    show pending submissions {A.Essam}
+    mark submission {A.Essam}
 
 el gom3a:
-    todo list apis
+    todo list apis {Y.Essam}
 
 
 library {Mustafa}
@@ -49,8 +49,8 @@ generate reports {Tamer}
 
 add the mailing functions
 
-clear database
-delete account
-1 api for each delete
+clear database {A.Essam}
+delete account {Y.Essam}
+1 api for each delete 
 
 any extra api asked by the frontend
