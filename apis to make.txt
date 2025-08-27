@@ -21,16 +21,20 @@ show student profile(admin) {A.Essam} [done]
 attend a session {Y.Essam} [done]
 view feed {Y.Essam} [done]
 assign group(owner) {A.Essam} [done]
+create quiz {A.Essam} [done]
+get all quizes {A.Essam} [done]
+get quiz {A.Essam} [done]
+start a quiz {A.Essam} [done]
+get active quiz {A.Essam} [done]
 
 
-
-el arba3:
-    schedule quiz
-    get active quiz
+el arba3:     
     submit quiz
 
 el 5amees:
     schedule assignment
+    get all assignments
+    get assignment
     submit assignment
     mark submission
 
@@ -43,6 +47,7 @@ leaderboard {Mustafa}
 data analysis {Tamer}
 generate reports {Tamer}
 
+add the mailing functions
 
 clear database
 delete account
