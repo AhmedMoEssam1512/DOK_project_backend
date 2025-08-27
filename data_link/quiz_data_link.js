@@ -2,6 +2,7 @@ const sequelize = require('../config/database');
 const { Op } = require("sequelize");
 const Quiz = require('../models/quiz_model');
 const Admin = require('../models/admin_model');
+const Submission = require('../models/submission_model');
 
 Quiz.belongsTo(Admin, { foreignKey: "publisher" });
 
@@ -38,6 +39,8 @@ function getQuizById(quizId) {
 function updateQuizDates(quizId, newDate) {
     return Quiz.update({ date: newDate }, { where: { quizId } });
 }
+
+
 
 module.exports = {
      createQuiz,

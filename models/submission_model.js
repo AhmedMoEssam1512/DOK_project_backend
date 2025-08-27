@@ -1,12 +1,12 @@
 const sequelize = require('../config/database');
 const { DataTypes } = require('sequelize');
 const Submission = sequelize.define('Submission', {
-  subId: { type: DataTypes.STRING, primaryKey: true },
+  subId: { type: DataTypes.STRING, primaryKey: true, autoIncrement : true },
   score: DataTypes.INTEGER,
-  document: DataTypes.STRING,
+  answers: DataTypes.STRING,
   subDate: {type: DataTypes.DATE , defaultValue: DataTypes.NOW},
-  student: DataTypes.STRING,
-  assistant: DataTypes.STRING,
+  studentId: DataTypes.INTEGER,
+  assistantId: DataTypes.INTEGER,
   type: DataTypes.ENUM('quiz','assignment'),
   semester: DataTypes.STRING,
   QuizId: DataTypes.STRING,
