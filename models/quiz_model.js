@@ -3,7 +3,7 @@ const { DataTypes } = require('sequelize');
 const Quiz = sequelize.define('Quiz', {
   quizId: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   mark: DataTypes.INTEGER,
-  publisher: DataTypes.STRING,
+  publisher: DataTypes.INTEGER,
   quizPdf: DataTypes.STRING,
   date: DataTypes.DATE,
   semester: DataTypes.STRING,

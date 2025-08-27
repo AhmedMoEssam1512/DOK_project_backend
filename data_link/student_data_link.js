@@ -55,11 +55,19 @@ function findAttendanceByStudentAndSession(studentId, sessionId) {
     });
 }
 
+function getGroupById(studentId){
+    return Student.findOne({where : { studentId } }).then(student=>{
+        if(!student) return null;
+        return student.group;
+    })
+}
+
 module.exports={
     findStudentByEmail,
     createStudent,
     registerStudent,
     findStudentById,
     createAttendance,
-    findAttendanceByStudentAndSession
+    findAttendanceByStudentAndSession,
+    getGroupById
 }

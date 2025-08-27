@@ -24,9 +24,7 @@ const logIn = asyncWrapper(async (req, res, next) => {
       {
         id: adminUser.adminId,
         email: adminUser.email,
-        role: adminUser.role,
         group: adminUser.group,
-        permission: adminUser.permission,
         type: "admin",
       },
       process.env.JWT_SECRET,
@@ -61,6 +59,7 @@ const logIn = asyncWrapper(async (req, res, next) => {
       {
         id: studentUser.studentId,
         email: studentUser.studentEmail,
+        group: studentUser.group,
         type: "student",
       },
       process.env.JWT_SECRET,

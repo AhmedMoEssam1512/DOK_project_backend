@@ -12,13 +12,28 @@ const Student = require('../models/student_model.js');
 const createQuiz = asyncWrapper(async (req, res) => {
     const {mark,quizPdf,date,semester,durationInMin} = req.body;
     const publisher = req.admin.id;
-    const newQuiz = await quiz.createQuiz({mark,publisher,quizPdf,date,semester,durationInMin});
+    console.log("publisher id:", publisher)
+    console.log("Creating quiz with data:", {mark,quizPdf,date,semester,durationInMin});
+    const newQuiz = await quiz.createQuiz(mark,publisher,quizPdf,date,semester,durationInMin);
     return res.status(201).json({
         status: "success" ,
         data: { message: "Quiz created successfully", quizId: newQuiz.quizId }
     });
 });
 
+const getAllQuizzes = asyncWrapper(async (req, res) => {
+    const group = req.user.group;
+    const quizzes = group =='all'?
+    await quiz.getAllQuizzes() :   
+    await quiz.getAllQuizzesForGroup(group);
+    return res.status(200).json({
+        status: "success",
+        results: quizzes.length,
+        data: { quizzes }
+    });
+});
+
 module.exports = {
-    createQuiz  
+    createQuiz  ,
+    getAllQuizzes
 };

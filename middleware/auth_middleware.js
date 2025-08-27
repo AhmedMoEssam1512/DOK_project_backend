@@ -86,13 +86,8 @@ const protect = asyncWrapper(async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (decoded.type === 'admin') {
-      req.admin = decoded;
-    } else if (decoded.type === 'student') {
-      req.student = decoded;
-    } else {
-      return next(new AppError('Not authorized, invalid token type', 401));
-    }
+    req.user = decoded; // attach payload
+    console.log("protect finished")
     next();
   } catch (error) {
     return next(new AppError('Not authorized, token failed', 401));

@@ -7,4 +7,7 @@ const quizMiddleWare = require('../middleware/quiz_middleware');
 router.route('/createQuiz')
     .post(auth.adminProtect, quizMiddleWare.checkFields, quizControllers.createQuiz);
 
+router.route('/getAllQuizzes')
+    .get(auth.protect,quizMiddleWare.getGroup ,quizControllers.getAllQuizzes);
+
 module.exports = router;

@@ -15,34 +15,47 @@ const checkFields = asyncWrapper(async (req, res, next) => {
     if (mark == null || quizPdf == null || date == null || semester == null || durationInMin == null) {
         return next(new AppError("All fields are required", httpStatus.BAD_REQUEST));
     }
-
+    console.log("chack 1 done, all fields present")
     if (typeof mark !== 'number' || mark < 0) {
         return next(new AppError("Mark must be a non-negative number", httpStatus.BAD_REQUEST));
     }
-
+    console.log("chack 2 done, mark valid")
      // quizPdf must be a valid URL ending with .pdf
     const pdfRegex = /^https?:\/\/.+\.pdf$/i;
     if (typeof quizPdf !== 'string' || !pdfRegex.test(quizPdf.trim())) {
         return next(new AppError("Quiz PDF must be a valid link ending with .pdf", httpStatus.BAD_REQUEST));
     }
+    console.log("chack 3 done, pdf valid")
 
     // allow any date format that JS Date can parse
     const parsedDate = new Date(date);
     if (parsedDate.toString() === "Invalid Date") {
         return next(new AppError("Invalid date format", httpStatus.BAD_REQUEST));
     }
+    console.log("chack 4 done, date valid")
 
     if (typeof semester !== 'string' || semester.trim() === '') {
         return next(new AppError("Semester must be a non-empty string", httpStatus.BAD_REQUEST));
     }
+    console.log("chack 5 done, semester valid")
 
     if (typeof durationInMin !== 'number' || durationInMin <= 0) {
         return next(new AppError("Duration must be a positive number", httpStatus.BAD_REQUEST));
     }
+    console.log("chack 6 done, duration valid")
+    next();
+});
 
+const getGroup = asyncWrapper(async (req, res, next) => {
+    const group = req.user.group
+    if (!group) {
+        return next(new AppError("Group not found", httpStatus.NOT_FOUND));
+    }
+    req.group = group;
     next();
 });
 
 module.exports = {
-    checkFields     
+    checkFields,
+    getGroup     
 };
