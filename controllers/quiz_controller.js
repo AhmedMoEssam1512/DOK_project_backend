@@ -63,7 +63,7 @@ const startQuiz = asyncWrapper(async (req, res, next) => {
     console.log("Fetched after update:", quizData); // 👈 confirm new date is stored
 
     // cache it
-    setCache("activeQuiz", quizData, 4000);
+    setCache("activeQuiz", quizData, quizData.durationInMin * 60+600);
 
     return res.status(200).json({
         status: "success",
