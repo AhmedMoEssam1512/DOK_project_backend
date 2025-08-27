@@ -25,8 +25,16 @@ function destroyOldFeeds(cutoffDate){
     });
 }
 
+function createPost(text, semester, adminId) {
+    return feed.create({    
+        text,
+        semester,
+        adminId
+    })};
+
 module.exports = {
     getAllFeeds,
     destroyOldFeeds,
-    getFeedByAssistantIdAndSemester
+    getFeedByAssistantIdAndSemester,
+    createPost
 };

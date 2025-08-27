@@ -133,36 +133,6 @@ const createSession = asyncWrapper(async (req, res) => {
     data: { message: "Session created successfully" }
   })});
 
-const postOnFeed = asyncWrapper(async (req, res) => {
-  const { text, semester } = req.body;
-  const adminId = req.admin.id;
-  const adminRecord = await admin.findAdminById(adminId);
-  const adminName = adminRecord.name; 
-  const adminGroup = req.admin.group; // 👈 "all" or specific group
-
-  // Create the post
-  const newPost = await feed.createPost(text, semester, adminId);
-
-  // Notify students
-  sse.notifyStudents(adminGroup, {
-    event: "feed_posted",
-    message: `New feed post from admin ${adminName}`,
-    post: {
-      id: newPost.id,
-      text: newPost.text,
-      semester: newPost.semester,
-      group: adminGroup,
-      adminId: newPost.adminId,
-      createdAt: newPost.createdAt,
-    },
-  });
-
-  return res.status(201).json({
-    status: "success",
-    data: { message: "Post created & submitted successfully" }
-  });
-});
-
 const showMyProfile = asyncWrapper(async (req, res) => {
   const adminId = req.admin.id;
   const adminProfile = await admin.findAdminById(adminId);
@@ -207,7 +177,6 @@ module.exports = {
     unBanStudent,
     rejectSudent,
     createSession,
-    postOnFeed,
     showMyProfile,
     showStudentProfile
 }

@@ -7,4 +7,7 @@ const auth = require('../middleware/auth_middleware');
 router.route('/')
     .get(auth.adminProtect ,feedMiddleware.deletePostsGreaterThan14Days ,feedController.getFeed);
 
+router.route('/postOnFeed')
+    .post(auth.adminProtect, feedController.postOnFeed);
+
 module.exports = router;
