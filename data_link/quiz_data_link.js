@@ -45,7 +45,7 @@ function createSubmission(quizId, studentId,assistantId ,answers, semester) {
 }
 
 function findSubmissionByQuizAndStudent(quizId,studentId){
-    return Submission.findOne({where :{quizId,studentId}})
+    return Submission.findOne({where :{quizId,studentId,type:"quiz"}})
 }
 
 
