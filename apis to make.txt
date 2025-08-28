@@ -34,13 +34,12 @@ get assignment {A.Essam} [done]
 submit assignment {A.Essam} [done]
 show pending submissions {A.Essam} [done]
 get submission by id {A.Essam} [done]
-
+show all my submissions(admin) {A.Essam}
 
 
   
 
-el gom3a:
-    show all my submissions(admin) {A.Essam}
+el gom3a: 
     mark submission {A.Essam}
     show my submissions(student) {A.Essam}
     show submission {A.Essam}
