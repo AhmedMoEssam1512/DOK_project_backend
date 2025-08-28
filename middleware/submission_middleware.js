@@ -30,7 +30,38 @@ const canSeeSubmission = asyncWrapper(async (req,res, next) => {
     next();
 })
 
+const marked = asyncWrapper(async (req,res, next) => {
+    const found = req.found;
+    if(found.marked){
+        return next(new AppError("Submission already marked", httpStatus.FORBIDDEN));
+    }
+    next();
+})
+
+const checkData = asyncWrapper(async (req,res, next) => {
+    const {marked,score } = req.body
+    if(!marked || !score){
+        return next(new AppError("All fields are required", httpStatus.BAD_REQUEST));
+    }
+    console.log("All fields checked");
+
+    const pdfRegex = /^https?:\/\/.+\.pdf$/i;
+    if (typeof marked !== 'string' || !pdfRegex.test(marked.trim())) {
+        return next(new AppError("marked PDF must be a valid link ending with .pdf", httpStatus.BAD_REQUEST));
+    }
+    console.log("chack 2 done, pdf valid")
+
+    if (typeof score !== 'number' || score <= 0) {
+        return next(new AppError("Score must be a positive number", httpStatus.BAD_REQUEST));
+    }
+    console.log("chack 3 done, duration valid")
+
+    next();
+})
+
 module.exports ={
     subExist,
     canSeeSubmission,
+    marked,
+    checkData,
 }

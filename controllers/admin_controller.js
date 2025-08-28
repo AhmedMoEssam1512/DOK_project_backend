@@ -219,6 +219,22 @@ const showAllSubmissions = asyncWrapper(async (req, res) => {
 
 })
 
+const markSubmission = asyncWrapper(async (req, res) => {
+    const found = req.found;
+    const studentSub = await student.findStudentById(found.studentId)   ;
+    const {marked,score } = req.body
+    found.score = score;
+    found.marked = marked;
+    found.markedAt = new Date();
+    studentSub.totalScore += score;
+    await studentSub.save();
+    await found.save();
+    return res.status(200).json({
+        status: "success",
+        message: `Submission marked successfully`,
+    })
+})
+
 module.exports = {
     TARegister,
     showPendingRegistration,
@@ -233,5 +249,6 @@ module.exports = {
     showUnmarkedSubmissions,
     findSubmissionById,
     showAllSubmissions,
+    markSubmission
 }
 

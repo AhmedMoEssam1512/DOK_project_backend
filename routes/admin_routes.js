@@ -49,4 +49,8 @@ router.route('/findSubmissionById/:id')
 router.route('/showAllSubmissions')
     .get(auth.adminProtect,adminControllers.showAllSubmissions);
 
+router.route('/markSubmission/:id')
+    .patch(auth.adminProtect,subMiddleWare.subExist,subMiddleWare.canSeeSubmission,
+        subMiddleWare.marked,subMiddleWare.checkData, adminControllers.markSubmission );
+
 module.exports = router;
