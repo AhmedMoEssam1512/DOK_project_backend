@@ -53,6 +53,7 @@ const getGroup = asyncWrapper(async (req, res, next) => {
         return next(new AppError("Group not found", httpStatus.NOT_FOUND));
     }
     req.group = group;
+    console.log("group sent :", group)
     next();
 });
 

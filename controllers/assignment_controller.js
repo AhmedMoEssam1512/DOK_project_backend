@@ -20,7 +20,22 @@ const createAssignment = asyncWrapper(async (req, res) => {
     });
 });
 
+const getAllAssignments = asyncWrapper(async (req, res) => {
+    const group = req.user.group;
+    // Get all quizzes based on group
+    const assignments = (group === 'all'
+    ? await assignment.getAllAssignments()
+    : await assignment.getAllAssignmentsByGroup(group)) ;
+
+    return res.status(200).json({
+        status: "success",
+        results: assignments.length,
+        data: { Assignments: assignments }
+    })
+})
+
 module.exports={
-    createAssignment
+    createAssignment,
+    getAllAssignments,
 }
 
