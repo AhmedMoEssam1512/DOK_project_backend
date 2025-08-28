@@ -1,7 +1,7 @@
 const sequelize = require('../config/database');
 const { DataTypes } = require('sequelize');
 const Submission = sequelize.define('Submission', {
-  subId: { type: DataTypes.STRING, primaryKey: true, autoIncrement : true },
+  subId: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement : true },
   score: DataTypes.INTEGER,
   answers: DataTypes.STRING,
   subDate: {type: DataTypes.DATE , defaultValue: DataTypes.NOW},
