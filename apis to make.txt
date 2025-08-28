@@ -21,16 +21,16 @@ show student profile(admin) {A.Essam} [done]
 attend a session {Y.Essam} [done]
 view feed {Y.Essam} [done]
 assign group(owner) {A.Essam} [done]
-create quiz {A.Essam} {Y.Essam added studentSSE} [done]
+create quiz {A.Essam} [done]
 get all quizes {A.Essam} [done]
 get quiz {A.Essam} [done]
-start a quiz {A.Essam} {Y.Essam added studentSSE} [done]
+start a quiz {both Essam} [done]
 get active quiz {A.Essam} [done]
-
+submit Active quiz {A.Essam} [done]
+submit quiz {A.Essam} [done]
 
 
 el 5amees:
-    submit quiz {A.Essam}
     schedule assignment {A.Essam}
     get all assignments {A.Essam}
     get assignment {A.Essam}
