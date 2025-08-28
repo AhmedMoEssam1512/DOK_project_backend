@@ -79,9 +79,20 @@ const canSeeAssign = asyncWrapper(async (req, res, next) => {
     next();
 });
 
+const submittedBefore = asyncWrapper(async (req, res, next) => {
+    const assId = req.params.assignId;
+    const studentId= req.user.id;
+    const submission = await assignment.findSubmissionByQuizAndStudent(assId,studentId);
+    if(submission){
+        return next(new AppError("You cannot submit same assignment twice", httpStatus.FORBIDDEN));
+    }
+    next();
+})
+
+
 module.exports = {
     checkField,
     assignExists,
     canSeeAssign,
-
+    submittedBefore,
 }

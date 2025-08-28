@@ -36,9 +36,19 @@ function getAssignmentById(assignId){
     return Assignment.findOne({where : {assignId}});
 }
 
+function createSubmission(assId, studentId,publisher,answers, semester){
+    return Submission.create({assId, studentId, publisher, answers, semester, "type":"assignment"})
+}
+
+function findSubmissionByQuizAndStudent(assId,studentId){
+    return Submission.findOne({where: {assId,studentId}})
+}
+
 module.exports={
     createAssignment,
     getAllAssignments,
     getAllAssignmentsByGroup,
     getAssignmentById,
+    createSubmission,
+    findSubmissionByQuizAndStudent,
 }

@@ -42,9 +42,25 @@ const getAssignmentById = asyncWrapper(async (req, res) => {
     });
 })
 
+const submitAssignment = asyncWrapper(async (req, res) => {
+    const { answers } = req.body;
+    const studentId = req.user.id;
+    const found = await student.findStudentById(studentId);
+    const {assignId} = req.params;
+    const newSub= await assignment.createSubmission(assignId, studentId,found.assistantId ,answers, found.semester);
+
+    return res.status(200).json({
+        status: "success",
+        data: { message: "Assignment submitted successfully" ,
+            submissionId: newSub.id
+        }
+    });
+})
+
 module.exports={
     createAssignment,
     getAllAssignments,
     getAssignmentById,
+    submitAssignment
 }
 
