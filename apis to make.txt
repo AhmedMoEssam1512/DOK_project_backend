@@ -33,17 +33,16 @@ get all assignments {A.Essam} [done]
 get assignment {A.Essam} [done]
 submit assignment {A.Essam} [done]
 show pending submissions {A.Essam} [done]
+get submission by id {A.Essam} [done]
 
 
 
-
-el 5amees:
-    get submission by id {A.Essam}
-    
+  
 
 el gom3a:
+    show all my submissions(admin) {A.Essam}
     mark submission {A.Essam}
-    show my submissions {A.Essam}
+    show my submissions(student) {A.Essam}
     show submission {A.Essam}
     todo list apis {Y.Essam}
 
