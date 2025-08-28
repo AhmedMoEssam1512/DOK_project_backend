@@ -11,8 +11,8 @@ const Submission = sequelize.define('Submission', {
   assistantId: DataTypes.INTEGER,
   type: DataTypes.ENUM('quiz','assignment'),
   semester: DataTypes.STRING,
-  quizId: DataTypes.STRING,
-  assId: DataTypes.STRING
+  quizId: DataTypes.INTEGER,
+  assId: DataTypes.INTEGER
 }, { tableName: 'submission', timestamps: false });
 
 module.exports = Submission;

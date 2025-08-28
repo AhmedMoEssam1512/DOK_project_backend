@@ -20,7 +20,11 @@ router.route('/getActiveQuiz')
     .get(auth.protect, quizMiddleWare.activeQuizExists, quizMiddleWare.canAccessActiveQuiz ,quizControllers.getActiveQuiz); 
     
 router.route('/submitActiveQuiz/')
-    .post(auth.protect, quizMiddleWare.activeQuizExists, quizMiddleWare.canAccessActiveQuiz ,
+    .post(auth.protect, quizMiddleWare.activeQuizExists, quizMiddleWare.canAccessActiveQuiz ,quizMiddleWare.submittedBefore,
         quizMiddleWare.verifySubmissionTiming, quizMiddleWare.verifySubmissionPDF ,quizControllers.submitActiveQuiz);
-    
+
+router.route('/submitQuiz/:quizId')
+        .post(auth.protect, quizMiddleWare.quizExists, quizMiddleWare.canSeeQuiz ,
+        quizMiddleWare.submittedBefore, quizMiddleWare.verifySubmissionPDF ,quizControllers.submitQuiz)
+
 module.exports = router;

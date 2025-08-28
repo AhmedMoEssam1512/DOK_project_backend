@@ -87,7 +87,7 @@ const startQuiz = asyncWrapper(async (req, res, next) => {
 
 
 const getActiveQuiz = asyncWrapper(async (req, res, next) => {
-    const activeQuiz = req.activeQuiz;
+    const activeQuiz = req.quizData;
     return res.status(200).json({
         status: "success",
         data: { activeQuiz }
@@ -99,8 +99,22 @@ const submitActiveQuiz = asyncWrapper(async (req, res, next) => {
     const { answers } = req.body;
     const studentId = req.user.id;
     const found = await student.findStudentById(studentId);
-    const activeQuiz = req.activeQuiz;
-    const quizId = activeQuiz.quizId
+    const activeQuiz = req.quizData;
+    const newSub= await quiz.createSubmission(activeQuiz.quizId, studentId,found.assistantId ,answers, found.semester);
+
+    return res.status(200).json({
+        status: "success",
+        data: { message: "Quiz submitted successfully" ,
+        submissionId: newSub.id  
+        }
+    });
+});
+
+const submitQuiz = asyncWrapper(async (req, res, next) => {
+    const { answers } = req.body;
+    const studentId = req.user.id;
+    const found = await student.findStudentById(studentId);
+    const {quizId} = req.params;
     const newSub= await quiz.createSubmission(quizId, studentId,found.assistantId ,answers, found.semester);
 
     return res.status(200).json({
@@ -111,12 +125,12 @@ const submitActiveQuiz = asyncWrapper(async (req, res, next) => {
     });
 });
 
-
 module.exports = {
     createQuiz  ,
     getAllQuizzes,
     getQuizById, 
     startQuiz,
     getActiveQuiz,
-    submitActiveQuiz
+    submitActiveQuiz,
+    submitQuiz
 };

@@ -82,6 +82,8 @@ const canAccessQuiz = asyncWrapper(async (req, res, next) => {
     next();
 });
 
+
+
 const canSeeQuiz = asyncWrapper(async (req, res, next) => {
     const userGroup = req.user.group ;
     const quizData = req.quizData;
@@ -112,13 +114,23 @@ const activeQuizExists = asyncWrapper(async (req, res, next) => {
         return next(new AppError("No active quiz found", httpStatus.NOT_FOUND));
     }
     console.log("active quiz exists")
-    req.activeQuiz = activeQuiz;
+    req.quizData = activeQuiz;
+    next();
+});
+
+const submittedBefore = asyncWrapper(async (req, res, next) => {
+    const subQuiz = req.quizData;
+    const studentId= req.user.id;
+    const submission = await quiz.findSubmissionByQuizAndStudent(subQuiz.quizId,studentId);
+    if(submission){
+        return next(new AppError("You cannot submit same quiz twice", httpStatus.FORBIDDEN));
+    }
     next();
 });
 
 const canAccessActiveQuiz = asyncWrapper(async (req, res, next) => {
     const userGroup = req.user.group;
-    const activeQuiz = req.activeQuiz;
+    const activeQuiz = req.quizData;
     const publisher = await admin.findAdminById(activeQuiz.publisher);
 
     // publisher group is already baked into how the quiz was cached
@@ -144,7 +156,7 @@ const verifySubmissionPDF = asyncWrapper(async (req, res, next) => {
 });
 
 const verifySubmissionTiming = asyncWrapper(async (req, res, next) => {
-    const activeQuiz = req.activeQuiz;
+    const activeQuiz = req.quizData;
 
     let deadline = new Date(activeQuiz.date);
     deadline += activeQuiz.durationInMin * 60000
@@ -166,5 +178,6 @@ module.exports = {
     activeQuizExists ,
     canAccessActiveQuiz ,
     verifySubmissionPDF,
-    verifySubmissionTiming
+    verifySubmissionTiming,
+    submittedBefore
 };

@@ -44,6 +44,10 @@ function createSubmission(quizId, studentId,assistantId ,answers, semester) {
     return Submission.create({ quizId, studentId,assistantId ,answers, semester, type : "quiz" });
 }
 
+function findSubmissionByQuizAndStudent(quizId,studentId){
+    return Submission.findOne({where :{quizId,studentId}})
+}
+
 
 module.exports = {
      createQuiz,
@@ -51,5 +55,6 @@ module.exports = {
     getAllQuizzesForGroup,
     getQuizById,
     updateQuizDates,
-    createSubmission
+    createSubmission,
+    findSubmissionByQuizAndStudent
 };
