@@ -40,6 +40,9 @@ function updateQuizDates(quizId, newDate) {
     return Quiz.update({ date: newDate }, { where: { quizId } });
 }
 
+function createSubmission(quizId, studentId,assistantId ,answers, semester) {
+    return Submission.create({ quizId, studentId,assistantId ,answers, semester, type : "quiz" });
+}
 
 
 module.exports = {
@@ -47,5 +50,6 @@ module.exports = {
     getAllQuizzes,
     getAllQuizzesForGroup,
     getQuizById,
-    updateQuizDates
+    updateQuizDates,
+    createSubmission
 };

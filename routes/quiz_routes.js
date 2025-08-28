@@ -17,6 +17,10 @@ router.route('/startQuiz/:quizId')
     .get(auth.adminProtect, quizMiddleWare.quizExists,quizMiddleWare.canAccessQuiz ,quizControllers.startQuiz);
 
 router.route('/getActiveQuiz')
-    .get(auth.protect, quizMiddleWare.activeQuizExists, quizMiddleWare.canAccessActiveQuiz ,quizControllers.getActiveQuiz);   
+    .get(auth.protect, quizMiddleWare.activeQuizExists, quizMiddleWare.canAccessActiveQuiz ,quizControllers.getActiveQuiz); 
+    
+router.route('/submitActiveQuiz/')
+    .post(auth.protect, quizMiddleWare.activeQuizExists, quizMiddleWare.canAccessActiveQuiz ,
+        quizMiddleWare.verifySubmissionTiming, quizMiddleWare.verifySubmissionPDF ,quizControllers.submitActiveQuiz);
     
 module.exports = router;

@@ -19,19 +19,7 @@ const createQuiz = asyncWrapper(async (req, res) => {
     const adminGroup = req.admin.group; // 👈 "all" or specific group
     console.log("publisher id:", publisher)
     console.log("Creating quiz with data:", {mark,quizPdf,date,semester,durationInMin});
-    const newQuiz = await quiz.createQuiz(mark,publisher,quizPdf,date,semester,durationInMin);
-
-    sse.notifyStudents(adminGroup, {
-        event: "New Quiz Published",
-        message: `Group ${adminGroup}, a date for the upcoming quiz has been dropped. Please check your dashboard.`,
-        post: {
-            date: date,
-            quizMark: mark,
-            semester: semester,
-            durationInMin: durationInMin
-        },
-      });
-    
+    const newQuiz = await quiz.createQuiz(mark,publisher,quizPdf,date,semester,durationInMin);  
     return res.status(201).json({
         status: "success" ,
         data: { message: "Quiz created successfully", quizId: newQuiz.quizId }
@@ -84,13 +72,7 @@ const startQuiz = asyncWrapper(async (req, res, next) => {
     sse.notifyStudents(adminGroup, {
         event: "Quiz is starting",
         message: `Quiz to group ${adminGroup} is gonna start now. Please check your dashboard.`,
-        post: {
-            publisher: quizData.publisher,
-            quizPdf: quizData.quizPdf,
-            quizMark: quizData.mark,
-            semester: quizData.semester,
-            durationInMin: quizData.durationInMin
-        },
+        
       });
 
     return res.status(200).json({
@@ -113,10 +95,28 @@ const getActiveQuiz = asyncWrapper(async (req, res, next) => {
 });
 
 
+const submitActiveQuiz = asyncWrapper(async (req, res, next) => {
+    const { answers } = req.body;
+    const studentId = req.user.id;
+    const found = await student.findStudentById(studentId);
+    const activeQuiz = req.activeQuiz;
+    const quizId = activeQuiz.quizId
+    const newSub= await quiz.createSubmission(quizId, studentId,found.assistantId ,answers, found.semester);
+
+    return res.status(200).json({
+        status: "success",
+        data: { message: "Quiz submitted successfully" ,
+        submissionId: newSub.id  
+        }
+    });
+});
+
+
 module.exports = {
     createQuiz  ,
     getAllQuizzes,
     getQuizById, 
     startQuiz,
-    getActiveQuiz
+    getActiveQuiz,
+    submitActiveQuiz
 };

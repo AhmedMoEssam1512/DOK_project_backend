@@ -68,7 +68,7 @@ const quizExists = asyncWrapper(async (req, res, next) => {
 });
 
 const canAccessQuiz = asyncWrapper(async (req, res, next) => {
-    const userGroup = req.admin.group;
+    const userGroup = req.admin.group ;
     const quizData = req.quizData;
     const publisher = await admin.findAdminById(quizData.publisher);
     if (!publisher) {
@@ -83,7 +83,7 @@ const canAccessQuiz = asyncWrapper(async (req, res, next) => {
 });
 
 const canSeeQuiz = asyncWrapper(async (req, res, next) => {
-    const userGroup = req.user.group;
+    const userGroup = req.user.group ;
     const quizData = req.quizData;
     const publisher = await admin.findAdminById(quizData.publisher);
     if (!publisher) {
@@ -111,7 +111,7 @@ const activeQuizExists = asyncWrapper(async (req, res, next) => {
     if (!activeQuiz) {
         return next(new AppError("No active quiz found", httpStatus.NOT_FOUND));
     }
-
+    console.log("active quiz exists")
     req.activeQuiz = activeQuiz;
     next();
 });
@@ -127,7 +127,32 @@ const canAccessActiveQuiz = asyncWrapper(async (req, res, next) => {
         return next(new AppError("You do not have permission to access this active quiz", httpStatus.FORBIDDEN));
     }
 
-    console.log(`✅ User from group ${userGroup} can access quiz for group ${activeQuiz.publisherGroup}`);
+    console.log(`✅ User from group ${userGroup} can access quiz for group ${publisher.group}`);
+    next();
+});
+
+const verifySubmissionPDF = asyncWrapper(async (req, res, next) => {
+    const { answers } = req.body;
+
+    const pdfRegex = /^https?:\/\/.+\.pdf$/i;
+    if (typeof answers !== 'string' || !pdfRegex.test(answers.trim())) {
+        return next(new AppError("answers PDF must be a valid link ending with .pdf", httpStatus.BAD_REQUEST));
+    }
+    console.log("valid Pdf")
+    // Further validation can be added here based on quiz structure
+    next();
+});
+
+const verifySubmissionTiming = asyncWrapper(async (req, res, next) => {
+    const activeQuiz = req.activeQuiz;
+
+    let deadline = new Date(activeQuiz.date);
+    deadline += activeQuiz.durationInMin * 60000
+    console.log (deadline)
+    if (new Date() > deadline) {
+        return next(new AppError("Quiz submission time has expired", httpStatus.BAD_REQUEST));
+    }
+    console.log("Quiz submission is within the allowed time frame");
     next();
 });
 
@@ -139,5 +164,7 @@ module.exports = {
     canSeeQuiz ,
     canAccessQuiz ,
     activeQuizExists ,
-    canAccessActiveQuiz 
+    canAccessActiveQuiz ,
+    verifySubmissionPDF,
+    verifySubmissionTiming
 };
