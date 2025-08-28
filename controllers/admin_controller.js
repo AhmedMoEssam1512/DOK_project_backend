@@ -102,7 +102,7 @@ const unBanStudent = asyncWrapper(async (req, res) => {
   });
 });
 
-const rejectSudent = asyncWrapper(async (req, res) => {
+const rejectStudent = asyncWrapper(async (req, res) => {
   const student = req.student; // must be set earlier by studentFound
   const adminId = req.admin.id;
   console.log(adminId) // assuming adminId is available in req.admin
@@ -158,6 +158,32 @@ const showStudentProfile= asyncWrapper(async (req, res) => {
   });
 });
 
+const showUnmarkedSubmissions = asyncWrapper(async (req, res) => {
+    const adminId = req.admin.id;
+    const adminProfile = await admin.findAdminById(adminId);
+    console.log(adminId);
+    const pendingSubmissions = (adminId === "1"
+        ? await admin.getUnmarkedSubmissionsByAdminId(adminId)
+        : await admin.getAllUnmarkedSubmissions());
+
+    if (!pendingSubmissions || pendingSubmissions.length === 0) {
+        return res.status(200).json({ message: "No unmarked submissions found" });
+    }
+    return res.status(200).json({
+        status: "success",
+        message: `Unmarked submissions for admin ${adminProfile.name}`,
+        data: {
+            submissions: pendingSubmissions.map(submission => ({
+                id: submission.subId,
+                studentId: submission.studentId,
+                quizId: submission.quizId,
+                assignmentId: submission.assId,
+                submittedAt: submission.createdAt
+            }))
+        }
+    });
+});
+
 module.exports = {
     TARegister,
     showPendingRegistration,
@@ -166,8 +192,9 @@ module.exports = {
     removeStudent,
     banStudent,
     unBanStudent,
-    rejectSudent,
+    rejectStudent,
     showMyProfile,
-    showStudentProfile
+    showStudentProfile,
+    showUnmarkedSubmissions
 }
 

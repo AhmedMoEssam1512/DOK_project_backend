@@ -6,13 +6,15 @@ const Submission = sequelize.define('Submission', {
     autoIncrement: true },
   score: DataTypes.INTEGER,
   answers: DataTypes.STRING,
+  marked:  DataTypes.STRING,
   subDate: {type: DataTypes.DATE , defaultValue: DataTypes.NOW},
   studentId: DataTypes.INTEGER,
   assistantId: DataTypes.INTEGER,
   type: DataTypes.ENUM('quiz','assignment'),
   semester: DataTypes.STRING,
   quizId: DataTypes.INTEGER,
-  assId: DataTypes.INTEGER
+  assId: DataTypes.INTEGER,
+  createdAt: {type : DataTypes.DATE,  defaultValue: DataTypes.NOW},
 }, { tableName: 'submission', timestamps: false });
 
 module.exports = Submission;

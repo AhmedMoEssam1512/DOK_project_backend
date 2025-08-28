@@ -18,7 +18,7 @@ router.route('/verifyStudent/:studentEmail')
     .patch(auth.adminProtect, adminMiddleWare.studentFound, adminControllers.verifyStudent);
 
 router.route('/rejectStudent/:studentEmail')
-    .patch(auth.adminProtect, adminMiddleWare.studentFound,adminMiddleWare.canReject ,adminControllers.rejectSudent);
+    .patch(auth.adminProtect, adminMiddleWare.studentFound,adminMiddleWare.canReject ,adminControllers.rejectStudent);
 
 router.route('/checkStudentInGroup/:group')
     .get(auth.adminProtect, adminControllers.showStudentInGroup);   
@@ -37,5 +37,8 @@ router.route('/showMyProfile')
 
 router.route('/showStudentProfile/:studentId')
     .get(auth.adminProtect,adminMiddleWare.checkAuthurityByID ,adminControllers.showStudentProfile);
+
+router.route('/showUnmarkedSubmissions')
+    .get(auth.adminProtect,adminControllers.showUnmarkedSubmissions);
 
 module.exports = router;
