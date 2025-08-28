@@ -36,46 +36,76 @@ const createSession = asyncWrapper(async (req, res) => {
   })});
 
 const attendSession = asyncWrapper(async (req, res, next) => {
-    const { sessionId } = req.params;
-    const decoded = jwt.verify(req.headers.authorization.split(' ')[1], process.env.JWT_SECRET);
+    const sessionId = req.activeSession?.sessionId || req.params.sessionId;
+    if (!sessionId) {
+        return next(new AppError("Session ID missing", httpStatus.BAD_REQUEST));
+    }
+
+    const decoded = jwt.verify(
+        req.headers.authorization.split(' ')[1],
+        process.env.JWT_SECRET
+    );
     const studentId = decoded.id;
-    const studentSem = await student.findStudentById(studentId);
-    const sem = studentSem.semester;
+
+    const studentData = await student.findStudentById(studentId);
+    const sem = studentData.semester;
+
     await student.createAttendance(studentId, sessionId, sem);
 
     return res.status(200).json({
         status: "success",
         data: { message: "Attendance recorded successfully" }
-    })});
+    });
+});
+
+
 
 const startSession = asyncWrapper(async (req, res) => {
     const { sessionId } = req.params;
-    const adminGroup = req.admin.group; // 👈 "all" or specific group
+    const adminGroup = req.admin.group;
     
     const sessionsData = await session.findSessionById(sessionId);
-    
+    if (!sessionsData) {
+        return next(new AppError("Session not found", httpStatus.NOT_FOUND));
+    }
+
+    // Update session start time
     await session.UpdateSession(sessionId, new Date());
 
     const cacheKey = `activeSession:${adminGroup}`;
 
-    setCache(cacheKey, sessionsData, 9000);
+    // ✅ no need to remap keys
+    await setCache(cacheKey, sessionsData, 9000);
 
+    // Notify students
     sse.notifyStudents(adminGroup, {
         event: "Session Started",
         message: `Group ${adminGroup}, the session has started. Please join using the provided link.`,
         post: {
-            sessionId: sessionsData.sessionId,
+            sessionId: sessionsData.sessionId, // 👈 already exists
             link: sessionsData.link,
             dateAndTime: sessionsData.dateAndTime
         },
-        });
+    });
+
     return res.status(200).json({
         status: "success",
         data: { message: "Session started and students notified" }
-    })});
+    });
+});
+
+const getActiveSession = asyncWrapper(async (req, res, next) => {
+    const activeSession = req.activeSession;
+    return res.status(200).json({
+        status: "success",
+        data: { activeSession }
+    });
+});
+
 
 module.exports = {
     createSession,
     attendSession,
-    startSession
+    startSession,
+    getActiveSession
 }

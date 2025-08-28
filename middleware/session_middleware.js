@@ -5,29 +5,36 @@ const AppError = require('../utils/app.error');
 const asyncWrapper = require('./asyncwrapper');
 const {where} = require("sequelize");
 const session = require('../data_link/session_data_link.js');
+const Session = require('../models/session_model.js');
+const student = require('../data_link/student_data_link.js');
+const admin = require('../data_link/admin_data_link.js');
+const { getCache } = require("../utils/cache");
 
 const sessionFound = asyncWrapper(async (req, res, next) => {
     const { sessionId } = req.params;
+
     const sessFound = await session.findSessionById(sessionId);
     if (!sessFound) {
-        const error = AppError.create("Session not found", 404, httpStatus.Error);
-        return next(error);
+        return next(new AppError("Session not found", httpStatus.NOT_FOUND));
     }
+
+    console.log("Session found:", sessFound);
+
+    req.sessionData = sessFound;
+
     next();
-})
+});
 
 const sessionStarted = asyncWrapper(async (req, res, next) => {
-    const { sessionId } = req.params;
-    const sessFound = await session.findSessionById(sessionId);
-
+    const sessFound = req.activeSession; // use from cache
     if (!sessFound || !sessFound.dateAndTime) {
-        const error = AppError.create("Session not started yet", 400, httpStatus.Error);
-        return next(error);
+        return next(new AppError("Session not started yet", httpStatus.BAD_REQUEST));
     }
 
-    const sessionStart = new Date(sessFound.dateAndTime); 
+    const sessionStart = new Date(sessFound.dateAndTime);
     const now = new Date();
 
+    // 150 min window
     const sessionEnd = new Date(sessionStart.getTime() + 150 * 60 * 1000);
 
     const sameDate =
@@ -36,16 +43,58 @@ const sessionStarted = asyncWrapper(async (req, res, next) => {
         now.getDate() === sessionStart.getDate();
 
     if (!sameDate) {
-        const error = AppError.create("Session is not scheduled for today", 400, httpStatus.Error);
-        return next(error);
+        return next(new AppError("Session is not scheduled for today", httpStatus.BAD_REQUEST));
     }
 
-    // check if current time is within allowed range
     if (now < sessionStart || now > sessionEnd) {
-        const error = AppError.create("Attendance window closed", 400, httpStatus.Error);
-        return next(error);
+        return next(new AppError("Attendance window closed", httpStatus.BAD_REQUEST));
     }
 
+    next();
+});
+
+const canAccessSession = asyncWrapper(async (req, res, next) => {
+    const userGroup = req.admin.group;
+    const sessionData = await session.findSessionById(req.params.sessionId);
+    const publisher = await admin.findAdminById(sessionData.adminId);
+    if (!publisher) {
+        return next(new AppError("Publisher not found", httpStatus.NOT_FOUND));
+    }
+    if (publisher.group !== 'all' && publisher.group !== userGroup&& userGroup !== 'all') {
+        return next(new AppError("You do not have permission to access this session", httpStatus.FORBIDDEN));
+    }
+    console.log("User has permission to access the session");
+    next();
+});
+
+const canAccessActiveSession = asyncWrapper(async (req, res, next) => {
+    const userGroup = req.student.group;
+
+    let activeSession = await getCache(`activeSession:${userGroup}`);
+    if (!activeSession) {
+        activeSession = await getCache("activeSession:all");
+    }
+
+    if (!activeSession) {
+        return next(new AppError("No active session found for your group", httpStatus.NOT_FOUND));
+    }
+
+    console.log("Active session found:", activeSession);
+    req.activeSession = activeSession;
+    next();
+});
+
+const activeSessionExists = asyncWrapper(async (req, res, next) => {
+    const userGroup = req.student.group;
+    let activeSession = await getCache(`activeSession:${userGroup}`);
+    if (!activeSession) {
+        activeSession = await getCache("activeSession:all");
+    }
+    if (!activeSession) {
+        return next(new AppError("No active session found for your group", httpStatus.NOT_FOUND));
+    }
+    console.log("Active session found:", activeSession);
+    req.activeSession = activeSession;
     next();
 });
 
@@ -53,5 +102,8 @@ const sessionStarted = asyncWrapper(async (req, res, next) => {
 
 module.exports = {
     sessionFound,
-    sessionStarted
+    sessionStarted,
+    canAccessSession,
+    canAccessActiveSession,
+    activeSessionExists
 }
