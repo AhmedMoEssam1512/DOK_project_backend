@@ -36,8 +36,8 @@ function getAssignmentById(assignId){
     return Assignment.findOne({where : {assignId}});
 }
 
-function createSubmission(assId, studentId,publisher,answers, semester){
-    return Submission.create({assId, studentId, publisher, answers, semester, "type":"assignment"})
+function createSubmission(assId, studentId,assistantId,answers, semester){
+    return Submission.create({assId, studentId, assistantId, answers, semester, "type":"assignment"})
 }
 
 function findSubmissionByQuizAndStudent(assignId,studentId){

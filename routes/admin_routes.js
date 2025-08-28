@@ -4,6 +4,8 @@ const auth = require('../middleware/auth_middleware');
 const adminControllers = require('../controllers/admin_controller');
 const adminMiddleWare = require('../middleware/admin_middleware');
 const { establishAdminConnection } = require('../controllers/SSE_connection');
+const subMiddleWare = require('../middleware/submission_middleware');
+
 
 router.route('/adminRegister')
     .post(adminMiddleWare.adminFound,adminMiddleWare.passwordEncryption,adminControllers.TARegister);
@@ -18,7 +20,7 @@ router.route('/verifyStudent/:studentEmail')
     .patch(auth.adminProtect, adminMiddleWare.studentFound, adminControllers.verifyStudent);
 
 router.route('/rejectStudent/:studentEmail')
-    .patch(auth.adminProtect, adminMiddleWare.studentFound,adminMiddleWare.canReject ,adminControllers.rejectSudent);
+    .patch(auth.adminProtect, adminMiddleWare.studentFound,adminMiddleWare.canReject ,adminControllers.rejectStudent);
 
 router.route('/checkStudentInGroup/:group')
     .get(auth.adminProtect, adminControllers.showStudentInGroup);   
@@ -37,5 +39,14 @@ router.route('/showMyProfile')
 
 router.route('/showStudentProfile/:studentId')
     .get(auth.adminProtect,adminMiddleWare.checkAuthurityByID ,adminControllers.showStudentProfile);
+
+router.route('/showUnmarkedSubmissions')
+    .get(auth.adminProtect,adminControllers.showUnmarkedSubmissions);
+
+router.route('/findSubmissionById/:id')
+    .get(auth.adminProtect,subMiddleWare.subExist,subMiddleWare.canSeeSubmission, adminControllers.findSubmissionById );
+
+router.route('/showAllSubmissions')
+    .get(auth.adminProtect,adminControllers.showAllSubmissions);
 
 module.exports = router;

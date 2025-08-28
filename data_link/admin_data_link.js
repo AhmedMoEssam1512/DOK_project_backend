@@ -6,6 +6,7 @@ const Rejection = require('../models/rejection_model');
 const Registration = require('../models/registration_model');
 const Session = require('../models/session_model');
 const Feed = require('../models/feed_model');
+const Submission = require('../models/submission_model');
 
 function create(email,name,password,phoneNumber,group){
     return Admin.create({
@@ -120,6 +121,27 @@ function findAdminById(adminID ){
     });
 }
 
+function getUnmarkedSubmissionsByAdminId(assistantId){
+    console.log(assistantId);
+    return Submission.findAll({where: { assistantId ,score : null}});
+}
+
+function getAllUnmarkedSubmissions(){
+    console.log("all sent")
+    return Submission.findAll({where: { score : null}})
+}
+
+function findSubmissionById(subId){
+    return Submission.findOne({where : {subId}});
+}
+
+function getAllSubmissions(){
+    return Submission.findAll({})
+}
+
+function getAllSubmissionsById(assistantId){
+    return Submission.findAll({where: { assistantId }})
+}
 
 module.exports={
     create,
@@ -138,5 +160,10 @@ module.exports={
     findVerifiedStudentsByTaGroup,
     createSession,
     createPost,
-    findAdminById
+    findAdminById,
+    getUnmarkedSubmissionsByAdminId,
+    getAllUnmarkedSubmissions,
+    findSubmissionById,
+    getAllSubmissions,
+    getAllSubmissionsById
 }
