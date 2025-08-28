@@ -8,6 +8,7 @@ const admin = require('../data_link/admin_data_link.js');
 const student = require('../data_link/student_data_link.js');
 const Admin = require('../models/admin_model.js');
 const Student = require('../models/student_model.js');
+const sse = require('../utils/sseClients.js');
 const { getCache } = require("../utils/cache");
 const { setCache } = require("../utils/cache");
 const { Op } = require("sequelize");
@@ -15,9 +16,22 @@ const { Op } = require("sequelize");
 const createQuiz = asyncWrapper(async (req, res) => {
     const {mark,quizPdf,date,semester,durationInMin} = req.body;
     const publisher = req.admin.id;
+    const adminGroup = req.admin.group; // 👈 "all" or specific group
     console.log("publisher id:", publisher)
     console.log("Creating quiz with data:", {mark,quizPdf,date,semester,durationInMin});
     const newQuiz = await quiz.createQuiz(mark,publisher,quizPdf,date,semester,durationInMin);
+
+    sse.notifyStudents(adminGroup, {
+        event: "New Quiz Published",
+        message: `Group ${adminGroup}, a date for the upcoming quiz has been dropped. Please check your dashboard.`,
+        post: {
+            date: date,
+            quizMark: mark,
+            semester: semester,
+            durationInMin: durationInMin
+        },
+      });
+    
     return res.status(201).json({
         status: "success" ,
         data: { message: "Quiz created successfully", quizId: newQuiz.quizId }
@@ -66,6 +80,18 @@ const startQuiz = asyncWrapper(async (req, res, next) => {
 
     // store quiz in cache
     setCache(cacheKey, quizData, (quizData.durationInMin * 60) + 600);
+
+    sse.notifyStudents(adminGroup, {
+        event: "Quiz is starting",
+        message: `Quiz to group ${adminGroup} is gonna start now. Please check your dashboard.`,
+        post: {
+            publisher: quizData.publisher,
+            quizPdf: quizData.quizPdf,
+            quizMark: quizData.mark,
+            semester: quizData.semester,
+            durationInMin: quizData.durationInMin
+        },
+      });
 
     return res.status(200).json({
         status: "success",
