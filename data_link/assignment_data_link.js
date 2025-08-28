@@ -40,8 +40,18 @@ function createSubmission(assId, studentId,publisher,answers, semester){
     return Submission.create({assId, studentId, publisher, answers, semester, "type":"assignment"})
 }
 
-function findSubmissionByQuizAndStudent(assId,studentId){
-    return Submission.findOne({where: {assId,studentId}})
+function findSubmissionByQuizAndStudent(assignId,studentId){
+    return Submission.findOne({where: {assignId,studentId}})
+}
+
+function findSubmissionByAssignmentAndStudent(assignId, studentId) {
+  return Submission.findOne({
+    where: {
+      assignId,
+      studentId,
+      type: 'assignment'   // make sure it's assignment
+    }
+  });
 }
 
 module.exports={
@@ -51,4 +61,5 @@ module.exports={
     getAssignmentById,
     createSubmission,
     findSubmissionByQuizAndStudent,
+    findSubmissionByAssignmentAndStudent
 }

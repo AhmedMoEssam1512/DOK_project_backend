@@ -9,6 +9,7 @@ const Session = require('../models/session_model.js');
 const student = require('../data_link/student_data_link.js');
 const admin = require('../data_link/admin_data_link.js');
 const { getCache } = require("../utils/cache");
+const { Op } = require("sequelize")
 
 const sessionFound = asyncWrapper(async (req, res, next) => {
     const { sessionId } = req.params;
@@ -98,12 +99,25 @@ const activeSessionExists = asyncWrapper(async (req, res, next) => {
     next();
 });
 
+const upcomingSession = asyncWrapper(async (req, res, next) => {
+  const { group } = req.student;
 
+  const upcomingSession = await session.findAllUpcomingSessionByGroup(group);
+
+  if (!upcomingSession) {
+    return next(
+      new AppError("No upcoming session found for your group", httpStatus.NOT_FOUND)
+    );
+  }
+  req.upcomingSession = upcomingSession;
+  next();
+});
 
 module.exports = {
     sessionFound,
     sessionStarted,
     canAccessSession,
     canAccessActiveSession,
-    activeSessionExists
+    activeSessionExists,
+    upcomingSession
 }

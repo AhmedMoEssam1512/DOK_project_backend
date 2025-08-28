@@ -10,6 +10,9 @@ const asyncWrapper = require('../middleware/asyncwrapper');
 const jwt = require("jsonwebtoken");
 const { notifyAssistants } = require('../utils/sseClients');
 const Registration = require('../models/registration_model.js');
+const assignment = require('../data_link/assignment_data_link.js');
+const submission = require('../data_link/assignment_data_link.js');
+const Assignment = require('../models/assignment_model.js');
 
 
 const studentRegister = asyncWrapper(async (req, res) => {
@@ -105,10 +108,9 @@ const showMyProfile = asyncWrapper(async (req, res) => {
       })
   });
 
-
 module.exports = {
     studentRegister,
     showMyAdminProfile,
     showMyProfile,
-    getMyFeed
+    getMyFeed,
 }

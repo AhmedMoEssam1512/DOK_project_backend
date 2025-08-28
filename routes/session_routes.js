@@ -19,4 +19,7 @@ router.route('/startSession/:sessionId')
 router.route('/getActiveSession')
     .get(auth.studentProtect, sessionMiddleWare.activeSessionExists, sessionMiddleWare.canAccessActiveSession, sessionControllers.getActiveSession);
 
+router.route('/getUpcomingSession')
+    .get(auth.studentProtect, sessionMiddleWare.upcomingSession, sessionControllers.getUpcomingSession);
+
 module.exports = router;
