@@ -7,7 +7,7 @@ const Session = sequelize.define('Session', {
   number: DataTypes.INTEGER,
   semester: DataTypes.STRING,
   dateAndTime: DataTypes.DATE,
-  adminId: DataTypes.STRING,
+  adminId: DataTypes.INTEGER,
   link: DataTypes.STRING
 }, { tableName: 'session', timestamps: false });
 

@@ -18,4 +18,7 @@ router.route('/submitAssignment/:assignId')
     .post(auth.protect, assignMiddleWare.assignExists, assignMiddleWare.canSeeAssign ,
         assignMiddleWare.submittedBefore, quizMiddleware.verifySubmissionPDF ,assignControllers.submitAssignment)
 
+router.route('/getUnsubmittedAssignments')
+    .get(auth.studentProtect, assignControllers.getUnsubmittedAssignments)
+
 module.exports = router;

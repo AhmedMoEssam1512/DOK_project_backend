@@ -102,10 +102,18 @@ const getActiveSession = asyncWrapper(async (req, res, next) => {
     });
 });
 
+const getUpcomingSession = asyncWrapper(async (req, res) => {
+  return res.status(200).json({
+    status: "success",
+    data: { upcoming: req.upcomingSession }
+  });
+});
+
 
 module.exports = {
     createSession,
     attendSession,
     startSession,
-    getActiveSession
+    getActiveSession,
+    getUpcomingSession
 }
