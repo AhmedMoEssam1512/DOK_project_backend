@@ -37,8 +37,21 @@ const attendedSessionBefore = asyncWrapper(async (req, res, next) => {
     next();
 })
 
+const canSeeSubmission = asyncWrapper(async (req,res, next) => {
+    const sub = req.found;
+    const studentId = req.student.id;
+    if(!studentId){
+        return next(new AppError("student not found", httpStatus.NOT_FOUND))
+    }
+    console.log("StudentId: ",studentId);
+    if(sub.studentId !== studentId ){
+        return next(new AppError("You are not allowed to view this submission", httpStatus.FORBIDDEN));
+    }
+    next();
+})
 
 module.exports = {   
     studentFound,
-    attendedSessionBefore
+    attendedSessionBefore,
+    canSeeSubmission,
 }

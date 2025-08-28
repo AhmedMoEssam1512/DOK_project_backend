@@ -132,10 +132,19 @@ const showMySubmission = asyncWrapper(async (req, res) => {
     });
 })
 
+const showASubmission = asyncWrapper(async (req, res) => {
+    const found = req.found;
+    return res.status(200).json({
+        status: "success",
+        data: {found}
+    })
+})
+
 module.exports = {
     studentRegister,
     showMyAdminProfile,
     showMyProfile,
     getMyFeed,
     showMySubmission,
+    showASubmission
 }

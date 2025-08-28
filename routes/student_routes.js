@@ -6,6 +6,7 @@ const adminMiddleWare = require('../middleware/admin_middleware');
 const sessionMiddleWare = require('../middleware/session_middleware');
 const feedMiddleware = require('../middleware/feed_middleware');
 const auth = require('../middleware/auth_middleware');
+const submissionMiddleware = require('../middleware/submission_middleware');
 const { establishStudentConnection } = require('../controllers/SSE_connection');
 
 router.route('/studentRegister')
@@ -25,5 +26,8 @@ router.route('/getMyFeed')
 
 router.route('/showMySubmission')
     .get(auth.studentProtect, studentControllers.showMySubmission);
+
+router.route('/showSubmission/:id')
+    .get(auth.studentProtect,submissionMiddleware.subExist ,studentMiddleWare.canSeeSubmission,studentControllers.showASubmission);
 
 module.exports = router;
