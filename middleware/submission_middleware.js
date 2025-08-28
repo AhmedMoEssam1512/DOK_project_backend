@@ -5,6 +5,8 @@ const AppError = require('../utils/app.error');
 const asyncWrapper = require('./asyncwrapper.js');
 const admin = require('../data_link/admin_data_link.js');
 const Submission = require('../models/submission_model.js');
+const quiz = require('../data_link/quiz_data_link.js');
+const assignment = require('../data_link/assignment_data_link.js');
 
 const subExist = asyncWrapper(async (req,res ,next) => {
     const subId = req.params.id;
@@ -43,6 +45,16 @@ const checkData = asyncWrapper(async (req,res, next) => {
     if(!marked || !score){
         return next(new AppError("All fields are required", httpStatus.BAD_REQUEST));
     }
+    const found = req.found;
+    let total;
+    if(found.type==="quiz"){
+        const qfound = await quiz.getQuizById(found.quizId);
+        total = qfound.mark
+    }
+    else{
+        const afound = await assignment.getAssignmentById(found.assignmentId);
+        total = afound.mark
+    }
     console.log("All fields checked");
 
     const pdfRegex = /^https?:\/\/.+\.pdf$/i;
@@ -51,13 +63,15 @@ const checkData = asyncWrapper(async (req,res, next) => {
     }
     console.log("chack 2 done, pdf valid")
 
-    if (typeof score !== 'number' || score <= 0) {
-        return next(new AppError("Score must be a positive number", httpStatus.BAD_REQUEST));
+    if (typeof score !== 'number' || score <= 0 || score > total) {
+        return next(new AppError("Score must be a positive number and less than the total score", httpStatus.BAD_REQUEST));
     }
     console.log("chack 3 done, duration valid")
 
     next();
 })
+
+
 
 module.exports ={
     subExist,

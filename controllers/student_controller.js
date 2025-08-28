@@ -92,25 +92,50 @@ const showMyProfile = asyncWrapper(async (req, res) => {
   });
 });
 
-    const getMyFeed = asyncWrapper(async (req, res, next) => {
-      const studentId = req.student.id;
-      const studentProfile = await student.findStudentById(studentId);
-      const assistantId = studentProfile.assistantId;
-      const semester = studentProfile.semester;
-      const feeds = await feed.getFeedByAssistantIdAndSemester(assistantId, semester);
-      if (!feeds || feeds.length === 0) {
-          return next(new AppError("No feed found for your assistant", httpStatus.NOT_FOUND));
-      }
-      return res.status(200).json({
-          status: "success",
-          results: feeds.length,
-          data: { feeds }
-      })
-  });
+const getMyFeed = asyncWrapper(async (req, res, next) => {
+    const studentId = req.student.id;
+    const studentProfile = await student.findStudentById(studentId);
+    const assistantId = studentProfile.assistantId;
+    const semester = studentProfile.semester;
+    const feeds = await feed.getFeedByAssistantIdAndSemester(assistantId, semester);
+    if (!feeds || feeds.length === 0) {
+        return next(new AppError("No feed found for your assistant", httpStatus.NOT_FOUND));
+    }
+    return res.status(200).json({
+        status: "success",
+        results: feeds.length,
+        data: { feeds }
+    })
+});
+
+const showMySubmission = asyncWrapper(async (req, res) => {
+    const studentId = req.student.id;
+    const profile = await student.findStudentById(studentId);
+    const submissions = await student.showSubmissions(studentId);
+    console.log(studentId);
+    if (!submissions || submissions.length === 0) {
+        return res.status(200).json({ message: "No submissions found" });
+    }
+    return res.status(200).json({
+        status: "success",
+        message: `submissions for student ${profile.studentName}`,
+        data: {
+            submissions: submissions.map(submission => ({
+                id: submission.subId,
+                assistantId: submission.assistantId,
+                quizId: submission.quizId,
+                assignmentId: submission.assId,
+                submittedAt: submission.createdAt,
+                score: submission.score,
+            }))
+        }
+    });
+})
 
 module.exports = {
     studentRegister,
     showMyAdminProfile,
     showMyProfile,
     getMyFeed,
+    showMySubmission,
 }

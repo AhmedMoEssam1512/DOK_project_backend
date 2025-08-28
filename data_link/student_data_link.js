@@ -5,6 +5,7 @@ const {where} = require("sequelize");
 const Rejection = require('../models/rejection_model.js');
 const Registration = require('../models/registration_model.js');
 const Attendance = require('../models/attendance_model.js');
+const Submission = require('../models/submission_model.js');
 const {verify} = require("jsonwebtoken");
 
 function findStudentByEmail(studentEmail){
@@ -62,6 +63,10 @@ function getGroupById(studentId){
     })
 }
 
+function showSubmissions(studentId){
+    return Submission.findAll({where:{studentId}})
+}
+
 module.exports={
     findStudentByEmail,
     createStudent,
@@ -69,5 +74,6 @@ module.exports={
     findStudentById,
     createAttendance,
     findAttendanceByStudentAndSession,
-    getGroupById
+    getGroupById,
+    showSubmissions,
 }

@@ -23,4 +23,7 @@ router.route('/showMyProfile')
 router.route('/getMyFeed')
     .get(auth.studentProtect,feedMiddleware.deletePostsGreaterThan14Days , studentControllers.getMyFeed);    
 
+router.route('/showMySubmission')
+    .get(auth.studentProtect, studentControllers.showMySubmission);
+
 module.exports = router;
