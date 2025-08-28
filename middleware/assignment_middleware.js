@@ -53,8 +53,35 @@ const checkField = asyncWrapper(async (req, res, next) => {
     next();
 })
 
+const assignExists = asyncWrapper(async (req, res, next) => {
+    const { assignId } = req.params;
+    const assignData = await assignment.getAssignmentById(assignId);
+    if (!assignData) {
+        return next(new AppError("Assignment not found", httpStatus.NOT_FOUND));
+    }
+    console.log("Assignment found:", assignData);
+    req.assignData = assignData;
+    next();
+});
 
+const canSeeAssign = asyncWrapper(async (req, res, next) => {
+    const userGroup = req.user.group ;
+    const assignData = req.assignData;
+    const publisher = await admin.findAdminById(assignData.publisher);
+    if (!publisher) {
+        return next(new AppError("Publisher not found", httpStatus.NOT_FOUND));
+    }
+
+    if (publisher.group !== 'all' && publisher.group !== userGroup&& userGroup !== 'all') {
+        return next(new AppError("You do not have permission to view this Assignment", httpStatus.FORBIDDEN));
+    }
+    console.log("User has permission to view the quiz");
+    next();
+});
 
 module.exports = {
-    checkField
+    checkField,
+    assignExists,
+    canSeeAssign,
+
 }

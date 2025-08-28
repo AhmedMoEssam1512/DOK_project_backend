@@ -32,9 +32,13 @@ async function getAllAssignmentsByGroup(group) {
     });
 }
 
+function getAssignmentById(assignId){
+    return Assignment.findOne({where : {assignId}});
+}
 
 module.exports={
     createAssignment,
     getAllAssignments,
     getAllAssignmentsByGroup,
+    getAssignmentById,
 }

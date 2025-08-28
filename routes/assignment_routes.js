@@ -11,4 +11,7 @@ router.route('/createAssignment')
 router.route('/getAllAssignments')
     .get(auth.protect, quizMiddleware.getGroup, assignControllers.getAllAssignments)
 
+router.route('/getAssignmentById/:assignId')
+    .get(auth.protect,assignMiddleWare.assignExists,assignMiddleWare.canSeeAssign,assignControllers.getAssignmentById)
+
 module.exports = router;

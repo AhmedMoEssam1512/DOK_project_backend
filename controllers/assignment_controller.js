@@ -34,8 +34,17 @@ const getAllAssignments = asyncWrapper(async (req, res) => {
     })
 })
 
+const getAssignmentById = asyncWrapper(async (req, res) => {
+    const assignData = req.assignData;
+    return res.status(200).json({
+        status: "success",
+        data: { assignData }
+    });
+})
+
 module.exports={
     createAssignment,
     getAllAssignments,
+    getAssignmentById,
 }
 
