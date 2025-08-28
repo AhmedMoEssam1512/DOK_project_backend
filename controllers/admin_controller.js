@@ -162,9 +162,9 @@ const showUnmarkedSubmissions = asyncWrapper(async (req, res) => {
     const adminId = req.admin.id;
     const adminProfile = await admin.findAdminById(adminId);
     console.log(adminId);
-    const pendingSubmissions = (adminId === "1"
-        ? await admin.getUnmarkedSubmissionsByAdminId(adminId)
-        : await admin.getAllUnmarkedSubmissions());
+    const pendingSubmissions = (adminId === 1
+        ? await admin.getAllUnmarkedSubmissions()
+        : await admin.getUnmarkedSubmissionsByAdminId(adminId));
 
     if (!pendingSubmissions || pendingSubmissions.length === 0) {
         return res.status(200).json({ message: "No unmarked submissions found" });
@@ -192,6 +192,33 @@ const findSubmissionById = asyncWrapper(async (req, res) => {
     })
 })
 
+const showAllSubmissions = asyncWrapper(async (req, res) => {
+    const assistantId = req.admin.id;
+    const adminProfile = await admin.findAdminById(assistantId);
+    console.log(assistantId);
+    const submissions = (assistantId === 1
+        ? await admin.getAllSubmissions()
+        : await admin.getAllSubmissionsById(assistantId));
+
+    if (!submissions || submissions.length === 0) {
+        return res.status(200).json({ message: "No unmarked submissions found" });
+    }
+    return res.status(200).json({
+        status: "success",
+        message: `Unmarked submissions for admin ${adminProfile.name}`,
+        data: {
+            submissions: submissions.map(submission => ({
+                id: submission.subId,
+                studentId: submission.studentId,
+                quizId: submission.quizId,
+                assignmentId: submission.assId,
+                submittedAt: submission.createdAt
+            }))
+        }
+    });
+
+})
+
 module.exports = {
     TARegister,
     showPendingRegistration,
@@ -205,5 +232,6 @@ module.exports = {
     showStudentProfile,
     showUnmarkedSubmissions,
     findSubmissionById,
+    showAllSubmissions,
 }
 

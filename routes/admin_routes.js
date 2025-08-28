@@ -46,4 +46,7 @@ router.route('/showUnmarkedSubmissions')
 router.route('/findSubmissionById/:id')
     .get(auth.adminProtect,subMiddleWare.subExist,subMiddleWare.canSeeSubmission, adminControllers.findSubmissionById );
 
+router.route('/showAllSubmissions')
+    .get(auth.adminProtect,adminControllers.showAllSubmissions);
+
 module.exports = router;
