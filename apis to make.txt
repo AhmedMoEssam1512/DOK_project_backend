@@ -32,16 +32,19 @@ create assignment {A.Essam} [done]
 get all assignments {A.Essam} [done]
 get assignment {A.Essam} [done]
 submit assignment {A.Essam} [done]
+show pending submissions {A.Essam} [done]
+get submission by id {A.Essam} [done]
+show all my submissions(admin) {A.Essam}
+todo list apis {Y.Essam} [done]
 
 
+  
 
-el 5amees:
-    show pending submissions {A.Essam}
+el gom3a: 
     mark submission {A.Essam}
-
-el gom3a:
-    todo list apis {Y.Essam}
-
+    show my submissions(student) {A.Essam}
+    show submission {A.Essam}
+    
 
 library {Mustafa}
 leaderboard {Mustafa}
