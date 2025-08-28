@@ -184,6 +184,14 @@ const showUnmarkedSubmissions = asyncWrapper(async (req, res) => {
     });
 });
 
+const findSubmissionById = asyncWrapper(async (req, res) => {
+    const found = req.found;
+    return res.status(200).json({
+        status: "success",
+        data: {found}
+    })
+})
+
 module.exports = {
     TARegister,
     showPendingRegistration,
@@ -195,6 +203,7 @@ module.exports = {
     rejectStudent,
     showMyProfile,
     showStudentProfile,
-    showUnmarkedSubmissions
+    showUnmarkedSubmissions,
+    findSubmissionById,
 }
 

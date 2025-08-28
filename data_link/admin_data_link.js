@@ -129,6 +129,10 @@ function getAllUnmarkedSubmissions(){
     return Submission.findAll({where: { score : null}})
 }
 
+function findSubmissionById(subId){
+    return Submission.findOne({where : {subId}});
+}
+
 module.exports={
     create,
     findNotVerifiedStudentsByTaGroup,
@@ -148,5 +152,6 @@ module.exports={
     createPost,
     findAdminById,
     getUnmarkedSubmissionsByAdminId,
-    getAllUnmarkedSubmissions
+    getAllUnmarkedSubmissions,
+    findSubmissionById,
 }

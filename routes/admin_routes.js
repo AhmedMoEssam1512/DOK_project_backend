@@ -4,6 +4,8 @@ const auth = require('../middleware/auth_middleware');
 const adminControllers = require('../controllers/admin_controller');
 const adminMiddleWare = require('../middleware/admin_middleware');
 const { establishAdminConnection } = require('../controllers/SSE_connection');
+const subMiddleWare = require('../middleware/submission_middleware');
+
 
 router.route('/adminRegister')
     .post(adminMiddleWare.adminFound,adminMiddleWare.passwordEncryption,adminControllers.TARegister);
@@ -40,5 +42,8 @@ router.route('/showStudentProfile/:studentId')
 
 router.route('/showUnmarkedSubmissions')
     .get(auth.adminProtect,adminControllers.showUnmarkedSubmissions);
+
+router.route('/findSubmissionById/:id')
+    .get(auth.adminProtect,subMiddleWare.subExist,subMiddleWare.canSeeSubmission, adminControllers.findSubmissionById );
 
 module.exports = router;
