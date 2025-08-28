@@ -124,15 +124,6 @@ const rejectSudent = asyncWrapper(async (req, res) => {
   });
 });
 
-const createSession = asyncWrapper(async (req, res) => {
-  const { number, semester, dateAndTime, link } = req.body;
-  const adminId = req.admin.id;
-  await admin.createSession(number, semester, dateAndTime, adminId, link);
-  return res.status(201).json({
-    status: "success",
-    data: { message: "Session created successfully" }
-  })});
-
 const showMyProfile = asyncWrapper(async (req, res) => {
   const adminId = req.admin.id;
   const adminProfile = await admin.findAdminById(adminId);
@@ -176,7 +167,6 @@ module.exports = {
     banStudent,
     unBanStudent,
     rejectSudent,
-    createSession,
     showMyProfile,
     showStudentProfile
 }

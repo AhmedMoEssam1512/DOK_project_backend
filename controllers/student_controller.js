@@ -89,19 +89,6 @@ const showMyProfile = asyncWrapper(async (req, res) => {
   });
 });
 
-const attendSession = asyncWrapper(async (req, res, next) => {
-    const { sessionId } = req.params;
-    const decoded = jwt.verify(req.headers.authorization.split(' ')[1], process.env.JWT_SECRET);
-    const studentId = decoded.id;
-    const studentSem = await student.findStudentById(studentId);
-    const sem = studentSem.semester;
-    await student.createAttendance(studentId, sessionId, sem);
-
-    return res.status(200).json({
-        status: "success",
-        data: { message: "Attendance recorded successfully" }
-    })});
-
     const getMyFeed = asyncWrapper(async (req, res, next) => {
       const studentId = req.student.id;
       const studentProfile = await student.findStudentById(studentId);
@@ -123,6 +110,5 @@ module.exports = {
     studentRegister,
     showMyAdminProfile,
     showMyProfile,
-    attendSession,
     getMyFeed
 }

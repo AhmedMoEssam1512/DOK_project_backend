@@ -7,6 +7,10 @@ function findSessionById(sessionId){
     return Session.findOne({where : { sessionId } });
 }
 
+function UpdateSession(sessionId, dateAndTime){
+    return Session.update({dateAndTime},{where : { sessionId } })};
+
 module.exports={
-    findSessionById
+    findSessionById,
+    UpdateSession
 }

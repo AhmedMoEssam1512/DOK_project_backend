@@ -18,10 +18,7 @@ router.route('/showMyAdminProfile')
     .get(auth.studentProtect, studentControllers.showMyAdminProfile);
 
 router.route('/showMyProfile')
-    .get(auth.studentProtect, studentControllers.showMyProfile);
-
-router.route('/attendSession/:sessionId')
-    .post(auth.studentProtect, sessionMiddleWare.sessionFound, studentMiddleWare.attendedSessionBefore,  studentControllers.attendSession);    
+    .get(auth.studentProtect, studentControllers.showMyProfile);  
 
 router.route('/getMyFeed')
     .get(auth.studentProtect,feedMiddleware.deletePostsGreaterThan14Days , studentControllers.getMyFeed);    

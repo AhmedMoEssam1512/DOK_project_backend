@@ -1,0 +1,19 @@
+const express = require('express');
+const router = express.Router();
+const auth = require('../middleware/auth_middleware');
+const sessionControllers = require('../controllers/session_controller');
+const { establishAdminConnection } = require('../controllers/SSE_connection');
+const studentControllers = require('../controllers/student_controller');
+const studentMiddleWare = require('../middleware/student_middleware');
+const sessionMiddleWare = require('../middleware/session_middleware');
+
+router.route('/attendSession/:sessionId')
+    .post(auth.studentProtect, sessionMiddleWare.sessionFound, sessionMiddleWare.sessionStarted, studentMiddleWare.attendedSessionBefore,  sessionControllers.attendSession);
+
+router.route('/createSession')
+    .post(auth.adminProtect, sessionControllers.createSession);
+
+router.route('/startSession/:sessionId')
+    .patch(auth.adminProtect, sessionMiddleWare.sessionFound, sessionControllers.startSession);    
+
+module.exports = router;

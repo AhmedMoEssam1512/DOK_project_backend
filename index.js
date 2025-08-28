@@ -8,6 +8,7 @@ const studentRoutes = require('./routes/student_routes');
 const logInRoute = require('./routes/logIn_route');
 const feedRoute = require('./routes/feed_routes');
 const quizRoutes = require('./routes/quiz_routes');
+const sessionRoutes = require('./routes/session_routes');
 const app = express();
 app.use(express.json());
 
@@ -37,6 +38,7 @@ app.use('/student', studentRoutes);
 app.use('/login', logInRoute);
 app.use('/feed', feedRoute);
 app.use('/quiz', quizRoutes);
+app.use('/session', sessionRoutes);
 /*
 // Global not-found handler
 app.use('*', (req, res) => {
