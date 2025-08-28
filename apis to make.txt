@@ -36,14 +36,9 @@ show pending submissions {A.Essam} [done]
 get submission by id {A.Essam} [done]
 show all my submissions(admin) {A.Essam}
 todo list apis {Y.Essam} [done]
-
-
-  
-
-el gom3a: 
-    mark submission {A.Essam}
-    show my submissions(student) {A.Essam}
-    show submission {A.Essam}
+mark submission {A.Essam} [done]
+show my submissions(student) {A.Essam} [done]
+show submission {A.Essam} [done]
     
 
 library {Mustafa}
