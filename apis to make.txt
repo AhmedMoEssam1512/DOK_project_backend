@@ -21,10 +21,10 @@ show student profile(admin) {A.Essam} [done]
 attend a session {Y.Essam} [done]
 view feed {Y.Essam} [done]
 assign group(owner) {A.Essam} [done]
-create quiz {A.Essam} {Y.Essam added SSE} [done]
+create quiz {A.Essam} {Y.Essam added studentSSE} [done]
 get all quizes {A.Essam} [done]
 get quiz {A.Essam} [done]
-start a quiz {A.Essam} {Y.Essam added SSE} [done]
+start a quiz {A.Essam} {Y.Essam added studentSSE} [done]
 get active quiz {A.Essam} [done]
 
 
