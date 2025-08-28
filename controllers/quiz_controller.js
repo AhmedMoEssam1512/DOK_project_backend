@@ -15,8 +15,7 @@ const { Op } = require("sequelize");
 
 const createQuiz = asyncWrapper(async (req, res) => {
     const {mark,quizPdf,date,semester,durationInMin} = req.body;
-    const publisher = req.admin.id;
-    const adminGroup = req.admin.group; // 👈 "all" or specific group
+    const publisher = req.admin.id; 
     console.log("publisher id:", publisher)
     console.log("Creating quiz with data:", {mark,quizPdf,date,semester,durationInMin});
     const newQuiz = await quiz.createQuiz(mark,publisher,quizPdf,date,semester,durationInMin);  
