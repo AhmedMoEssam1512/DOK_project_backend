@@ -73,13 +73,70 @@ function getTotalNumberOfStudents(){
 
 function showLeaderBoard(limit,offset){
     return Student.findAndCountAll({
-    attributes: ["studentName", "totalScore"],
+    attributes: ["studentName", "totalScore", "studentId"],
     where: { verified: true },
     order: [["totalScore", "DESC"]],
     limit,
     offset
     });
 }
+
+function getStudentScore(id){
+    return Student.findOne({
+        attributes: ["totalScore"],
+        where: { studentId: id }   
+    });
+}
+
+// async function getStudentRank(id) {
+//   // 1. Find the student's score
+//   const student = await Student.findOne({
+//     where: { studentId: id, verified: true },
+//     attributes: ["totalScore"]
+//   });
+
+//   if (!student) return null;
+
+//   const score = student.totalScore;
+
+//   // 2. Count how many students have a higher score
+//   const higherCount = await Student.count({
+//     where: {
+//       verified: true,
+//       totalScore: { [Op.gt]: score }
+//     }
+//   });
+
+//   // 3. Rank = higherCount + 1
+//   return higherCount + 1;
+// }
+
+
+async function getStudentRank(id) {
+  try {
+    const [result] = await sequelize.query(
+      `
+      SELECT rank FROM (
+        SELECT "studentId",
+               RANK() OVER (ORDER BY "totalScore" DESC) AS rank
+        FROM student
+        WHERE verified = true
+      ) ranked
+      WHERE "studentId" = :id
+      `,
+      {
+        replacements: { id },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    return result ? result.rank : null;
+  } catch (err) {
+    console.error("Error in getStudentRank:", err.message);
+    throw err;
+  }
+}
+
 
 module.exports={
     findStudentByEmail,
@@ -91,5 +148,7 @@ module.exports={
     getGroupById,
     showSubmissions,
     getTotalNumberOfStudents,
-    showLeaderBoard
+    showLeaderBoard,
+    getStudentScore,
+    getStudentRank
 }
