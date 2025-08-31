@@ -67,6 +67,19 @@ function showSubmissions(studentId){
     return Submission.findAll({where:{studentId}})
 }
 
+function getTotalNumberOfStudents(){
+    return Student.count({where: { verified: true }});
+}
+
+function showLeaderBoard(limit,offset){
+    return Student.findAndCountAll({
+    attributes: ["studentName", "totalScore"],
+    order: [["totalScore", "DESC"]],
+    limit,
+    offset
+    });
+}
+
 module.exports={
     findStudentByEmail,
     createStudent,
@@ -76,4 +89,6 @@ module.exports={
     findAttendanceByStudentAndSession,
     getGroupById,
     showSubmissions,
+    getTotalNumberOfStudents,
+    showLeaderBoard
 }
