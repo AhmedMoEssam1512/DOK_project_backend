@@ -74,6 +74,7 @@ function getTotalNumberOfStudents(){
 function showLeaderBoard(limit,offset){
     return Student.findAndCountAll({
     attributes: ["studentName", "totalScore"],
+    where: { verified: true },
     order: [["totalScore", "DESC"]],
     limit,
     offset

@@ -43,6 +43,7 @@ leaderboard {Mustafa} [Done]
     
 
 library {Mustafa}
+forget password {Mustafa}
 data analysis {Tamer}
 generate reports {Tamer}
 
