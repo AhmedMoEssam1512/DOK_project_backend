@@ -30,4 +30,7 @@ router.route('/showMySubmission')
 router.route('/showSubmission/:id')
     .get(auth.studentProtect,submissionMiddleware.subExist ,studentMiddleWare.canSeeSubmission,studentControllers.showASubmission);
 
+router.route('/getQuizTrend')
+    .get(auth.studentProtect,studentControllers.getQuizTrend)   
+
 module.exports = router;

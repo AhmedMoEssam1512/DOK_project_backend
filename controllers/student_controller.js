@@ -8,6 +8,7 @@ const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
 const asyncWrapper = require('../middleware/asyncwrapper');
 const jwt = require("jsonwebtoken");
+const quizLink= require('../data_link/quiz_data_link.js');
 const { notifyAssistants } = require('../utils/sseClients');
 const Registration = require('../models/registration_model.js');
 const assignment = require('../data_link/assignment_data_link.js');
@@ -140,11 +141,52 @@ const showASubmission = asyncWrapper(async (req, res) => {
     })
 })
 
+// Student quiz trend: per-quiz points grouped by week, for line chart
+const getQuizTrend = asyncWrapper(async (req, res) => {
+  const { from, to } = req.query; // optional ISO dates
+  const { Op } = require('sequelize');
+  const Submission = require('../models/submission_model');
+  const studentId = req.student.id;
+  const fromDate = from ? new Date(from) : null;
+  const toDate = to ? new Date(to) : null;
+
+  // get student's group to pull all quizzes for that group
+  const me = await student.findStudentById(studentId);
+  const allQuizzes = await quizLink.getAllQuizzesForGroup(me.group);
+  const quizzes = allQuizzes
+    .filter(q => (fromDate ? new Date(q.date) >= fromDate : true))
+    .filter(q => (toDate ? new Date(q.date) <= toDate : true))
+    .map(q => ({ quizId: q.quizId, date: q.date, totalMark: q.mark }))
+    .sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  const quizIds = quizzes.map(q => q.quizId);
+  const subs = quizIds.length ? await Submission.findAll({ where: { studentId, type: 'quiz', quizId: { [Op.in]: quizIds } }, raw: true }) : [];
+  const subMap = new Map(subs.map(s => [s.quizId, s]));
+
+ // Build one point per quiz; if no submission or score 0 -> percentage 0
+  const points = quizzes
+    .map((q, idx) => {
+      const when = new Date(q.date);
+      const week = idx + 1; // sequential week index based on date order
+      const sub = subMap.get(q.quizId);
+      const score = sub && typeof sub.score === 'number' ? sub.score : 0;
+      const totalMark = typeof q.totalMark === 'number' && q.totalMark > 0 ? q.totalMark : null;
+      return { quizId: q.quizId, date: when, week, score, totalMark: q.totalMark };
+    })
+    ;
+
+  // For chart: y-axis = Week, x-axis= Row grade
+  const chartPoints = points.map(p => ({ y: p.week, x: p.score, quizId: p.quizId, date: p.date }));
+
+  return res.status(200).json({ status: 'success', data: { points, chartPoints } });
+})
+
 module.exports = {
     studentRegister,
     showMyAdminProfile,
     showMyProfile,
     getMyFeed,
     showMySubmission,
-    showASubmission
+    showASubmission,
+    getQuizTrend
 }
