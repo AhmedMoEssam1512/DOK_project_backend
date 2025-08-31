@@ -39,12 +39,11 @@ todo list apis {Y.Essam} [done]
 mark submission {A.Essam} [done]
 show my submissions(student) {A.Essam} [done]
 show submission {A.Essam} [done]
-leaderboard {Mustafa} [Done]
-    
+leaderboard {Mustafa} [done]
+data analysis {Tamer} [done]    
 
 library {Mustafa}
 forget password {Mustafa}
-data analysis {Tamer}
 generate reports {Tamer}
 
 add the mailing functions
