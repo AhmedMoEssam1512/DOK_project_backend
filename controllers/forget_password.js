@@ -11,11 +11,12 @@ const forgetPassword = asyncwrapper(async (req, res, next) => {
 
     // Check the email if it's in the data base or not 
     const user = await User.findUserByEmail(email);
+    console.log("user found : ",user);
     if (user){
 
         // Check if this email has requested an otp or not
         const hasOTP = await User.HasOTP(email);
-        console.log(hasOTP);
+        console.log("has otp ? ",hasOTP);
         if(hasOTP===true){
             res.json({
                 status: "You have already requested an OTP",
