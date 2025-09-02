@@ -41,12 +41,12 @@ show my submissions(student) {A.Essam} [done]
 show submission {A.Essam} [done]
 leaderboard {Mustafa} [done]
 data analysis {Tamer} [done]    
+forget password {Mustafa} [done]
 
-library {Mustafa}
-forget password {Mustafa}
+library {Tamer}
 generate reports {Tamer}
 
-add the mailing functions
+add the mailing functions {Mustafa}
 
 clear database {A.Essam}
 delete account {Y.Essam}
