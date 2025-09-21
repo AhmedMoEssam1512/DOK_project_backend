@@ -45,7 +45,12 @@ const postOnFeed = asyncWrapper(async (req, res) => {
 
   return res.status(201).json({
     status: "success",
-    data: { message: "Post created & submitted successfully" }
+    data: { message: "Post created & submitted successfully", id: newPost.id,
+      text: newPost.text,
+      semester: newPost.semester,
+      group: adminGroup,
+      adminId: newPost.adminId,
+      createdAt: newPost.createdAt}
   });
 });
 
