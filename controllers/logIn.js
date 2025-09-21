@@ -36,6 +36,12 @@ const logIn = asyncWrapper(async (req, res, next) => {
       status: "success",
       message: "Login successful",
       token: adminToken,
+      data : {id: adminUser.adminId, 
+              email: adminUser.email,
+              Name : adminUser.Name,
+              phoneNumber : adminUser.phoneNumber,   
+              group: adminUser.group}
+      
     });
   }
 
@@ -72,6 +78,17 @@ const logIn = asyncWrapper(async (req, res, next) => {
       status: "success",
       message: "Login successful",
       token: studentToken,
+      data : {id: studentUser.studentId, 
+              email: studentUser.studentEmail,
+              Name : studentUser.Name,
+              phoneNumber : studentUser.studentPhoneNumber,
+              assistantId: studentUser.assistantId,
+              totalScore: studentUser.totalScore,
+              parentPhoneNumber: studentUser.parentPhoneNumber,
+              parentEmail: studentUser.parentEmail,
+              birthDate: studentUser.birthDate,
+              semester: studentUser.semester,
+              group: studentUser.group}
     });
   }
 
