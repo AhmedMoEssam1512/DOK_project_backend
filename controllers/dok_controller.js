@@ -16,11 +16,9 @@ const asyncWrapper = require('../middleware/asyncwrapper');
 const DOK_signUp= asyncWrapper( async (req, res) => {
     const { email, name, password, phonenumber, role = "teacher", permission = "all" } = req.body;
 
-    // hash password
     const encryptedPassword = await bcrypt.hash(String(password), 10);
 
-    // create admin
-    await Admin.create({
+    const teacher =await Admin.create({
       adminId: 1,
       email,
       name,
@@ -33,7 +31,14 @@ const DOK_signUp= asyncWrapper( async (req, res) => {
     });
     return res.status(201).json({
       status: "success" ,
-      data: { message: "Teacher created successfully" }
+      message: "Teacher created successfully",
+      data: {id:teacher.id, 
+             email: teacher.email, 
+             name: teacher.name, 
+             phoneNumber: teacher.phoneNumber, 
+             role: teacher.role, 
+             permission: teacher.permission
+            }
     });
 })
 
@@ -43,7 +48,13 @@ const rejectAssistant = asyncWrapper(async (req, res) => {
     await admins.removeAssistant( email  );
     return res.status(200).json({
     status: "success",
-    message: `Assistant with email ${email} rejected and removed from database`
+    message: `Assistant with email ${email} rejected and removed from database`,
+    data: {
+        id: assistant.id,
+        name: assistant.name,
+        email: assistant.email,
+        group: assistant.group
+    }
   });
 });
 
@@ -53,7 +64,13 @@ const acceptAssistant = asyncWrapper(async (req, res) => {
     await admins.verifyAssistant( email );
     return res.status(200).json({
         status: "success",
-        message: `Assistant with email ${email} accepted`
+        message: `Assistant with email ${email} accepted`,
+        data: {
+        id: assistant.id,
+        name: assistant.name,
+        email: assistant.email,
+        group: assistant.group
+    }
     });
 })
 
@@ -75,7 +92,13 @@ const removeAssistant = asyncWrapper(async (req, res) => {
     const deleted = await admins.removeAssistant(email);
     return res.status(200).json({
         status: "success",
-        message: `Assistant with email ${email} removed successfully`
+        message: `Assistant with email ${email} removed successfully`,
+        data: {
+        id: assistant.id,
+        name: assistant.name,
+        email: assistant.email,
+        group: assistant.group
+    }
     })
 })
 
@@ -104,7 +127,13 @@ const assignGroupToAssistant = asyncWrapper(async (req, res) => {
     await assistant.save();
     return res.status(200).json({
         status: "success",
-        message: `Group ${group} assigned to assistant ${assistant.name} successfully`
+        message: `Group ${group} assigned to assistant ${assistant.name} successfully`,
+        data: {
+        id: assistant.id,
+        name: assistant.name,
+        email: assistant.email,
+        group: assistant.group
+    }
     });
 });
 

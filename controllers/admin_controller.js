@@ -18,11 +18,16 @@ const sse = require('../utils/sseClients.js');
 const TARegister = asyncWrapper(async (req, res) => {
     const { email, name, password, phoneNumber, group} = req.body;
     const encryptedPassword = await bcrypt.hash(String(password), 10);
-    await admin.create(email,name,password,phoneNumber,group);
+    const created=await admin.create(email,name,encryptedPassword,phoneNumber,group);
 
     return res.status(201).json({
         status: "success" ,
-        data: { message: "Assistant created successfully" }
+        message: "Assistant created successfully",
+        data: {id :created.adminId, 
+               email: created.email, 
+               name: created.name, 
+               phoneNumber: created.phoneNumber, 
+               group: created.group}
     });
 });
 
@@ -52,7 +57,11 @@ const verifyStudent = asyncWrapper(async (req, res) => {
   return res.status(200).json({ 
     status: "success",
     message: `Student ${student.studentName} verified successfully`,
-    data: { studentEmail: student.studentEmail }
+    data: { id: student.studentId,
+            studentEmail: student.studentEmail,
+            studentName : student.studentName ,
+            group : student.group
+     }
   });
 });
 
@@ -64,6 +73,7 @@ const showStudentInGroup = asyncWrapper(async (req, res) => {
         message: `Students in group ${TAGroup}`,
         data: { 
   data: students.map(student => ({
+      id: student.studentId,
       name: student.studentName,
       email: student.studentEmail,
     }))
@@ -76,7 +86,10 @@ const removeStudent = asyncWrapper(async (req, res) => {
   return res.status(200).json({
     status: "success",
     message: `Student ${student.studentName} deleted successfully`,
-    data: { studentEmail: student.studentEmail }
+    data: { id: student.studentId,
+            studentEmail: student.studentEmail,
+            studentName : student.studentName ,
+            group : student.group }
   });
 });
 
@@ -87,7 +100,10 @@ const banStudent = asyncWrapper(async (req, res) => {
   return res.status(200).json({
     status: "success",
     message: `Student ${student.studentName} banned successfully`,
-    data: { studentEmail: student.studentEmail }
+    data: { id: student.studentId,
+            studentEmail: student.studentEmail,
+            studentName : student.studentName ,
+            group : student.group }
   });
 });
 
@@ -98,7 +114,10 @@ const unBanStudent = asyncWrapper(async (req, res) => {
   return res.status(200).json({
     status: "success",
     message: `Student ${student.studentName} unbanned successfully`,
-    data: { studentEmail: student.studentEmail }
+    data: { id: student.studentId,
+            studentEmail: student.studentEmail,
+            studentName : student.studentName ,
+            group : student.group }
   });
 });
 
@@ -120,7 +139,10 @@ const rejectStudent = asyncWrapper(async (req, res) => {
   return res.status(200).json({
     status: "success",
     message: `Student ${student.studentName} rejected successfully`,
-    data: { studentEmail: student.studentEmail }
+    data: { id: student.studentId,
+            studentEmail: student.studentEmail,
+            studentName : student.studentName ,
+            group : student.group }
   });
 });
 
@@ -232,6 +254,7 @@ const markSubmission = asyncWrapper(async (req, res) => {
     return res.status(200).json({
         status: "success",
         message: `Submission marked successfully`,
+        data: {found}
     })
 })
 
