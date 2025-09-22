@@ -47,6 +47,7 @@ library {Tamer}
 generate reports {Tamer}
 
 add the mailing functions {Mustafa}
+add sse connection last event handler {A.Essam}
 
 clear database {A.Essam}
 delete account {Y.Essam}
