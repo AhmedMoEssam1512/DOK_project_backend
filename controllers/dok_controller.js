@@ -11,11 +11,9 @@ const Registration = require('../models/registration_model.js');
 const admins = require('../data_link/admin_data_link');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
-<<<<<<< HEAD
 const  asyncWrapper  = require('../middleware/asyncwrapper');
-=======
-const { asyncWrapper } = require('../middleware/asyncwrapper');
->>>>>>> 80953e219cf3d53bf31f104cd1ff63958d2dbcae
+
+
 const XLSX = require('xlsx');
 const ExcelJS = require('exceljs');
 const path = require('path');
