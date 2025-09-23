@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .upload-section {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+            background-color: #f9f9f9;
+        }
+        .upload-section:hover {
+            border-color: #007bff;
+            background-color: #f0f8ff;
+        }
+        .file-input {
+            display: none;
+        }
+        .browse-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .browse-btn:hover {
+            background-color: #0056b3;
+        }
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            display: none;
+        }
+        .submit-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+            display: none;
+        }
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+        .submit-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+            display: none;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #007bff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            display: none;
+        }
+        .success-message {
+            color: #28a745;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>📁 File Upload System</h1>
+    
+    <!-- Student Upload Section -->
+    <div class="upload-section">
+        <h2>👨‍🎓 Student Assignment Submission</h2>
+        <p>Upload your PDF assignment file</p>
+        
+        <input type="file" id="studentFile" class="file-input" accept=".pdf">
+        <button class="browse-btn" onclick="document.getElementById('studentFile').click()">
+            📁 Browse Files
+        </button>
+        
+        <div class="file-info" id="studentFileInfo">
+            <p><strong>Selected File:</strong> <span id="studentFileName"></span></p>
+            <p><strong>File Size:</strong> <span id="studentFileSize"></span></p>
+        </div>
+        
+        <div class="progress-bar" id="studentProgress">
+            <div class="progress-fill" id="studentProgressFill"></div>
+        </div>
+        
+        <button class="submit-btn" id="studentSubmitBtn" onclick="submitStudentFile()">
+            📤 Submit Assignment
+        </button>
+        
+        <div class="error-message" id="studentError"></div>
+        <div class="success-message" id="studentSuccess"></div>
+    </div>
+    
+    <!-- Admin Upload Section -->
+    <div class="upload-section">
+        <h2>👨‍🏫 Admin Material Upload</h2>
+        <p>Upload PDF materials for students</p>
+        
+        <input type="file" id="adminFile" class="file-input" accept=".pdf">
+        <button class="browse-btn" onclick="document.getElementById('adminFile').click()">
+            📁 Browse Files
+        </button>
+        
+        <div class="file-info" id="adminFileInfo">
+            <p><strong>Selected File:</strong> <span id="adminFileName"></span></p>
+            <p><strong>File Size:</strong> <span id="adminFileSize"></span></p>
+        </div>
+        
+        <div class="progress-bar" id="adminProgress">
+            <div class="progress-fill" id="adminProgressFill"></div>
+        </div>
+        
+        <button class="submit-btn" id="adminSubmitBtn" onclick="submitAdminFile()">
+            📤 Upload Material
+        </button>
+        
+        <div class="error-message" id="adminError"></div>
+        <div class="success-message" id="adminSuccess"></div>
+    </div>
+
+    <script>
+        // Student file handling
+        document.getElementById('studentFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file type
+                if (file.type !== 'application/pdf') {
+                    showError('studentError', 'Only PDF files are allowed for assignment submission');
+                    return;
+                }
+                
+                // Validate file size (10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    showError('studentError', 'File size must be less than 10MB');
+                    return;
+                }
+                
+                // Show file info
+                document.getElementById('studentFileName').textContent = file.name;
+                document.getElementById('studentFileSize').textContent = formatFileSize(file.size);
+                document.getElementById('studentFileInfo').style.display = 'block';
+                document.getElementById('studentSubmitBtn').style.display = 'inline-block';
+                hideError('studentError');
+            }
+        });
+        
+        // Admin file handling
+        document.getElementById('adminFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file type
+                if (file.type !== 'application/pdf') {
+                    showError('adminError', 'Only PDF files are allowed');
+                    return;
+                }
+                
+                // Validate file size (10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    showError('adminError', 'File size must be less than 10MB');
+                    return;
+                }
+                
+                // Show file info
+                document.getElementById('adminFileName').textContent = file.name;
+                document.getElementById('adminFileSize').textContent = formatFileSize(file.size);
+                document.getElementById('adminFileInfo').style.display = 'block';
+                document.getElementById('adminSubmitBtn').style.display = 'inline-block';
+                hideError('adminError');
+            }
+        });
+        
+        // Student file submission
+        function submitStudentFile() {
+            const fileInput = document.getElementById('studentFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showError('studentError', 'Please select a file first');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('pdf', file);
+            
+            // Show progress
+            showProgress('studentProgress');
+            
+            // Submit file
+            fetch('/library/123/submit', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Authorization': 'Bearer ' + getStudentToken() // You need to implement this
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideProgress('studentProgress');
+                if (data.status === 'success') {
+                    showSuccess('studentSuccess', 'Assignment submitted successfully!');
+                    document.getElementById('studentSubmitBtn').disabled = true;
+                } else {
+                    showError('studentError', data.message || 'Submission failed');
+                }
+            })
+            .catch(error => {
+                hideProgress('studentProgress');
+                showError('studentError', 'Network error: ' + error.message);
+            });
+        }
+        
+        // Admin file submission
+        function submitAdminFile() {
+            const fileInput = document.getElementById('adminFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showError('adminError', 'Please select a file first');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('pdf', file);
+            
+            // Show progress
+            showProgress('adminProgress');
+            
+            // Submit file
+            fetch('/library/123/upload-pdf', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Authorization': 'Bearer ' + getAdminToken() // You need to implement this
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideProgress('adminProgress');
+                if (data.status === 'success') {
+                    showSuccess('adminSuccess', 'Material uploaded successfully!');
+                    document.getElementById('adminSubmitBtn').disabled = true;
+                } else {
+                    showError('adminError', data.message || 'Upload failed');
+                }
+            })
+            .catch(error => {
+                hideProgress('adminProgress');
+                showError('adminError', 'Network error: ' + error.message);
+            });
+        }
+        
+        // Helper functions
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+        
+        function hideError(elementId) {
+            document.getElementById(elementId).style.display = 'none';
+        }
+        
+        function showSuccess(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+        
+        function showProgress(elementId) {
+            document.getElementById(elementId).style.display = 'block';
+            // Simulate progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                document.getElementById(elementId + 'Fill').style.width = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                }
+            }, 100);
+        }
+        
+        function hideProgress(elementId) {
+            document.getElementById(elementId).style.display = 'none';
+            document.getElementById(elementId + 'Fill').style.width = '0%';
+        }
+        
+        // Token functions (you need to implement these based on your auth system)
+        function getStudentToken() {
+            return localStorage.getItem('studentToken') || 'your-student-token-here';
+        }
+        
+        function getAdminToken() {
+            return localStorage.getItem('adminToken') || 'your-admin-token-here';
+        }
+    </script>
+</body>
+</html>
