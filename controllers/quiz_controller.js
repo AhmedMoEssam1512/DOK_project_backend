@@ -1,7 +1,7 @@
 const Quiz = require('../models/quiz_model');
 const Topic = require('../models/topic_model');
 const Submission = require('../models/submission_model');
-const { asyncWrapper } = require('../middleware/asyncwrapper');
+const  asyncWrapper  = require('../middleware/asyncwrapper');
 const AppError = require('../utils/app.error');
 const admin = require('../data_link/admin_data_link');
 

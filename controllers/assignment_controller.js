@@ -3,7 +3,6 @@ const Submission = require('../models/submission_model');
 const Topic = require('../models/topic_model');
 const  asyncWrapper  = require('../middleware/asyncwrapper');
 const AppError = require('../utils/app.error');
-//const dueDateManager = require('../utils/dueDateManager');
 const admin = require('../data_link/admin_data_link');
 
 // ==================== ATTACHMENT HELPERS ====================
