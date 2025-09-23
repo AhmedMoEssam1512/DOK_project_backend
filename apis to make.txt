@@ -42,10 +42,28 @@ show submission {A.Essam} [done]
 leaderboard {Mustafa} [done]
 data analysis {Tamer} [done]    
 forget password {Mustafa} [done]
+Create Topic {Tamer} [done]
+Get Topic By id {Tamer} [done]
+Update Topic By id {Tamer} [done]
+Get All Topics {Tamer} [done]
+Delete Topic By id {Tamer} [done]
+Delete All Topics {Tamer} [done]
+Create Assignment {Tamer} [done]
+Get Assignment By id {Tamer} [done]
+Update Assignment By id {Tamer} [done]
+Get All Assignments {Tamer} [done]
+Delete Assignment By id {Tamer} [done]
+Publish Assignment By id {Tamer} [done]
+COntrol Late Submission By assignment id {Tamer} [done]
+Create Quiz {Tamer} [done]
+Get Quiz By id {Tamer} [done]
+Update Quiz By id {Tamer} [done]
+Get All Quizzes {Tamer} [done]
+Delete Quiz By id {Tamer} [done]
+Publish Quiz {Tamer} [done]
 
-library {Tamer}
+
 generate reports {Tamer}
-
 add the mailing functions {Mustafa}
 
 clear database {A.Essam}

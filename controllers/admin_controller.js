@@ -128,7 +128,7 @@ const rejectStudent = asyncWrapper(async (req, res) => {
 });
 
 const showMyProfile = asyncWrapper(async (req, res) => {
-  const adminId = req.admin.id;
+  const adminId = req.admin.adminId;
   const adminProfile = await admin.findAdminById(adminId);
   return res.status(200).json({
     status: "success",

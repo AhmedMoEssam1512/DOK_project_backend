@@ -3,8 +3,17 @@ const Topic = require('../models/topic_model');
 const Submission = require('../models/submission_model');
 const { asyncWrapper } = require('../middleware/asyncwrapper');
 const AppError = require('../utils/app.error');
-const dueDateManager = require('../utils/dueDateManager');
 const admin = require('../data_link/admin_data_link');
+
+// Helper to add admin name to publisher field
+function addPublisherToQuiz(quizInstance, adminName) {
+  if (!quizInstance) return quizInstance;
+  const quiz = quizInstance.toJSON ? quizInstance.toJSON() : quizInstance;
+  return {
+    ...quiz,
+    publisher: adminName
+  };
+}
 
 // Create Quiz
 const createQuiz = asyncWrapper(async (req, res) => {
@@ -33,7 +42,7 @@ const createQuiz = asyncWrapper(async (req, res) => {
     status: "success",
     message: "Quiz created successfully",
     data: {
-      quiz: newQuiz
+      quiz: addPublisherToQuiz(newQuiz, req.admin.name)
     }
     });
 });
@@ -50,21 +59,15 @@ const getAllQuizzes = asyncWrapper(async (req, res) => {
   
   const quizzes = await Quiz.findAll({
     where: whereClause,
-    order: [['order', 'ASC']]
+    order: [['order', 'ASC']],
   });
-  
-  // Add adminName to publisher field for each quiz
-  const quizzesWithPublisher = quizzes.map(quiz => ({
-    ...quiz.dataValues,
-    publisher: req.admin.adminName
-  }));
   
   return res.status(200).json({
     status: "success",
     message: "Quizzes retrieved successfully",
     data: {
-      count: quizzesWithPublisher.length,
-      quizzes: quizzesWithPublisher
+      count: quizzes.length,
+      quizzes: quizzes.map(quiz => addPublisherToQuiz(quiz, req.admin.name))
     }
   });
 });
@@ -74,7 +77,7 @@ const getQuizById = asyncWrapper(async (req, res) => {
   const { quizId } = req.params;
   
   const quiz = await Quiz.findOne({
-    where: { quizId, isActive: true }
+    where: { quizId, isActive: true },
   });
   
   if (!quiz) {
@@ -84,17 +87,11 @@ const getQuizById = asyncWrapper(async (req, res) => {
     });
   }
   
-  // Add adminName to publisher field
-  const quizResponse = {
-    ...quiz.dataValues,
-    publisher: req.admin.adminName
-  };
-  
   return res.status(200).json({
     status: "success",
     message: "Quiz retrieved successfully",
     data: {
-      quiz: quizResponse
+      quiz: addPublisherToQuiz(quiz, req.admin.name)
     }
   });
 });
@@ -105,7 +102,7 @@ const updateQuiz = asyncWrapper(async (req, res) => {
   const updateData = req.body;
   
   const quiz = await Quiz.findOne({
-    where: { quizId, isActive: true }
+    where: { quizId, isActive: true },
   });
   
   if (!quiz) {
@@ -118,17 +115,11 @@ const updateQuiz = asyncWrapper(async (req, res) => {
   // Update quiz
   await quiz.update(updateData);
   
-  // Add adminName to publisher field
-  const quizResponse = {
-    ...quiz.dataValues,
-    publisher: req.admin.adminName
-  };
-  
   return res.status(200).json({
     status: "success",
     message: "Quiz updated successfully",
     data: {
-      quiz: quizResponse
+      quiz: addPublisherToQuiz(quiz, req.admin.name)
     }
   });
 });
@@ -138,7 +129,7 @@ const deleteQuiz = asyncWrapper(async (req, res) => {
   const { quizId } = req.params;
   
   const quiz = await Quiz.findOne({
-    where: { quizId, isActive: true }
+    where: { quizId, isActive: true },
   });
   
   if (!quiz) {
@@ -151,17 +142,11 @@ const deleteQuiz = asyncWrapper(async (req, res) => {
   // Soft delete
   await quiz.update({ isActive: false });
   
-  // Add adminName to publisher field
-  const quizResponse = {
-    ...quiz.dataValues,
-    publisher: req.admin.adminName
-  };
-  
   return res.status(200).json({
     status: "success",
     message: "Quiz deleted successfully",
     data: {
-      quiz: quizResponse
+      quiz: addPublisherToQuiz(quiz, req.admin.name)
     }
   });
 });
@@ -171,7 +156,7 @@ const publishQuiz = asyncWrapper(async (req, res) => {
   const { quizId } = req.params;
   
   const quiz = await Quiz.findOne({
-    where: { quizId, isActive: true }
+    where: { quizId, isActive: true },
   });
   
   if (!quiz) {
@@ -186,17 +171,11 @@ const publishQuiz = asyncWrapper(async (req, res) => {
     publishedAt: new Date()
   });
   
-  // Add adminName to publisher field
-  const quizResponse = {
-    ...quiz.dataValues,
-    publisher: req.admin.adminName
-  };
-  
   return res.status(200).json({
     status: "success",
     message: "Quiz published successfully",
     data: {
-      quiz: quizResponse
+      quiz: addPublisherToQuiz(quiz, req.admin.name)
     }
   });
 });

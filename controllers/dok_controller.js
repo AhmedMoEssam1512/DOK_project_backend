@@ -24,7 +24,6 @@ const DOK_signUp= asyncWrapper( async (req, res) => {
 
     // create admin
     await Admin.create({
-      adminId: 1,
       email,
       name,
       password: encryptedPassword,
