@@ -9,7 +9,9 @@ const logInRoute = require('./routes/logIn_route');
 const feedRoute = require('./routes/feed_routes');
 const quizRoutes = require('./routes/quiz_routes');
 const assignmentRoutes = require('./routes/assignment_routes');
+const submissionRoutes = require('./routes/submission_routes');
 const sessionRoutes = require('./routes/session_routes');
+const topicRoutes = require('./routes/topic_routes');
 const leaderBoard = require('./routes/leader_board');
 const app = express();
 app.use(express.json());
@@ -40,8 +42,10 @@ app.use('/student', studentRoutes);
 app.use('/login', logInRoute);
 app.use('/feed', feedRoute);
 app.use('/quiz', quizRoutes);
-app.use('/assignment', assignmentRoutes)
+app.use('/assignment', assignmentRoutes);
+app.use('/submission', submissionRoutes);
 app.use('/session', sessionRoutes);
+app.use('/topic', topicRoutes);
 app.use('/leaderBoard', leaderBoard);
 /*
 // Global not-found handler
@@ -77,4 +81,3 @@ app.use((error, req, res, next) => {
     data: { message: error.message }
   });
 });
-

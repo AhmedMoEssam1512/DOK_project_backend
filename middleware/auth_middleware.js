@@ -2,10 +2,10 @@ const jwt = require('jsonwebtoken');
 const Admin = require('../models/admin_model');
 const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
-const asyncWrapper = require('./asyncwrapper');
+const { asyncWrapper } = require('./asyncwrapper');
 
 
-const adminProtect = async (req, res, next) => {
+const adminProtect = asyncWrapper(async (req, res, next) => {
   let token;
 
   // 1. Support for "Authorization: Bearer <token>"
@@ -27,13 +27,20 @@ const adminProtect = async (req, res, next) => {
     if (decoded.type !== 'admin') {
       return next(new AppError('Not authorized as admin', 401));
     }
-    req.admin = decoded;
-    console.log("admin protect finished") // attach payload
+    
+    // Get admin from database
+    const admin = await Admin.findByPk(decoded.id);
+    if (!admin) {
+      return next(new AppError('Admin not found', 401));
+    }
+    
+    req.admin = admin;
+    console.log("admin protect finished") // attach admin object
     next();
   } catch (error) {
     return next(new AppError('Not authorized, token failed', 401));
   }
-};
+});
 
 const studentProtect = async (req, res, next) => {
   let token;
@@ -102,4 +109,3 @@ module.exports = {
   studentProtect,
   protect
  };
-

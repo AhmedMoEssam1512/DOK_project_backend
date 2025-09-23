@@ -1,30 +1,34 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth_middleware');
 const quizControllers = require('../controllers/quiz_controller');
-const quizMiddleWare = require('../middleware/quiz_middleware');
+const auth = require('../middleware/auth_middleware');
+const quizMiddleware = require('../middleware/quiz_middleware');
 
-router.route('/createQuiz')
-    .post(auth.adminProtect, quizMiddleWare.checkFields, quizControllers.createQuiz);
+// Quiz CRUD Operations
+router.route('/')
+  .post(auth.adminProtect, quizControllers.createQuiz)
+  .get(auth.adminProtect, quizControllers.getAllQuizzes);
 
-router.route('/getAllQuizzes')
-    .get(auth.protect,quizMiddleWare.getGroup ,quizControllers.getAllQuizzes);
+router.route('/:quizId')
+  .get(auth.adminProtect, quizMiddleware.quizExists, quizControllers.getQuizById)
+  .patch(auth.adminProtect, quizMiddleware.quizExists, quizControllers.updateQuiz)
+  .delete(auth.adminProtect, quizMiddleware.quizExists, quizControllers.deleteQuiz);
 
-router.route('/getQuizById/:quizId')
-    .get(auth.protect, quizMiddleWare.quizExists,quizMiddleWare.canSeeQuiz ,quizControllers.getQuizById);
+// Quiz Publishing Operations
+router.route('/:quizId/publish')
+  .patch(auth.adminProtect, quizMiddleware.quizExists, quizControllers.publishQuiz);
 
-router.route('/startQuiz/:quizId')
-    .get(auth.adminProtect, quizMiddleWare.quizExists,quizMiddleWare.canAccessQuiz ,quizControllers.startQuiz);
 
-router.route('/getActiveQuiz')
-    .get(auth.protect, quizMiddleWare.activeQuizExists, quizMiddleWare.canAccessActiveQuiz ,quizControllers.getActiveQuiz); 
-    
-router.route('/submitActiveQuiz/')
-    .post(auth.protect, quizMiddleWare.activeQuizExists, quizMiddleWare.canAccessActiveQuiz ,quizMiddleWare.submittedBefore,
-        quizMiddleWare.verifySubmissionTiming, quizMiddleWare.verifySubmissionPDF ,quizControllers.submitActiveQuiz);
 
-router.route('/submitQuiz/:quizId')
-        .post(auth.protect, quizMiddleWare.quizExists, quizMiddleWare.canSeeQuiz ,
-        quizMiddleWare.submittedBefore, quizMiddleWare.verifySubmissionPDF ,quizControllers.submitQuiz)
+// Quiz Submissions
+
+// Quiz Settings
+
+
+// Quiz Statistics
+
+// Quiz Submission Status Functions
+
+// Student Quiz Routes
 
 module.exports = router;
