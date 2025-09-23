@@ -2,10 +2,10 @@ const jwt = require('jsonwebtoken');
 const Admin = require('../models/admin_model');
 const AppError = require('../utils/app.error');
 const httpStatus = require('../utils/http.status');
-const { asyncWrapper } = require('./asyncwrapper');
+const  asyncwrapper  = require('./asyncwrapper');
 
 
-const adminProtect = asyncWrapper(async (req, res, next) => {
+const adminProtect = asyncwrapper(async (req, res, next) => {
   let token;
 
   // 1. Support for "Authorization: Bearer <token>"
@@ -74,7 +74,7 @@ const studentProtect = async (req, res, next) => {
 
 
 
-const protect = asyncWrapper(async (req, res, next) => {
+const protect = asyncwrapper(async (req, res, next) => {
    let token;
 
   // 1. Support for "Authorization: Bearer <token>"

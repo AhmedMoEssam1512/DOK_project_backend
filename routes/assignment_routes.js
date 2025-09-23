@@ -11,20 +11,20 @@ router.route('/')
 
 
 router.route('/:assignmentId')
-  .get(auth.adminProtect, assignmentMiddleware.assignmentExists, assignmentControllers.getAssignmentById)
-  .patch(auth.adminProtect, assignmentMiddleware.assignmentExists, assignmentControllers.updateAssignment)
-  .delete(auth.adminProtect, assignmentMiddleware.assignmentExists, assignmentControllers.deleteAssignment);
+  .get(auth.adminProtect, assignmentMiddleware.assignExists, assignmentControllers.getAssignmentById)
+  .patch(auth.adminProtect, assignmentMiddleware.assignExists, assignmentControllers.updateAssignment)
+  .delete(auth.adminProtect, assignmentMiddleware.assignExists, assignmentControllers.deleteAssignment);
 
 // Assignment Publishing Operations
 router.route('/:assignmentId/publish')
-  .patch(auth.adminProtect, assignmentMiddleware.assignmentExists, assignmentControllers.publishAssignment);
+  .patch(auth.adminProtect, assignmentMiddleware.assignExists, assignmentControllers.publishAssignment);
 
 
 // Assignment Submissions
 
 // Assignment Settings
 router.route('/:assignmentId/toggle-late-submission')
-  .patch(auth.adminProtect, assignmentMiddleware.assignmentExists, assignmentControllers.toggleLateSubmissionPolicy);
+  .patch(auth.adminProtect, assignmentMiddleware.assignExists, assignmentControllers.toggleLateSubmissionPolicy);
 
 // Assignment Statistics
 

@@ -1,4 +1,4 @@
-const { asyncWrapper } = require('./asyncwrapper');
+const  asyncWrapper  = require('./asyncwrapper');
 const AppError = require('../utils/app.error');
 // Using numeric HTTP status codes
 const Topic = require('../models/topic_model');

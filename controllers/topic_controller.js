@@ -1,5 +1,5 @@
 const Topic = require('../models/topic_model');
-const { asyncWrapper } = require('../middleware/asyncwrapper');
+const  asyncWrapper  = require('../middleware/asyncwrapper');
 const AppError = require('../utils/app.error');
 // Using numeric HTTP status codes to avoid extra dependencies
 
