@@ -32,16 +32,16 @@ async function getAllAssignmentsByGroup(group) {
     });
 }
 
-function getAssignmentById(assignId){
-    return Assignment.findOne({where : {assignId}});
+function getAssignmentById(assignmentId){
+    return Assignment.findOne({ where: { assignmentId } });
 }
 
-function createSubmission(assId, studentId,assistantId,answers, semester){
-    return Submission.create({assId, studentId, assistantId, answers, semester, "type":"assignment"})
+function createSubmission(assignmentId, studentId, assistantId, answers, semester){
+    return Submission.create({ assId: assignmentId, studentId, assistantId, answers, semester, "type":"assignment" })
 }
 
-function findSubmissionByQuizAndStudent(assignId,studentId){
-    return Submission.findOne({where: {assignId,studentId}})
+function findSubmissionByQuizAndStudent(assignmentId, studentId){
+    return Submission.findOne({ where: { assId: assignmentId, studentId } })
 }
 
 function findSubmissionByAssignmentAndStudent(assignId, studentId) {

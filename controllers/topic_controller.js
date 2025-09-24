@@ -1,4 +1,6 @@
 const Topic = require('../models/topic_model');
+const Quiz = require('../models/quiz_model');
+const Assignment = require('../models/assignment_model');
 const  asyncWrapper  = require('../middleware/asyncwrapper');
 const AppError = require('../utils/app.error');
 // Using numeric HTTP status codes to avoid extra dependencies
@@ -59,7 +61,48 @@ const getTopicById = asyncWrapper(async (req, res, next) => {
     if (!topic) {
         return next(new AppError("Topic not found", 404));
     }
-    res.status(200).json({ status: "success", data: { topic } });
+    // Fetch quizzes and assignments for this topic
+    const [quizInstances, assignmentInstances] = await Promise.all([
+        Quiz.findAll({
+            where: { topicId, adminId, semester, isActive: true },
+            // Ensure publisher never appears in responses if it exists in DB
+            attributes: { exclude: ['publisher'] },
+            order: [['createdAt', 'DESC']]
+        }),
+        Assignment.findAll({
+            where: { topicId, adminId, semester, isActive: true },
+            order: [['createdAt', 'DESC']]
+        })
+    ]);
+
+    // Helper: format createdAt to Africa/Cairo local time in ISO-like string
+    const toCairoISO = (date) => {
+        if (!date) return date;
+        try {
+            const s = new Date(date).toLocaleString('sv-SE', { timeZone: 'Africa/Cairo' });
+            return s.replace(' ', 'T'); // e.g., 2025-09-24T13:05:37
+        } catch (_) {
+            return date;
+        }
+    };
+
+    // Normalize to a single materials list with type field
+    const materials = [
+        ...quizInstances.map(q => {
+            const obj = q.toJSON ? q.toJSON() : q;
+            return { type: 'quiz', ...obj, createdAt: toCairoISO(obj.createdAt) };
+        }),
+        ...assignmentInstances.map(a => {
+            const obj = a.toJSON ? a.toJSON() : a;
+            return { type: 'assignment', ...obj, createdAt: toCairoISO(obj.createdAt) };
+        })
+    ].sort((a, b) => {
+        const aTime = new Date(a.createdAt || 0).getTime();
+        const bTime = new Date(b.createdAt || 0).getTime();
+        return bTime - aTime; // newest first
+    });
+
+    res.status(200).json({ status: "success", data: { topic, materials } });
 });
 
 // Update Topic

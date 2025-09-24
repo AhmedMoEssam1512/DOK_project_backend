@@ -5,13 +5,23 @@ const  asyncWrapper  = require('../middleware/asyncwrapper');
 const AppError = require('../utils/app.error');
 const admin = require('../data_link/admin_data_link');
 
-// Helper to add admin name to publisher field
+// Helper to add admin name to publisher field and format createdAt to Cairo time
 function addPublisherToQuiz(quizInstance, adminName) {
   if (!quizInstance) return quizInstance;
   const quiz = quizInstance.toJSON ? quizInstance.toJSON() : quizInstance;
+  const toCairoISO = (date) => {
+    if (!date) return date;
+    try {
+      const s = new Date(date).toLocaleString('sv-SE', { timeZone: 'Africa/Cairo' });
+      return s.replace(' ', 'T');
+    } catch (_) {
+      return date;
+    }
+  };
   return {
     ...quiz,
-    publisher: adminName
+    publisher: adminName,
+    createdAt: toCairoISO(quiz.createdAt)
   };
 }
 

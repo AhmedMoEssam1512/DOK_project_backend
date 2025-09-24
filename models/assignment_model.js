@@ -71,7 +71,7 @@ const Assignment = sequelize.define('Assignment', {
 }, {
   tableName: 'assignment',
   timestamps: true,
-  createdAt: false,
+  createdAt: 'createdAt',
   updatedAt: false
 });
 

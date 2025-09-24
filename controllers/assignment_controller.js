@@ -79,6 +79,11 @@ const createAssignment = asyncWrapper(async (req, res) => {
   // Convert assignment to JSON and add admin name to publisher
   const assignmentResponse = newAssignment.toJSON();
   assignmentResponse.publisher = adminName;
+  // format createdAt to Cairo time
+  try {
+    const s = new Date(assignmentResponse.createdAt).toLocaleString('sv-SE', { timeZone: 'Africa/Cairo' });
+    assignmentResponse.createdAt = s.replace(' ', 'T');
+  } catch (_) {}
   
     return res.status(201).json({
     status: "success",
@@ -152,6 +157,10 @@ const getAssignmentById = asyncWrapper(async (req, res) => {
   // Convert assignment to JSON and add admin name to publisher
   const assignmentResponse = assignment.toJSON();
   assignmentResponse.publisher = adminName;
+  try {
+    const s = new Date(assignmentResponse.createdAt).toLocaleString('sv-SE', { timeZone: 'Africa/Cairo' });
+    assignmentResponse.createdAt = s.replace(' ', 'T');
+  } catch (_) {}
   
     return res.status(200).json({
         status: "success",
@@ -188,6 +197,10 @@ const updateAssignment = asyncWrapper(async (req, res) => {
   // Convert assignment to JSON and add admin name to publisher
   const assignmentResponse = assignment.toJSON();
   assignmentResponse.publisher = adminName;
+  try {
+    const s = new Date(assignmentResponse.createdAt).toLocaleString('sv-SE', { timeZone: 'Africa/Cairo' });
+    assignmentResponse.createdAt = s.replace(' ', 'T');
+  } catch (_) {}
 
     return res.status(200).json({
         status: "success",

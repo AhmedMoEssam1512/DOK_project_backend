@@ -79,7 +79,7 @@ const Quiz = sequelize.define('Quiz', {
 }, {
   tableName: 'quiz', 
   timestamps: true,
-  createdAt: false,
+  createdAt: 'createdAt',
   updatedAt: false
 });
 
