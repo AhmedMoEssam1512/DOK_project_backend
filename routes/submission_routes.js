@@ -1,15 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { health } = require('../controllers/submission_controller');
-const { adminProtect } = require('../middleware/auth_middleware');
-
-// Lightweight route just to expose presence; no submission features included.
-router.get('/health', adminProtect, health);
-
-module.exports = router;
-
-const express = require('express');
-const router = express.Router();
 const submissionControllers = require('../controllers/submission_controller');
 const auth = require('../middleware/auth_middleware');
 
@@ -23,16 +13,23 @@ router.route('/assignment/:assignmentId')
 router.route('/student')
   .get(auth.studentProtect, submissionControllers.getStudentSubmissions);
 
+
 router.route('/:submissionId')
   .get(auth.studentProtect, submissionControllers.getSubmissionById)
   .patch(auth.studentProtect, submissionControllers.updateSubmission)
   .delete(auth.studentProtect, submissionControllers.deleteSubmission);
 
-// Admin Submission Routes
-
 // Grade Assignment Submission
 router.route('/assignment/:assignmentId/submissions/:submissionId/grade')
   .patch(auth.adminProtect, submissionControllers.gradeAssignmentSubmission);
+
+// Grade Quiz Submission
+router.route('/quiz/:quizId/submissions/:submissionId/grade')
+  .patch(auth.adminProtect, submissionControllers.gradeQuizSubmission);
+
+// Get current student's quiz submission status
+router.route('/quiz/:quizId/status')
+  .get(auth.studentProtect, submissionControllers.getQuizSubmissionStatus);
 
 module.exports = router;
 

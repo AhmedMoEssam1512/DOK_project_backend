@@ -21,7 +21,7 @@ const subExist = asyncWrapper(async (req,res ,next) => {
 
 const canSeeSubmission = asyncWrapper(async (req,res, next) => {
     const sub = req.found;
-    const adminId = req.admin.id;
+    const adminId = req.admin.adminId;
     if(!adminId){
         return next(new AppError("Admin not found", httpStatus.NOT_FOUND))
     }
@@ -52,7 +52,7 @@ const checkData = asyncWrapper(async (req,res, next) => {
         total = qfound.mark
     }
     else{
-        const afound = await assignment.getAssignmentById(found.assignmentId);
+        const afound = await assignment.getAssignmentById(found.assId);
         total = afound.mark
     }
     console.log("All fields checked");

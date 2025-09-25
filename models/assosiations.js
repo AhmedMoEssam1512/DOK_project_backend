@@ -62,8 +62,8 @@ module.exports = db => {
     Submission.belongsTo(Quiz, { foreignKey: 'quizId' });
 
     // ---------------- Assignment - Submission ----------------
-    Assignment.hasMany(Submission, { foreignKey: 'assignmentId' }); 
-    Submission.belongsTo(Assignment, { foreignKey: 'assignmentId' });
+    Assignment.hasMany(Submission, { foreignKey: 'assId' }); 
+    Submission.belongsTo(Assignment, { foreignKey: 'assId' });
 
     // ---------------- Assignment - Topic ----------------
     Assignment.belongsTo(Topic, { foreignKey: 'topicId', as: 'Topic' });

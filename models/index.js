@@ -39,8 +39,8 @@ Object.keys(db).forEach(modelName => {
 });
 
 // Apply external associations.js
-if (fs.existsSync(path.join(__dirname, 'associations.js'))) {
-    require('./associations')(db);
+if (fs.existsSync(path.join(__dirname, 'assosiations.js'))) {
+    require('./assosiations')(db);
 }
 
 db.sequelize = sequelize;

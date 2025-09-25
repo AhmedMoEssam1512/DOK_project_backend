@@ -33,8 +33,7 @@ const adminProtect = asyncwrapper(async (req, res, next) => {
     if (!admin) {
       return next(new AppError('Admin not found', 401));
     }
-    
-    req.admin = admin;
+    req.admin = decoded; // attach payload
     console.log("admin protect finished") // attach admin object
     next();
   } catch (error) {

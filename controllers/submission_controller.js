@@ -1,26 +1,12 @@
 const asyncWrapper = require('../middleware/asyncwrapper');
-const AppError = require('../utils/appError');
-
-// Placeholder controller to restore file presence without enabling submission features.
-// All previous heavy endpoints (bulk operations/statistics) remain removed as requested.
-
-const health = asyncWrapper(async (req, res) => {
-  return res.status(200).json({ status: 'success', message: 'submission controller is available' });
-});
-
-module.exports = {
-  health,
-};
-
-const Submission = require('../models/submission_model');
-const Quiz = require('../models/quiz_model');
-const Assignment = require('../models/assignment_model');
-const { asyncWrapper } = require('../middleware/asyncwrapper');
+const AppError = require('../utils/app.error');
+const { Op } = require('sequelize');
+const { Submission, Quiz, Assignment, Admin } = require('../models');
 
 // Submit Quiz
 const submitQuiz = asyncWrapper(async (req, res) => {
   const { quizId } = req.params;
-  const { answers, timeSpent } = req.body;
+  const { attachment } = req.body;
   const studentId = req.student.id;
   
   const quiz = await Quiz.findOne({
@@ -39,11 +25,11 @@ const submitQuiz = asyncWrapper(async (req, res) => {
     where: { 
       studentId, 
       quizId,
-      status: 'submitted'
+      type: 'quiz'
     }
   });
   
-  if (existingSubmission && quiz.attempts === 1) {
+  if (existingSubmission) {
     return res.status(400).json({
       status: "error",
       message: "You have already submitted this quiz"
@@ -61,48 +47,41 @@ const submitQuiz = asyncWrapper(async (req, res) => {
     });
   }
   
-  // Calculate attempt number
-  const attemptCount = await Submission.count({
-    where: { studentId, quizId }
-  });
+  // Validate attachment URL
+  if (!attachment || typeof attachment !== 'string') {
+    return res.status(400).json({
+      status: "error",
+      message: "Attachment URL is required"
+    });
+  }
   
   const submissionData = {
     studentId,
     quizId,
-    answers: JSON.stringify(answers),
-    status: 'submitted',
-    submittedAt: now,
-    isLate,
-    attemptNumber: attemptCount + 1,
-    timeSpent,
-    maxScore: quiz.maxPoints
+    answers: attachment, // Store PDF URL as answers
+    type: 'quiz',
+    semester: quiz.semester,
+    subDate: now,
+    status: 'submitted'
   };
   
-  // Auto-grade if possible (for multiple choice questions)
-  if (quiz.questions && Array.isArray(quiz.questions)) {
-    let score = 0;
-    const questions = JSON.parse(quiz.questions);
-    
-    questions.forEach((question, index) => {
-      if (answers[index] === question.correctAnswer) {
-        score += question.points || 1;
-      }
-    });
-    
-    submissionData.score = score;
-    submissionData.percentage = (score / quiz.maxPoints) * 100;
-    submissionData.isAutoGraded = true;
-    submissionData.status = 'graded';
-    submissionData.gradedAt = now;
-  }
-  
   const submission = await Submission.create(submissionData);
-  
+  const response = {
+    subId: submission.subId,
+    studentId: submission.studentId,
+    quizId: submission.quizId,
+    answers: submission.answers,
+    type: submission.type,
+    semester: submission.semester,
+    score: submission.score ?? null,
+    marked: submission.score != null ? 'yes' : 'no',
+  };
+
   return res.status(201).json({
     status: "success",
     message: "Quiz submitted successfully",
     data: {
-      submission
+      submission: response
     }
   });
 });
@@ -110,7 +89,7 @@ const submitQuiz = asyncWrapper(async (req, res) => {
 // Submit Assignment
 const submitAssignment = asyncWrapper(async (req, res) => {
   const { assignmentId } = req.params;
-  const { content, attachments } = req.body;
+  const { attachment } = req.body;
   const studentId = req.student.id;
   
   const assignment = await Assignment.findOne({
@@ -128,8 +107,8 @@ const submitAssignment = asyncWrapper(async (req, res) => {
   const existingSubmission = await Submission.findOne({
     where: { 
       studentId, 
-      assignmentId,
-      status: 'submitted'
+      assId: assignmentId,
+      type: 'assignment'
     }
   });
   
@@ -151,24 +130,42 @@ const submitAssignment = asyncWrapper(async (req, res) => {
     });
   }
   
+  // Validate attachment URL
+  if (!attachment || typeof attachment !== 'string') {
+    return res.status(400).json({
+      status: "error",
+      message: "Attachment URL is required"
+    });
+  }
+  
   const submissionData = {
     studentId,
-    assignmentId,
-    answers: content,
-    attachments: attachments || [],
-    status: 'submitted',
-    submittedAt: now,
-    isLate,
-    maxScore: assignment.maxPoints
+    assId: assignmentId,
+    answers: attachment, // Store PDF URL as answers
+    type: 'assignment',
+    semester: assignment.semester,
+    subDate: now,
+    status: 'submitted'
   };
   
   const submission = await Submission.create(submissionData);
-  
+  const response = {
+    subId: submission.subId,
+    studentId: submission.studentId,
+    assId: submission.assId ?? undefined,
+    answers: submission.answers,
+    type: submission.type,
+    semester: submission.semester,
+    score: submission.score ?? null,
+    marked: submission.score != null ? 'yes' : 'no',
+    assistantName
+  };
+
   return res.status(201).json({
     status: "success",
     message: "Assignment submitted successfully",
     data: {
-      submission
+      submission: response
     }
   });
 });
@@ -181,9 +178,9 @@ const getStudentSubmissions = asyncWrapper(async (req, res) => {
   const whereClause = { studentId };
   
   if (type === 'quiz') {
-    whereClause.quizId = { $ne: null };
+    whereClause.quizId = { [Op.ne]: null };
   } else if (type === 'assignment') {
-    whereClause.assignmentId = { $ne: null };
+    whereClause.assId = { [Op.ne]: null };
   }
   
   if (status) {
@@ -195,18 +192,16 @@ const getStudentSubmissions = asyncWrapper(async (req, res) => {
     include: [
       {
         model: Quiz,
-        as: 'Quiz',
         attributes: ['quizId', 'title', 'maxPoints'],
         required: false
       },
       {
         model: Assignment,
-        as: 'Assignment',
         attributes: ['assignmentId', 'title', 'maxPoints'],
         required: false
       }
     ],
-    order: [['submittedAt', 'DESC']]
+    order: [['subDate', 'DESC']]
   });
   
   return res.status(200).json({
@@ -225,17 +220,15 @@ const getSubmissionById = asyncWrapper(async (req, res) => {
   const studentId = req.student.id;
   
   const submission = await Submission.findOne({
-    where: { submissionId, studentId },
+    where: { subId: submissionId, studentId },
     include: [
       {
         model: Quiz,
-        as: 'Quiz',
-        attributes: ['quizId', 'title', 'maxPoints', 'showCorrectAnswers'],
+        attributes: ['quizId', 'title', 'maxPoints', 'showResults'],
         required: false
       },
       {
         model: Assignment,
-        as: 'Assignment',
         attributes: ['assignmentId', 'title', 'maxPoints'],
         required: false
       }
@@ -261,11 +254,11 @@ const getSubmissionById = asyncWrapper(async (req, res) => {
 // Update Submission (for draft submissions)
 const updateSubmission = asyncWrapper(async (req, res) => {
   const { submissionId } = req.params;
-  const { answers, content, attachments } = req.body;
+  const { attachment } = req.body;
   const studentId = req.student.id;
   
   const submission = await Submission.findOne({
-    where: { submissionId, studentId, status: 'draft' }
+    where: { subId: submissionId, studentId, status: 'draft' }
   });
   
   if (!submission) {
@@ -275,10 +268,15 @@ const updateSubmission = asyncWrapper(async (req, res) => {
     });
   }
   
-  const updateData = {};
-  if (answers) updateData.answers = JSON.stringify(answers);
-  if (content) updateData.answers = content;
-  if (attachments) updateData.attachments = attachments;
+  // Validate attachment URL
+  if (!attachment || typeof attachment !== 'string') {
+    return res.status(400).json({
+      status: "error",
+      message: "Attachment URL is required"
+    });
+  }
+  
+  const updateData = { answers: attachment };
   
   await submission.update(updateData);
   
@@ -297,7 +295,7 @@ const deleteSubmission = asyncWrapper(async (req, res) => {
   const studentId = req.student.id;
   
   const submission = await Submission.findOne({
-    where: { submissionId, studentId, status: 'draft' }
+    where: { subId: submissionId, studentId, status: 'draft' }
   });
   
   if (!submission) {
@@ -323,9 +321,8 @@ const gradeAssignmentSubmission = asyncWrapper(async (req, res) => {
   
   const submission = await Submission.findOne({
     where: { 
-      submissionId, 
-      assignmentId,
-      isActive: true 
+      subId: submissionId, 
+      assId: assignmentId
     }
   });
   
@@ -365,6 +362,70 @@ const gradeAssignmentSubmission = asyncWrapper(async (req, res) => {
   });
 });
 
+// Grade Quiz Submission
+const gradeQuizSubmission = asyncWrapper(async (req, res) => {
+  const { quizId, submissionId } = req.params;
+  const { score, feedback, grade } = req.body;
+
+  const submission = await Submission.findOne({
+    where: {
+      subId: submissionId,
+      quizId
+    }
+  });
+
+  if (!submission) {
+    return res.status(404).json({
+      status: "error",
+      message: "Submission not found"
+    });
+  }
+
+  const quiz = await Quiz.findByPk(quizId);
+  const percentage = quiz ? (score / quiz.maxPoints) * 100 : 0;
+
+  await submission.update({
+    score,
+    percentage,
+    grade,
+    feedback,
+    markedAt: new Date()
+  });
+  
+  const assistantName = req.admin?.name || null;
+
+  return res.status(200).json({
+    status: "success",
+    message: "Submission graded successfully",
+    data: {
+      submission: {
+        subId: submission.subId,
+        score,
+        percentage,
+        grade,
+        feedback,
+        marked: 'yes',
+        assistantName
+      }
+    }
+  });
+});
+
+// Get current student's quiz submission status
+const getQuizSubmissionStatus = asyncWrapper(async (req, res) => {
+  const { quizId } = req.params;
+  const studentId = req.student.id;
+
+  const submission = await Submission.findOne({ where: { studentId, quizId, type: 'quiz' } });
+
+  const response = submission
+    ? { marked: submission.score != null ? 'yes' : 'no', score: submission.score ?? null }
+    : { marked: 'no', score: null };
+
+  return res.status(200).json({ status: 'success', data: response });
+});
+
+
 module.exports = {
   submitQuiz,
   submitAssignment,
@@ -372,6 +433,8 @@ module.exports = {
   getSubmissionById,
   updateSubmission,
   deleteSubmission,
-  gradeAssignmentSubmission
+  gradeAssignmentSubmission,
+  gradeQuizSubmission,
+  getQuizSubmissionStatus
 };
 
