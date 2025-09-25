@@ -83,7 +83,6 @@ const checkQuizDueDate = asyncWrapper(async (req, res, next) => {
   if (DueDate>now && !quiz.allowLateSubmissions) {
     return next(new AppError('Quiz submission deadline has passed', 400));
   }
-  
   next();
 });
 
@@ -129,32 +128,24 @@ const subExist = asyncWrapper(async (req, res, next) => {
 });
 
 // Ensure admin can see/modify this submission (basic check; superadmin bypass)
-const canSeeSubmissionAsAdmin = asyncWrapper(async (req, res, next) => {
+const canSeeSubmission = asyncWrapper(async (req, res, next) => {
   const admin = req.admin;
-  const submission = req.submission
+  const submission= req.submission;
   if (!admin) {
     return next(new AppError('Not authorized', 401));
   }
   // Super admin override
-  if (String(admin.adminId) === '1' || String(admin.adminId) === String(submission.assistantId)) {
+  if (String(admin.adminId) === '1') {
     return next();
   }
-
+    console.log(submission);
+  if(String(admin.id) !== String(submission.assistantId)){
+      return next(new AppError('cannot access this submission',401));
+  }
   // For now, allow; implement stricter checks if business rules require
-  next(new AppError('cannot access this submission',401));
+  next();
 });
 
-const canSeeSubmissionAsStudent = asyncWrapper(async (req, res, next) => {
-    const student = req.student;
-    const submission = req.submission;
-    if (!student) {
-        return next(new AppError('Not authorized',401))
-    }
-    if(String(student.id)!==String(submission.studentId)){
-        return next(new AppError('cannot access this submission',401))
-    }
-    next();
-});
 // Ensure submission is not already marked
 const marked = asyncWrapper(async (req, res, next) => {
   const submission = req.submission;
@@ -177,25 +168,24 @@ const checkData = asyncWrapper(async (req, res, next) => {
 });
 
 
-const subFound = asyncWrapper(async(req,res,next)=>{
+const subFound=asyncWrapper(async(req,res,next)=>{
   const { submissionId } = req.params;
-  
   const submission = await Submission.findOne({
-    where: { subId: submissionId }
-    // include: [
-    //   {
-    //     model: Quiz,
-    //     attributes: ['quizId', 'title', 'maxPoints', 'showResults'],
-    //     required: false
-    //   },
-    //   {
-    //     model: Assignment,
-    //     attributes: ['assignmentId', 'title', 'maxPoints'],
-    //     required: false
-    //   }
-    // ]
+    where: { subId: submissionId, studentId },
+    include: [
+      {
+        model: Quiz,
+        attributes: ['quizId', 'title', 'maxPoints', 'showResults'],
+        required: false
+      },
+      {
+        model: Assignment,
+        attributes: ['assignmentId', 'title', 'maxPoints'],
+        required: false
+      }
+    ]
   });
-  console.log("Fetched Submission:", submission);
+  
   if (!submission) {
     return next(new AppError('Submission not found', 404));
   }
@@ -215,8 +205,8 @@ module.exports = {
   validateAttachment,
   // Admin submission functions
   subExist,
-  AsStudent,
+  canSeeSubmission,
   marked,
   checkData,
-  subFound
+  subFound,
 };

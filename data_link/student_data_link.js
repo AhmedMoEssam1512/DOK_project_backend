@@ -64,8 +64,8 @@ function getGroupById(studentId){
     })
 }
 
-function showSubmissions(studentId){
-    return Submission.findAll({where:{studentId}})
+function showSubmissions(type, status, studentId){
+    return Submission.findAll({where:{type, status, studentId}})
 }
 
 function getTotalNumberOfStudents(){

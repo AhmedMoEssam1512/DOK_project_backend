@@ -123,12 +123,12 @@ function findAdminById(adminID ){
 
 function getUnmarkedSubmissionsByAdminId(assistantId){
     console.log(assistantId);
-    return Submission.findAll({where: { assistantId ,score : null}});
+    return Submission.findAll({where: { assistantId , status: "unmarked"}});
 }
 
 function getAllUnmarkedSubmissions(){
     console.log("all sent")
-    return Submission.findAll({where: { score : null}})
+    return Submission.findAll({where: { status : "unmarked"}})
 }
 
 function findSubmissionById(subId){

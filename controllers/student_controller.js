@@ -111,8 +111,14 @@ const getMyFeed = asyncWrapper(async (req, res, next) => {
 
 const showMySubmission = asyncWrapper(async (req, res) => {
     const studentId = req.student.id;
+    const {type , status} = req.body;
+    if(type !== "quiz" && type !== "assignment"){
+        return res.status(400).json({
+            message: "Type must be quiz or assignment"
+        });
+    }
     const profile = await student.findStudentById(studentId);
-    const submissions = await student.showSubmissions(studentId);
+    const submissions = await student.showSubmissions(type, status, studentId);
     console.log(studentId);
     if (!submissions || submissions.length === 0) {
         return res.status(200).json({ message: "No submissions found" });
@@ -128,16 +134,28 @@ const showMySubmission = asyncWrapper(async (req, res) => {
                 assignmentId: submission.assId,
                 submittedAt: submission.createdAt,
                 score: submission.score,
+                status: submission.status,
+                gradedby: submission.gradedby,
+                feedback: submission.feedback,
             }))
         }
     });
 })
 
 const showASubmission = asyncWrapper(async (req, res) => {
-    const found = req.found;
+    const found = req.submission;
     return res.status(200).json({
         status: "success",
         data: {found}
+    })
+})
+
+const deleteSub = asyncWrapper(async (req, res) => {
+    const found = req.submission;
+    await found.destroy();
+    return res.status(200).json({
+        status: "success",
+        message: "Submission deleted successfully"
     })
 })
 
@@ -190,5 +208,6 @@ module.exports = {
     getMyFeed,
     showMySubmission,
     showASubmission,
-    getQuizTrend
+    getQuizTrend,
+    deleteSub
 }
