@@ -78,12 +78,11 @@ const checkAssignmentNotSubmitted = asyncWrapper(async (req, res, next) => {
 const checkQuizDueDate = asyncWrapper(async (req, res, next) => {
   const quiz = req.quiz;
   const now = new Date();
-  const isLate = quiz.dueDate && now > quiz.dueDate;
+  const DueDate = quiz.startedAt + quiz.timelimit*60000;
   
-  if (isLate && !quiz.allowLateSubmissions) {
+  if (DueDate>now && !quiz.allowLateSubmissions) {
     return next(new AppError('Quiz submission deadline has passed', 400));
   }
-  
   next();
 });
 
@@ -120,6 +119,7 @@ const validateAttachment = asyncWrapper(async (req, res, next) => {
 // Ensure submission exists and attach it to req.submission
 const subExist = asyncWrapper(async (req, res, next) => {
   const { id } = req.params;
+  console.log(id)
   const submission = await Submission.findOne({ where: { subId: id } });
   if (!submission) {
     return next(new AppError('Submission not found', 404));
@@ -131,12 +131,17 @@ const subExist = asyncWrapper(async (req, res, next) => {
 // Ensure admin can see/modify this submission (basic check; superadmin bypass)
 const canSeeSubmission = asyncWrapper(async (req, res, next) => {
   const admin = req.admin;
+  const submission= req.submission;
   if (!admin) {
     return next(new AppError('Not authorized', 401));
   }
   // Super admin override
   if (String(admin.adminId) === '1') {
     return next();
+  }
+    console.log(submission);
+  if(String(admin.id) !== String(submission.assistantId)){
+      return next(new AppError('cannot access this submission',401));
   }
   // For now, allow; implement stricter checks if business rules require
   next();
@@ -163,6 +168,34 @@ const checkData = asyncWrapper(async (req, res, next) => {
   next();
 });
 
+
+const subFound=asyncWrapper(async(req,res,next)=>{
+  const { submissionId } = req.params;
+  const submission = await Submission.findOne({
+    where: { subId: submissionId, studentId },
+    include: [
+      {
+        model: Quiz,
+        attributes: ['quizId', 'title', 'maxPoints', 'showResults'],
+        required: false
+      },
+      {
+        model: Assignment,
+        attributes: ['assignmentId', 'title', 'maxPoints'],
+        required: false
+      }
+    ]
+  });
+  
+  if (!submission) {
+    return next(new AppError('Submission not found', 404));
+  }
+
+  req.submission = submission;
+  next();
+  
+});
+
 module.exports = {
   quizExistsAndPublished,
   assignmentExistsAndPublished,
@@ -175,5 +208,6 @@ module.exports = {
   subExist,
   canSeeSubmission,
   marked,
-  checkData
+  checkData,
+  subFound,
 };

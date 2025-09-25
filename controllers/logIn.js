@@ -12,6 +12,7 @@ const logIn = asyncWrapper(async (req, res, next) => {
 
   // ------------------- ADMIN LOGIN -------------------
   const adminUser = await admin.findAdminByEmail(email);
+  console.log("admin found :",adminUser);
   if (adminUser) {
     const match = await bcrypt.compare(String(password), adminUser.password);
     if (!match) {
@@ -48,7 +49,9 @@ const logIn = asyncWrapper(async (req, res, next) => {
   }
 
   // ------------------- STUDENT LOGIN -------------------
+  console.log("Searching for student with email:", email);
   const studentUser = await student.findStudentByEmail(email);
+  console.log("student found :",studentUser);
   if (studentUser) {
     const valid = await bcrypt.compare(String(password), studentUser.password);
     if (!valid) {

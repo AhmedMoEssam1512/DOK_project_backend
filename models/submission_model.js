@@ -9,7 +9,7 @@ const Submission = sequelize.define('Submission', {
   score: DataTypes.INTEGER,
   answers: DataTypes.STRING,
   marked: DataTypes.STRING,
-  subDate: {
+  createdAt: {
     type: DataTypes.DATE, 
     defaultValue: DataTypes.NOW
   },
@@ -26,6 +26,8 @@ const Submission = sequelize.define('Submission', {
   gradedBy: DataTypes.STRING,
   feedback: DataTypes.TEXT,
   grade: DataTypes.STRING,
+    percentage: DataTypes.FLOAT,
+  status: {type:DataTypes.STRING, defaultValue: 'unmarked'}
 }, { 
   tableName: 'submission', 
   timestamps: true,

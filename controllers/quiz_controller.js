@@ -168,7 +168,9 @@ const publishQuiz = asyncWrapper(async (req, res) => {
   const quiz = await Quiz.findOne({
     where: { quizId, isActive: true },
   });
-  
+
+  quiz.startedAt = new Date();
+  await quiz.save();
   if (!quiz) {
     return res.status(404).json({
       status: "error",

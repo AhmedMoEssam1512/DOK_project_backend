@@ -35,10 +35,6 @@ const Quiz = sequelize.define('Quiz', {
     allowNull: false,
     defaultValue: 100
   },
-  dueDate: {
-    type: DataTypes.DATE,
-    allowNull: true
-  },
   timeLimit: {
     type: DataTypes.INTEGER, // Time limit in minutes
     allowNull: true
@@ -47,7 +43,10 @@ const Quiz = sequelize.define('Quiz', {
     type: DataTypes.INTEGER,
     allowNull: true // Can be null for quizzes not in any topic
   },
-  
+  startedAt: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
   semester: {
     type: DataTypes.STRING,
     allowNull: true
@@ -72,6 +71,10 @@ const Quiz = sequelize.define('Quiz', {
   isGraded: {
     type: DataTypes.BOOLEAN,
     defaultValue: true // Quizzes are usually graded
+  },
+  createdAt: {
+    type: DataTypes.DATE, 
+    defaultValue: DataTypes.NOW
   },
   showResults: {
     type: DataTypes.BOOLEAN,

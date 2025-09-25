@@ -207,7 +207,7 @@ const showUnmarkedSubmissions = asyncWrapper(async (req, res) => {
 });
 
 const findSubmissionById = asyncWrapper(async (req, res) => {
-    const found = req.found;
+    const found = req.submission;
     return res.status(200).json({
         status: "success",
         data: {found}
@@ -241,12 +241,22 @@ const showAllSubmissions = asyncWrapper(async (req, res) => {
 
 })
 
+const deleteSubByAdmin = asyncWrapper(async (req, res) => {
+    const found = req.submission;
+    await found.destroy();
+    return res.status(200).json({
+        status: "success",
+        message: "Submission deleted successfully"
+    })
+})
+
 const markSubmission = asyncWrapper(async (req, res) => {
-    const found = req.found;
+    const found = req.submission;
     const studentSub = await student.findStudentById(found.studentId)   ;
-    const {marked,score } = req.body
+    const {marked, score, feedback} = req.body
     found.score = score;
     found.marked = marked;
+    found.feedback = feedback;
     found.markedAt = new Date();
     studentSub.totalScore += score;
     await studentSub.save();
@@ -272,6 +282,7 @@ module.exports = {
     showUnmarkedSubmissions,
     findSubmissionById,
     showAllSubmissions,
-    markSubmission
+    markSubmission,
+    deleteSubByAdmin
 }
 
