@@ -1,5 +1,5 @@
 module.exports = db => {
-    const { Student, Admin, Quiz, Assignment, Submission, Session, Attendance, Registrations, Feed, Topic, WeeklySession } = db;
+    const { Student, Admin, Quiz, Assignment, Submission, Session, Attendance, Registrations, Feed, Topic } = db;
 
     console.log("Setting up associations...");
     // ---------------- Student----------------
@@ -43,19 +43,11 @@ module.exports = db => {
     Admin.hasMany(Assignment, { foreignKey: 'adminId' }); 
     Assignment.belongsTo(Admin, { foreignKey: 'adminId' });
 
-    // Admin - Submission (for grading)
-    Admin.hasMany(Submission, { foreignKey: 'gradedBy' }); 
-    Submission.belongsTo(Admin, { foreignKey: 'gradedBy', as: 'Grader' });
+    // Note: gradedBy is now a STRING field storing admin name, not a foreign key
 
     // Admin - Topic
     Admin.hasMany(Topic, { foreignKey: 'adminId' });
     Topic.belongsTo(Admin, { foreignKey: 'adminId' });
-
-    // Admin - WeeklySession
-    Admin.hasMany(WeeklySession, { foreignKey: 'adminId' }); 
-    WeeklySession.belongsTo(Admin, { foreignKey: 'adminId' });
-
-    // Note: Topics are standalone rows keyed by adminId + semester
 
     // ---------------- Quiz - Submission ----------------
     Quiz.hasMany(Submission, { foreignKey: 'quizId' }); 

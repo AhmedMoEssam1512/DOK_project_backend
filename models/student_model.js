@@ -10,6 +10,7 @@ const Student = sequelize.define('Student', {
   studentName: {type: DataTypes.STRING, allowNull: false},
   password: {type: DataTypes.STRING, allowNull: false},
   assistantId: {type: DataTypes.STRING},
+  adminId: {type: DataTypes.INTEGER},
   group: {type: DataTypes.STRING, allowNull: false},
   semester: {type: DataTypes.STRING, allowNull: false},
   parentPhoneNumber: {type: DataTypes.STRING, allowNull: false},

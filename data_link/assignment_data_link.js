@@ -4,7 +4,7 @@ const Assignment = require('../models/assignment_model');
 const Admin = require('../models/admin_model');
 const Submission = require('../models/submission_model');
 
-Assignment.belongsTo(Admin, { foreignKey: "publisher" });
+Assignment.belongsTo(Admin, { foreignKey: "adminId" });
 
 function createAssignment(mark, document, startDate, endDate, semester, publisher){
     return Assignment.create(

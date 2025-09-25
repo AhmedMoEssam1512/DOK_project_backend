@@ -67,7 +67,7 @@ const assignExists = asyncWrapper(async (req, res, next) => {
 const canSeeAssign = asyncWrapper(async (req, res, next) => {
     const userGroup = req.user.group ;
     const assignData = req.assignData;
-    const publisher = await admin.findAdminById(assignData.publisher);
+    const publisher = await admin.findAdminById(assignData.adminId);
     if (!publisher) {
         return next(new AppError("Publisher not found", httpStatus.NOT_FOUND));
     }

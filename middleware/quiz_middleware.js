@@ -71,7 +71,7 @@ const quizExists = asyncWrapper(async (req, res, next) => {
 const canAccessQuiz = asyncWrapper(async (req, res, next) => {
     const userGroup = req.admin.group ;
     const quizData = req.quizData;
-    const publisher = await admin.findAdminById(quizData.publisher);
+    const publisher = await admin.findAdminById(quizData.adminId);
     if (!publisher) {
         return next(new AppError("Publisher not found", httpStatus.NOT_FOUND));
     }
@@ -88,7 +88,7 @@ const canAccessQuiz = asyncWrapper(async (req, res, next) => {
 const canSeeQuiz = asyncWrapper(async (req, res, next) => {
     const userGroup = req.user.group ;
     const quizData = req.quizData;
-    const publisher = await admin.findAdminById(quizData.publisher);
+    const publisher = await admin.findAdminById(quizData.adminId);
     if (!publisher) {
         return next(new AppError("Publisher not found", httpStatus.NOT_FOUND));
     }

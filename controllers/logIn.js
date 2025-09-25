@@ -38,7 +38,7 @@ const logIn = asyncWrapper(async (req, res, next) => {
       token: adminToken,
       data : {id: adminUser.adminId, 
               email: adminUser.email,
-              name : adminUser.Name,
+              name : adminUser.name,
               phoneNumber : adminUser.phoneNumber,   
               group: adminUser.group,
               role: adminUser.role

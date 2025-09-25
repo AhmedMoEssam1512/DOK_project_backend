@@ -5,63 +5,17 @@ const { Submission, Quiz, Assignment, Admin } = require('../models');
 
 // Submit Quiz
 const submitQuiz = asyncWrapper(async (req, res) => {
-  const { quizId } = req.params;
   const { attachment } = req.body;
   const studentId = req.student.id;
-  
-  const quiz = await Quiz.findOne({
-    where: { quizId, isActive: true, isPublished: true }
-  });
-  
-  if (!quiz) {
-    return res.status(404).json({
-      status: "error",
-      message: "Quiz not found or not published"
-    });
-  }
-  
-  // Check if student already submitted
-  const existingSubmission = await Submission.findOne({
-    where: { 
-      studentId, 
-      quizId,
-      type: 'quiz'
-    }
-  });
-  
-  if (existingSubmission) {
-    return res.status(400).json({
-      status: "error",
-      message: "You have already submitted this quiz"
-    });
-  }
-  
-  // Check due date
-  const now = new Date();
-  const isLate = quiz.dueDate && now > quiz.dueDate;
-  
-  if (isLate && !quiz.allowLateSubmissions) {
-    return res.status(400).json({
-      status: "error",
-      message: "Quiz submission deadline has passed"
-    });
-  }
-  
-  // Validate attachment URL
-  if (!attachment || typeof attachment !== 'string') {
-    return res.status(400).json({
-      status: "error",
-      message: "Attachment URL is required"
-    });
-  }
+  const quiz = req.quiz; // From middleware
   
   const submissionData = {
     studentId,
-    quizId,
-    answers: attachment, // Store PDF URL as answers
+    quizId: quiz.quizId,
+    answers: attachment,
     type: 'quiz',
     semester: quiz.semester,
-    subDate: now,
+    subDate: new Date(),
     status: 'submitted'
   };
   
@@ -88,63 +42,17 @@ const submitQuiz = asyncWrapper(async (req, res) => {
 
 // Submit Assignment
 const submitAssignment = asyncWrapper(async (req, res) => {
-  const { assignmentId } = req.params;
   const { attachment } = req.body;
   const studentId = req.student.id;
-  
-  const assignment = await Assignment.findOne({
-    where: { assignmentId, isActive: true, isPublished: true }
-  });
-  
-  if (!assignment) {
-    return res.status(404).json({
-      status: "error",
-      message: "Assignment not found or not published"
-    });
-  }
-  
-  // Check if student already submitted
-  const existingSubmission = await Submission.findOne({
-    where: { 
-      studentId, 
-      assId: assignmentId,
-      type: 'assignment'
-    }
-  });
-  
-  if (existingSubmission) {
-    return res.status(400).json({
-      status: "error",
-      message: "You have already submitted this assignment"
-    });
-  }
-  
-  // Check due date
-  const now = new Date();
-  const isLate = assignment.dueDate && now > assignment.dueDate;
-  
-  if (isLate && !assignment.allowLateSubmissions) {
-    return res.status(400).json({
-      status: "error",
-      message: "Assignment submission deadline has passed"
-    });
-  }
-  
-  // Validate attachment URL
-  if (!attachment || typeof attachment !== 'string') {
-    return res.status(400).json({
-      status: "error",
-      message: "Attachment URL is required"
-    });
-  }
+  const assignment = req.assignment; // From middleware
   
   const submissionData = {
     studentId,
-    assId: assignmentId,
-    answers: attachment, // Store PDF URL as answers
+    assId: assignment.assignmentId,
+    answers: attachment,
     type: 'assignment',
     semester: assignment.semester,
-    subDate: now,
+    subDate: new Date(),
     status: 'submitted'
   };
   
@@ -251,20 +159,20 @@ const getSubmissionById = asyncWrapper(async (req, res) => {
   });
 });
 
-// Update Submission (for draft submissions)
+// Update Submission
 const updateSubmission = asyncWrapper(async (req, res) => {
   const { submissionId } = req.params;
   const { attachment } = req.body;
   const studentId = req.student.id;
   
   const submission = await Submission.findOne({
-    where: { subId: submissionId, studentId, status: 'draft' }
+    where: { subId: submissionId, studentId }
   });
   
   if (!submission) {
     return res.status(404).json({
       status: "error",
-      message: "Draft submission not found"
+      message: "Submission not found"
     });
   }
   
@@ -289,19 +197,19 @@ const updateSubmission = asyncWrapper(async (req, res) => {
   });
 });
 
-// Delete Submission (only if draft)
+// Delete Submission 
 const deleteSubmission = asyncWrapper(async (req, res) => {
   const { submissionId } = req.params;
   const studentId = req.student.id;
   
   const submission = await Submission.findOne({
-    where: { subId: submissionId, studentId, status: 'draft' }
+    where: { subId: submissionId, studentId }
   });
   
   if (!submission) {
     return res.status(404).json({
       status: "error",
-      message: "Draft submission not found"
+      message: "Submission not found"
     });
   }
   
@@ -336,13 +244,16 @@ const gradeAssignmentSubmission = asyncWrapper(async (req, res) => {
   const assignment = await Assignment.findByPk(assignmentId);
   const percentage = assignment ? (score / assignment.maxPoints) * 100 : 0;
   
+  const adminName = req.admin?.name || 'Unknown Admin';
+  
   await submission.update({
     score,
     percentage,
     grade,
     feedback,
     status: 'graded',
-    gradedAt: new Date()
+    gradedAt: new Date(),
+    gradedBy: adminName
   });
   
   return res.status(200).json({
@@ -350,13 +261,14 @@ const gradeAssignmentSubmission = asyncWrapper(async (req, res) => {
     message: "Submission graded successfully",
     data: {
       submission: {
-        submissionId: submission.submissionId,
+        submissionId: submission.subId,
         score,
         percentage,
         grade,
         feedback,
         status: 'graded',
-        gradedAt: new Date()
+        gradedAt: new Date(),
+        gradedBy: adminName
       }
     }
   });
@@ -384,15 +296,16 @@ const gradeQuizSubmission = asyncWrapper(async (req, res) => {
   const quiz = await Quiz.findByPk(quizId);
   const percentage = quiz ? (score / quiz.maxPoints) * 100 : 0;
 
+  const adminName = req.admin?.name || 'Unknown Admin';
+  
   await submission.update({
     score,
     percentage,
     grade,
     feedback,
-    markedAt: new Date()
+    markedAt: new Date(),
+    gradedBy: adminName
   });
-  
-  const assistantName = req.admin?.name || null;
 
   return res.status(200).json({
     status: "success",
@@ -405,7 +318,7 @@ const gradeQuizSubmission = asyncWrapper(async (req, res) => {
         grade,
         feedback,
         marked: 'yes',
-        assistantName
+        gradedBy: adminName
       }
     }
   });
@@ -427,14 +340,14 @@ const getQuizSubmissionStatus = asyncWrapper(async (req, res) => {
 
 
 module.exports = {
-  submitQuiz,
-  submitAssignment,
-  getStudentSubmissions,
-  getSubmissionById,
-  updateSubmission,
-  deleteSubmission,
-  gradeAssignmentSubmission,
-  gradeQuizSubmission,
-  getQuizSubmissionStatus
+  submitQuiz,//Done and Tested
+  submitAssignment,//Done and Tested
+  getStudentSubmissions,//Done
+  getSubmissionById,//Done
+  updateSubmission,//Done
+  deleteSubmission,//Done
+  gradeAssignmentSubmission,//Done
+  gradeQuizSubmission,//Done
+  getQuizSubmissionStatus//Done
 };
 

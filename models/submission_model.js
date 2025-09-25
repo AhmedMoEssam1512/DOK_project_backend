@@ -22,7 +22,10 @@ const Submission = sequelize.define('Submission', {
   markedAt: {
     type: DataTypes.DATE, 
     defaultValue: DataTypes.NOW
-  }, 
+  },
+  gradedBy: DataTypes.STRING,
+  feedback: DataTypes.TEXT,
+  grade: DataTypes.STRING,
 }, { 
   tableName: 'submission', 
   timestamps: true,

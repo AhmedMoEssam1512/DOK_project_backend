@@ -1,9 +1,11 @@
 const sequelize = require('../config/database');
 const { Sequelize, DataTypes } = require('sequelize');
 const Admin = sequelize.define('Admin', {
-  adminId: { type: DataTypes.INTEGER, 
+  adminId: { 
+    type: DataTypes.INTEGER, 
     primaryKey: true, 
-    autoIncrement: true  },
+    autoIncrement: true
+  },
   email: {type:DataTypes.STRING , unique: true, allowNull: false, validate: { isEmail: true }},
   name: {type: DataTypes.STRING, allowNull: false},
   group: DataTypes.STRING,
