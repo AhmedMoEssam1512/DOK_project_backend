@@ -164,24 +164,26 @@ const checkData = asyncWrapper(async (req, res, next) => {
 });
 
 
-const subFound=asyncWrapper(async(req,res,next)=>{
+const subFound = asyncWrapper(async(req,res,next)=>{
   const { submissionId } = req.params;
+  const studentId = req.student.id
+  console.log(studentId);
   const submission = await Submission.findOne({
-    where: { subId: submissionId, studentId },
-    include: [
-      {
-        model: Quiz,
-        attributes: ['quizId', 'title', 'maxPoints', 'showResults'],
-        required: false
-      },
-      {
-        model: Assignment,
-        attributes: ['assignmentId', 'title', 'maxPoints'],
-        required: false
-      }
-    ]
+    where: { subId: submissionId, studentId }
+    // include: [
+    //   {
+    //     model: Quiz,
+    //     attributes: ['quizId', 'title', 'maxPoints', 'showResults'],
+    //     required: false
+    //   },
+    //   {
+    //     model: Assignment,
+    //     attributes: ['assignmentId', 'title', 'maxPoints'],
+    //     required: false
+    //   }
+    // ]
   });
-  
+  console.log("Fetched Submission:", submission);
   if (!submission) {
     return next(new AppError('Submission not found', 404));
   }

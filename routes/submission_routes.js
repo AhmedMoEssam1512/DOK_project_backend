@@ -25,7 +25,7 @@ router.route('/assignment/:assignmentId')
     submissionControllers.submitAssignment
   );
 
-router.route('/student')
+router.route('/getMySubmission')
   .get(auth.studentProtect, submissionControllers.getStudentSubmissions);
 
 

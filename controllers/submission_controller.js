@@ -8,7 +8,7 @@ const { Submission, Quiz, Assignment, Admin } = require('../models');
 const submitQuiz = asyncWrapper(async (req, res) => {
   const { attachment } = req.body;
   const studentId = req.student.id;
-  const studentData = await student.getStudentById(studentId);
+  const studentData = await student.findStudentById(studentId);
   const quiz = req.quiz; // From middleware
   const submissionData = {
     studentId,
@@ -17,7 +17,6 @@ const submitQuiz = asyncWrapper(async (req, res) => {
     type: 'quiz',
     semester: quiz.semester,
     subDate: new Date(),
-    status: 'submitted',
     assistantId: studentData.assistantId || null
   };
   
@@ -47,7 +46,7 @@ const submitQuiz = asyncWrapper(async (req, res) => {
 const submitAssignment = asyncWrapper(async (req, res) => {
   const { attachment } = req.body;
   const studentId = req.student.id;
-  const studentData = await student.getStudentById(studentId);
+  const studentData = await student.findStudentById(studentId);
   const assignment = req.assignment; // From middleware
   
   const submissionData = {
@@ -57,7 +56,6 @@ const submitAssignment = asyncWrapper(async (req, res) => {
     type: 'assignment',
     semester: assignment.semester,
     subDate: new Date(),
-    status: 'submitted',
     assistantId: studentData.assistantId || null
   };
   
@@ -131,7 +129,7 @@ const getStudentSubmissions = asyncWrapper(async (req, res) => {
 // Get Submission by ID
 const getSubmissionById = asyncWrapper(async (req, res) => {
   const submission= req.submission;
-  const studentId = req.student.id;
+  console.log("Submission:", submission);
   
   return res.status(200).json({
     status: "success",
@@ -285,7 +283,7 @@ const getQuizSubmissionStatus = asyncWrapper(async (req, res) => {
 module.exports = {
   submitQuiz,//Done and Tested
   submitAssignment,//Done and Tested
-  getStudentSubmissions,//Done
+  getStudentSubmissions,//Done and partially tested
   getSubmissionById,//Done
   updateSubmission,//Done
   deleteSubmission,//Done
