@@ -78,9 +78,9 @@ const checkAssignmentNotSubmitted = asyncWrapper(async (req, res, next) => {
 const checkQuizDueDate = asyncWrapper(async (req, res, next) => {
   const quiz = req.quiz;
   const now = new Date();
-  const isLate = quiz.dueDate && now > quiz.dueDate;
+  const DueDate = quiz.startedAt + quiz.timelimit*60000;
   
-  if (isLate && !quiz.allowLateSubmissions) {
+  if (DueDate>now && !quiz.allowLateSubmissions) {
     return next(new AppError('Quiz submission deadline has passed', 400));
   }
   

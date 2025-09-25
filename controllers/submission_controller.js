@@ -1,14 +1,15 @@
 const asyncWrapper = require('../middleware/asyncwrapper');
 const AppError = require('../utils/app.error');
 const { Op } = require('sequelize');
+const student = require('../data_link/student_data_link');
 const { Submission, Quiz, Assignment, Admin } = require('../models');
 
 // Submit Quiz
 const submitQuiz = asyncWrapper(async (req, res) => {
   const { attachment } = req.body;
   const studentId = req.student.id;
+  const studentData = await student.getStudentById(studentId);
   const quiz = req.quiz; // From middleware
-  
   const submissionData = {
     studentId,
     quizId: quiz.quizId,
@@ -16,7 +17,8 @@ const submitQuiz = asyncWrapper(async (req, res) => {
     type: 'quiz',
     semester: quiz.semester,
     subDate: new Date(),
-    status: 'submitted'
+    status: 'submitted',
+    assistantId: studentData.assistantId || null
   };
   
   const submission = await Submission.create(submissionData);
@@ -66,7 +68,7 @@ const submitAssignment = asyncWrapper(async (req, res) => {
     semester: submission.semester,
     score: submission.score ?? null,
     marked: submission.score != null ? 'yes' : 'no',
-    assistantName
+    assistantId: submission.assistantId ?? null
   };
 
   return res.status(201).json({
@@ -253,7 +255,6 @@ const gradeAssignmentSubmission = asyncWrapper(async (req, res) => {
     feedback,
     status: 'graded',
     gradedAt: new Date(),
-    gradedBy: adminName
   });
   
   return res.status(200).json({
@@ -268,7 +269,6 @@ const gradeAssignmentSubmission = asyncWrapper(async (req, res) => {
         feedback,
         status: 'graded',
         gradedAt: new Date(),
-        gradedBy: adminName
       }
     }
   });

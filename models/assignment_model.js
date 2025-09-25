@@ -69,6 +69,10 @@ const Assignment = sequelize.define('Assignment', {
     type: DataTypes.BOOLEAN,
     defaultValue: true // Assignments are usually graded
   },
+  createdAt: {
+    type: DataTypes.DATE, 
+    defaultValue: DataTypes.NOW
+  }
 }, {
   tableName: 'assignment',
   timestamps: true,
