@@ -181,6 +181,8 @@ const getQuizTrend = asyncWrapper(async (req, res) => {
   return res.status(200).json({ status: 'success', data: { points, chartPoints } });
 })
 
+
+
 module.exports = {
     studentRegister,
     showMyAdminProfile,

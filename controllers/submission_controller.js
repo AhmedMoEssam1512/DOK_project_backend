@@ -127,58 +127,6 @@ const getStudentSubmissions = asyncWrapper(async (req, res) => {
 });
 
 // Get Submission by ID
-const getSubmissionById = asyncWrapper(async (req, res) => {
-  const submission= req.submission;
-  console.log("Submission:", submission);
-  
-  return res.status(200).json({
-    status: "success",
-    message: "Submission retrieved successfully",
-    data: {
-      submission
-    }
-  });
-});
-
-// Update Submission
-const updateSubmission = asyncWrapper(async (req, res) => {
-  const submission= req.submission;
-  const { attachment } = req.body;
-  const studentId = req.student.id;
-  
-  // Validate attachment URL
-  if (!attachment || typeof attachment !== 'string') {
-    return res.status(400).json({
-      status: "error",
-      message: "Attachment URL is required"
-    });
-  }
-  
-  
-  await submission.update({ answers: attachment });
-  
-  return res.status(200).json({
-    status: "success",
-    message: "Submission updated successfully",
-    data: {
-      submission
-    }
-  });
-});
-
-// Delete Submission 
-const deleteSubmission = asyncWrapper(async (req, res) => {
-  const submission= req.submission;
-  const studentId = req.student.id;
-  
-  await submission.destroy();
-  
-  return res.status(200).json({
-    status: "success",
-    message: "Submission deleted successfully"
-  });
-});
-
 
 // Grade Assignment Submission
 const gradeAssignmentSubmission = asyncWrapper(async (req, res) => {
@@ -284,9 +232,6 @@ module.exports = {
   submitQuiz,//Done and Tested
   submitAssignment,//Done and Tested
   getStudentSubmissions,//Done and partially tested
-  getSubmissionById,//Done
-  updateSubmission,//Done
-  deleteSubmission,//Done
   gradeAssignmentSubmission,//Done
   gradeQuizSubmission,//Done
   getQuizSubmissionStatus//Done

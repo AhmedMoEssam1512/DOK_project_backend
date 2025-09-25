@@ -25,14 +25,6 @@ router.route('/assignment/:assignmentId')
     submissionControllers.submitAssignment
   );
 
-router.route('/getMySubmission')
-  .get(auth.studentProtect, submissionControllers.getStudentSubmissions);
-
-
-router.route('/:submissionId')
-  .get(auth.studentProtect,submissionMiddleware.subFound ,submissionControllers.getSubmissionById)
-  .patch(auth.studentProtect, submissionMiddleware.subFound,submissionControllers.updateSubmission)
-  .delete(auth.studentProtect, submissionMiddleware.subFound ,submissionControllers.deleteSubmission);
 
 // Grade Assignment Submission
 router.route('/assignment/:assignmentId/submissions/:submissionId/grade')

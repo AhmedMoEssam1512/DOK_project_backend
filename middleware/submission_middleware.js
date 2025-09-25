@@ -129,19 +129,32 @@ const subExist = asyncWrapper(async (req, res, next) => {
 });
 
 // Ensure admin can see/modify this submission (basic check; superadmin bypass)
-const canSeeSubmission = asyncWrapper(async (req, res, next) => {
+const canSeeSubmissionAsAdmin = asyncWrapper(async (req, res, next) => {
   const admin = req.admin;
+  const submission = req.submission
   if (!admin) {
     return next(new AppError('Not authorized', 401));
   }
   // Super admin override
-  if (String(admin.adminId) === '1') {
+  if (String(admin.adminId) === '1' || String(admin.adminId) === String(submission.assistantId)) {
     return next();
   }
+
   // For now, allow; implement stricter checks if business rules require
-  next();
+  next(new AppError('cannot access this submission',401));
 });
 
+const canSeeSubmissionAsStudent = asyncWrapper(async (req, res, next) => {
+    const student = req.student;
+    const submission = req.submission;
+    if (!student) {
+        return next(new AppError('Not authorized',401))
+    }
+    if(String(student.id)!==String(submission.studentId)){
+        return next(new AppError('cannot access this submission',401))
+    }
+    next();
+});
 // Ensure submission is not already marked
 const marked = asyncWrapper(async (req, res, next) => {
   const submission = req.submission;
@@ -166,10 +179,9 @@ const checkData = asyncWrapper(async (req, res, next) => {
 
 const subFound = asyncWrapper(async(req,res,next)=>{
   const { submissionId } = req.params;
-  const studentId = req.student.id
-  console.log(studentId);
+  
   const submission = await Submission.findOne({
-    where: { subId: submissionId, studentId }
+    where: { subId: submissionId }
     // include: [
     //   {
     //     model: Quiz,
@@ -203,7 +215,7 @@ module.exports = {
   validateAttachment,
   // Admin submission functions
   subExist,
-  canSeeSubmission,
+  AsStudent,
   marked,
   checkData,
   subFound
