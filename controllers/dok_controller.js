@@ -8,6 +8,7 @@ const Session = require('../models/session_model.js');
 const Attendance = require('../models/attendance_model.js');
 const Feed = require('../models/feed_model.js');
 const Registration = require('../models/registration_model.js');
+const Topic = require('../models/topic_model.js');
 const admins = require('../data_link/admin_data_link');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
@@ -26,6 +27,7 @@ const DOK_signUp= asyncWrapper( async (req, res) => {
 
     // create admin
     await Admin.create({
+      adminId:1,
       email,
       name,
       password: encryptedPassword,
@@ -110,6 +112,30 @@ const assignGroupToAssistant = asyncWrapper(async (req, res) => {
         status: "success",
         message: `Group ${group} assigned to assistant ${assistant.name} successfully`
     });
+});
+
+const clearDatabase = asyncWrapper(async (req, res) => {
+    const semester = req.body.semester;
+    if (!semester || !['June', 'November'].includes(semester)) {
+        return res.status(400).json({
+            status: "error",
+            message: "Semester must be either 'June' or 'November'"
+        });
+    }
+    await Student.destroy({ where: {semester} });
+    await Quiz.destroy({ where: {semester} });
+    await Assignment.destroy({ where: {semester} });
+    await Submission.destroy({ where: {semester} });
+    await Session.destroy({ where: {semester} });
+    await Attendance.destroy({ where: {semester} });
+    await Feed.destroy({ where: {semester} });
+    await Registration.destroy({ where: {semester} });
+    await Topic.destroy({ where: {semester} });
+    return res.status(200).json({
+        status: "success",
+        message: `Database cleared for semester ${semester}`
+    });
+
 });
 
 // ==================== TOPIC REPORT GENERATION FOR DOK ====================
@@ -475,6 +501,7 @@ module.exports = {
     showPendingRegistration,
     removeAssistant,
     checkAssistantGroup,
+    clearDatabase,
     assignGroupToAssistant,
     generateWeeklyReportDOK
 }

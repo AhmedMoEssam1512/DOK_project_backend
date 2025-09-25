@@ -28,8 +28,16 @@ const checkRole = asyncWrapper(async (req, res, next) => {
   }
 });
 
-
+const DOKFound= asyncWrapper(async (req, res, next) => {
+  const dok = await Admin.findOne({ where: { adminId: 1 } });
+  if(dok){
+    return next(new AppError('DOK already exists', 400));
+  }
+  console.log("DOK not found, proceed to create one");
+  next();
+});
 module.exports = {
     findAdmin,
-    checkRole
+    checkRole,
+    DOKFound
 };
