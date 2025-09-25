@@ -40,7 +40,7 @@ const normalizeAttachments = (input) => {
 // Create Assignment
 const createAssignment = asyncWrapper(async (req, res) => {
   const assignmentData = req.body;
-  const adminId = req.admin.adminId;
+  const adminId = req.admin.id;
   
   // Add adminId to assignment data
   assignmentData.adminId = adminId;

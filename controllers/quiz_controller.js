@@ -28,7 +28,7 @@ function addPublisherToQuiz(quizInstance, adminName) {
 // Create Quiz
 const createQuiz = asyncWrapper(async (req, res) => {
   const quizData = req.body;
-  const adminId = req.admin.adminId;
+  const adminId = req.admin.id;
   
   // Add adminId to quiz data
   quizData.adminId = adminId;

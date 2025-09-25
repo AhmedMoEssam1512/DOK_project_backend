@@ -21,7 +21,7 @@ const findAdmin = asyncWrapper(async (req, res, next) => {
 
 const checkRole = asyncWrapper(async (req, res, next) => {
   // Allow admins with specific roles or IDs
-  if (req.admin.role === 'teacher' || req.admin.adminId === 1) {
+  if (req.admin.role === 'teacher' || req.admin.id === 1) {
     next();
   } else {
     return next(new AppError('You are not authorized to perform this action', 403));
