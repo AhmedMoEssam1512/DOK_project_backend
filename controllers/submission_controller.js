@@ -28,6 +28,7 @@ const submitQuiz = asyncWrapper(async (req, res) => {
     quizId: submission.quizId,
     answers: submission.answers,
     type: submission.type,
+    assistantId: submission.assistantId ,
     semester: submission.semester,
     score: submission.score ?? null,
     marked: submission.score != null ? 'yes' : 'no',
@@ -46,6 +47,7 @@ const submitQuiz = asyncWrapper(async (req, res) => {
 const submitAssignment = asyncWrapper(async (req, res) => {
   const { attachment } = req.body;
   const studentId = req.student.id;
+  const studentData = await student.getStudentById(studentId);
   const assignment = req.assignment; // From middleware
   
   const submissionData = {
@@ -55,7 +57,8 @@ const submitAssignment = asyncWrapper(async (req, res) => {
     type: 'assignment',
     semester: assignment.semester,
     subDate: new Date(),
-    status: 'submitted'
+    status: 'submitted',
+    assistantId: studentData.assistantId || null
   };
   
   const submission = await Submission.create(submissionData);
@@ -65,6 +68,7 @@ const submitAssignment = asyncWrapper(async (req, res) => {
     assId: submission.assId ?? undefined,
     answers: submission.answers,
     type: submission.type,
+    assistantId: submission.assistantId ,
     semester: submission.semester,
     score: submission.score ?? null,
     marked: submission.score != null ? 'yes' : 'no',
@@ -83,7 +87,7 @@ const submitAssignment = asyncWrapper(async (req, res) => {
 // Get Student Submissions
 const getStudentSubmissions = asyncWrapper(async (req, res) => {
   const studentId = req.student.id;
-  const { type, status } = req.query; // type: 'quiz' or 'assignment'
+  const { type, status } = req.body; // type: 'quiz' or 'assignment'
   
   const whereClause = { studentId };
   
@@ -126,31 +130,8 @@ const getStudentSubmissions = asyncWrapper(async (req, res) => {
 
 // Get Submission by ID
 const getSubmissionById = asyncWrapper(async (req, res) => {
-  const { submissionId } = req.params;
+  const submission= req.submission;
   const studentId = req.student.id;
-  
-  const submission = await Submission.findOne({
-    where: { subId: submissionId, studentId },
-    include: [
-      {
-        model: Quiz,
-        attributes: ['quizId', 'title', 'maxPoints', 'showResults'],
-        required: false
-      },
-      {
-        model: Assignment,
-        attributes: ['assignmentId', 'title', 'maxPoints'],
-        required: false
-      }
-    ]
-  });
-  
-  if (!submission) {
-    return res.status(404).json({
-      status: "error",
-      message: "Submission not found"
-    });
-  }
   
   return res.status(200).json({
     status: "success",
@@ -163,20 +144,9 @@ const getSubmissionById = asyncWrapper(async (req, res) => {
 
 // Update Submission
 const updateSubmission = asyncWrapper(async (req, res) => {
-  const { submissionId } = req.params;
+  const submission= req.submission;
   const { attachment } = req.body;
   const studentId = req.student.id;
-  
-  const submission = await Submission.findOne({
-    where: { subId: submissionId, studentId }
-  });
-  
-  if (!submission) {
-    return res.status(404).json({
-      status: "error",
-      message: "Submission not found"
-    });
-  }
   
   // Validate attachment URL
   if (!attachment || typeof attachment !== 'string') {
@@ -186,9 +156,8 @@ const updateSubmission = asyncWrapper(async (req, res) => {
     });
   }
   
-  const updateData = { answers: attachment };
   
-  await submission.update(updateData);
+  await submission.update({ answers: attachment });
   
   return res.status(200).json({
     status: "success",
@@ -201,19 +170,8 @@ const updateSubmission = asyncWrapper(async (req, res) => {
 
 // Delete Submission 
 const deleteSubmission = asyncWrapper(async (req, res) => {
-  const { submissionId } = req.params;
+  const submission= req.submission;
   const studentId = req.student.id;
-  
-  const submission = await Submission.findOne({
-    where: { subId: submissionId, studentId }
-  });
-  
-  if (!submission) {
-    return res.status(404).json({
-      status: "error",
-      message: "Submission not found"
-    });
-  }
   
   await submission.destroy();
   
@@ -246,8 +204,6 @@ const gradeAssignmentSubmission = asyncWrapper(async (req, res) => {
   const assignment = await Assignment.findByPk(assignmentId);
   const percentage = assignment ? (score / assignment.maxPoints) * 100 : 0;
   
-  const adminName = req.admin?.name || 'Unknown Admin';
-  
   await submission.update({
     score,
     percentage,
@@ -255,6 +211,7 @@ const gradeAssignmentSubmission = asyncWrapper(async (req, res) => {
     feedback,
     status: 'graded',
     gradedAt: new Date(),
+    gradedBy: req.admin.name
   });
   
   return res.status(200).json({
@@ -276,27 +233,13 @@ const gradeAssignmentSubmission = asyncWrapper(async (req, res) => {
 
 // Grade Quiz Submission
 const gradeQuizSubmission = asyncWrapper(async (req, res) => {
-  const { quizId, submissionId } = req.params;
+  const { quizId} = req.params;
+  const submission= req.submission;
   const { score, feedback, grade } = req.body;
 
-  const submission = await Submission.findOne({
-    where: {
-      subId: submissionId,
-      quizId
-    }
-  });
-
-  if (!submission) {
-    return res.status(404).json({
-      status: "error",
-      message: "Submission not found"
-    });
-  }
 
   const quiz = await Quiz.findByPk(quizId);
   const percentage = quiz ? (score / quiz.maxPoints) * 100 : 0;
-
-  const adminName = req.admin?.name || 'Unknown Admin';
   
   await submission.update({
     score,
@@ -304,7 +247,7 @@ const gradeQuizSubmission = asyncWrapper(async (req, res) => {
     grade,
     feedback,
     markedAt: new Date(),
-    gradedBy: adminName
+    gradedBy: req.admin.name,
   });
 
   return res.status(200).json({
@@ -318,7 +261,7 @@ const gradeQuizSubmission = asyncWrapper(async (req, res) => {
         grade,
         feedback,
         marked: 'yes',
-        gradedBy: adminName
+        gradedBy: req.admin.name,
       }
     }
   });

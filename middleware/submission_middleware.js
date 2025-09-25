@@ -163,6 +163,34 @@ const checkData = asyncWrapper(async (req, res, next) => {
   next();
 });
 
+
+const subFound=asyncWrapper(async(req,res,next)=>{
+  const { submissionId } = req.params;
+  const submission = await Submission.findOne({
+    where: { subId: submissionId, studentId },
+    include: [
+      {
+        model: Quiz,
+        attributes: ['quizId', 'title', 'maxPoints', 'showResults'],
+        required: false
+      },
+      {
+        model: Assignment,
+        attributes: ['assignmentId', 'title', 'maxPoints'],
+        required: false
+      }
+    ]
+  });
+  
+  if (!submission) {
+    return next(new AppError('Submission not found', 404));
+  }
+
+  req.submission = submission;
+  next();
+  
+});
+
 module.exports = {
   quizExistsAndPublished,
   assignmentExistsAndPublished,
@@ -175,5 +203,6 @@ module.exports = {
   subExist,
   canSeeSubmission,
   marked,
-  checkData
+  checkData,
+  subFound
 };
