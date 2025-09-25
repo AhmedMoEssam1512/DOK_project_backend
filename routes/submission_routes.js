@@ -26,17 +26,13 @@ router.route('/assignment/:assignmentId')
   );
 
 
-// Grade Assignment Submission
-router.route('/assignment/:assignmentId/submissions/:submissionId/grade')
-  .patch(auth.adminProtect, submissionControllers.gradeAssignmentSubmission);
+// Grade Submission
+router.route('/gradeSubmission/:id')
+  .patch(auth.adminProtect,submissionMiddleware.subExist, submissionMiddleware.canSeeSubmission ,submissionMiddleware.marked ,submissionControllers.gradeSubmission);
 
-// Grade Quiz Submission
-router.route('/quiz/:quizId/submissions/:submissionId/grade')
-  .patch(auth.adminProtect, submissionMiddleware.subFound , submissionControllers.gradeQuizSubmission);
-
-// Get current student's quiz submission status
-router.route('/quiz/:quizId/status')
-  .get(auth.studentProtect, submissionControllers.getQuizSubmissionStatus);
+// // Get current student's quiz submission status
+// router.route('/quiz/:quizId/status')
+//   .get(auth.studentProtect, submissionControllers.getQuizSubmissionStatus);
 
 module.exports = router;
 

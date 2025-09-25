@@ -115,6 +115,16 @@ async function getStudentRank(id) {
   }
 }
 
+async function addToScore(studentId, addedScore){
+    let stud = await Student.findOne({
+        where: {
+            studentId
+        }
+    })
+    stud.totalScore +=addedScore;
+    return stud.save();
+}
+
 
 module.exports={
     findStudentByEmail,
@@ -128,5 +138,6 @@ module.exports={
     getTotalNumberOfStudents,
     showLeaderBoard,
     getStudentScore,
-    getStudentRank
+    getStudentRank,
+    addToScore
 }

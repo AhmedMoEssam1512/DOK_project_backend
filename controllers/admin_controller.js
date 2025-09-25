@@ -253,9 +253,10 @@ const deleteSubByAdmin = asyncWrapper(async (req, res) => {
 const markSubmission = asyncWrapper(async (req, res) => {
     const found = req.submission;
     const studentSub = await student.findStudentById(found.studentId)   ;
-    const {marked, score} = req.body
+    const {marked, score, feedback} = req.body
     found.score = score;
     found.marked = marked;
+    found.feedback = feedback;
     found.markedAt = new Date();
     studentSub.totalScore += score;
     await studentSub.save();

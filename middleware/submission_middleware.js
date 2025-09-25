@@ -119,6 +119,7 @@ const validateAttachment = asyncWrapper(async (req, res, next) => {
 // Ensure submission exists and attach it to req.submission
 const subExist = asyncWrapper(async (req, res, next) => {
   const { id } = req.params;
+  console.log(id)
   const submission = await Submission.findOne({ where: { subId: id } });
   if (!submission) {
     return next(new AppError('Submission not found', 404));
