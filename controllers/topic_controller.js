@@ -11,7 +11,7 @@ const AppError = require('../utils/app.error');
 const addTopic = asyncWrapper(async (req, res, next) => {
     const { title } = req.body;
     const { semester } = req.query;
-    const adminId = req.admin.adminId;
+    const adminId = req.admin.id;
 
     if (!title) {
         return next(new AppError("Topic title is required", 400));
@@ -31,7 +31,7 @@ const addTopic = asyncWrapper(async (req, res, next) => {
 // Get All Topics
 const getAllTopics = asyncWrapper(async (req, res, next) => {
     const { semester } = req.query;
-    const adminId = req.admin.adminId;
+    const adminId = req.admin.id;
 
     if (!semester) {
         return next(new AppError("Semester is required", 400));
@@ -48,7 +48,7 @@ const getAllTopics = asyncWrapper(async (req, res, next) => {
 const getTopicById = asyncWrapper(async (req, res, next) => {
     const { topicId } = req.params;
     const { semester } = req.query;
-    const adminId = req.admin.adminId;
+    const adminId = req.admin.id;
 
     if (!semester) {
         return next(new AppError("Semester is required", 400));
@@ -110,7 +110,7 @@ const updateTopic = asyncWrapper(async (req, res, next) => {
     const { topicId } = req.params;
     const { title } = req.body;
     const { semester } = req.query; // Read semester from query
-    const adminId = req.admin.adminId;
+    const adminId = req.admin.id;
 
     if (!semester) {
         return next(new AppError("Semester is required", 400));
@@ -133,7 +133,7 @@ const updateTopic = asyncWrapper(async (req, res, next) => {
 const deleteTopic = asyncWrapper(async (req, res, next) => {
     const { topicId } = req.params;
     const { semester } = req.query;
-    const adminId = req.admin.adminId;
+    const adminId = req.admin.id;
 
     if (!semester) {
         return next(new AppError("Semester is required", 400));
@@ -160,7 +160,7 @@ const deleteTopic = asyncWrapper(async (req, res, next) => {
 // Delete All Topics
 const deleteAllTopics = asyncWrapper(async (req, res, next) => {
     const { semester } = req.query;
-    const adminId = req.admin.adminId;
+    const adminId = req.admin.id;
 
     if (!semester) {
         return next(new AppError("Semester is required", 400));

@@ -60,7 +60,7 @@ const checkAuthurity = asyncWrapper(async (req, res, next) => {
         return next(new AppError('student not found', 404));
     }
     // Only allow admins to manage students in their own group, except super admin (id = 1)
-    if (String(found.group) !== String(admin.group) && admin.adminId !== 1) {
+    if (String(found.group) !== String(admin.group) && admin.id !== 1) {
         return next(new AppError('You are not allowed to access this student', 403));
     }
     req.student = found;
@@ -76,7 +76,7 @@ const checkAuthurityByID = asyncWrapper(async (req, res, next) => {
         return next(new AppError('student not found', 404));
     }
     // Only allow admins to manage students in their own group, except super admin (id = 1)
-    if (String(found.group) !== String(admin.group) && admin.adminId !== 1) {
+    if (String(found.group) !== String(admin.group) && admin.id !== 1) {
         return next(new AppError('You are not allowed to access this student', 403));
     }
     req.student = found;
@@ -86,7 +86,7 @@ const checkAuthurityByID = asyncWrapper(async (req, res, next) => {
 
 const canReject = asyncWrapper(async (req, res, next) => {
   const {studentEmail }= req.params
-  const adminId= req.admin.adminId;
+  const adminId= req.admin.id;
   console.log("email and adminId : ", studentEmail, adminId)
   const reg = await regection.findByEmailAndId(studentEmail,adminId);
   console.log("reg : ", reg)

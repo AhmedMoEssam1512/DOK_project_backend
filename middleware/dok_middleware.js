@@ -21,15 +21,23 @@ const findAdmin = asyncWrapper(async (req, res, next) => {
 
 const checkRole = asyncWrapper(async (req, res, next) => {
   // Allow admins with specific roles or IDs
-  if (req.admin.role === 'teacher' || req.admin.adminId === 1) {
+  if (req.admin.role === 'teacher' || req.admin.id === 1) {
     next();
   } else {
     return next(new AppError('You are not authorized to perform this action', 403));
   }
 });
 
-
+const DOKFound= asyncWrapper(async (req, res, next) => {
+  const dok = await Admin.findOne({ where: { adminId: 1 } });
+  if(dok){
+    return next(new AppError('DOK already exists', 400));
+  }
+  console.log("DOK not found, proceed to create one");
+  next();
+});
 module.exports = {
     findAdmin,
-    checkRole
+    checkRole,
+    DOKFound
 };

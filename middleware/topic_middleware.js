@@ -9,7 +9,7 @@ const Topic = require('../models/topic_model');
 const topicExists = asyncWrapper(async (req, res, next) => {
     const { topicId } = req.params;
     const { semester } = req.query;
-    const adminId = req.admin.adminId;
+    const adminId = req.admin.id;
 
     if (!semester) {
         return next(new AppError("Semester is required", 400));
@@ -47,7 +47,7 @@ const validateSemester = asyncWrapper(async (req, res, next) => {
 // Check if any topic exists for semester (optional helper)
 const anyTopicForSemester = asyncWrapper(async (req, res, next) => {
     const { semester } = req.query;
-    const adminId = req.admin.adminId;
+    const adminId = req.admin.id;
     const anyTopic = await Topic.findOne({ where: { adminId, semester, isActive: true } });
     req.hasTopics = !!anyTopic;
     next();

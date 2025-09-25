@@ -7,6 +7,10 @@ const Assignment = sequelize.define('Assignment', {
     primaryKey: true, 
     autoIncrement: true  
   },
+  adminId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   title: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -39,10 +43,7 @@ const Assignment = sequelize.define('Assignment', {
     type: DataTypes.INTEGER,
     allowNull: true // Can be null for assignments not in any topic
   },
-  adminId: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
+  
   semester: {
     type: DataTypes.STRING,
     allowNull: true

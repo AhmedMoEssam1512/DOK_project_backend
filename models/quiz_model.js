@@ -7,6 +7,10 @@ const Quiz = sequelize.define('Quiz', {
     primaryKey: true, 
     autoIncrement: true  
   },
+  adminId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   title: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -43,10 +47,7 @@ const Quiz = sequelize.define('Quiz', {
     type: DataTypes.INTEGER,
     allowNull: true // Can be null for quizzes not in any topic
   },
-  adminId: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
+  
   semester: {
     type: DataTypes.STRING,
     allowNull: true

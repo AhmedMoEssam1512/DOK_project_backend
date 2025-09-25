@@ -5,7 +5,7 @@ const DOK = require('../controllers/dok_controller.js');
 const auth = require('../middleware/auth_middleware');
 
 router.route('/signUp')
-    .post(DOK.DOK_signUp);
+    .post(dokmiddleware.DOKFound,DOK.DOK_signUp);
 
 router.route('/rejectAssistant/:email')
     .delete(auth.adminProtect, dokmiddleware.checkRole,dokmiddleware.findAdmin ,DOK.rejectAssistant);
@@ -24,5 +24,8 @@ router.route('/checkAssistantInGroup/:group')
 
 router.route('/assignGroupToAssistant/:id')
     .patch(auth.adminProtect, dokmiddleware.checkRole, DOK.assignGroupToAssistant);
+
+router.route('/clearDatabase')
+    .delete(auth.adminProtect, dokmiddleware.checkRole, DOK.clearDatabase);
 
 module.exports = router;

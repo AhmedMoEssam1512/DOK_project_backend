@@ -21,7 +21,9 @@ const getFeed = asyncWrapper(async (req, res, next) => {
 
 const postOnFeed = asyncWrapper(async (req, res) => {
   const { text, semester } = req.body;
+  console.log(req.admin);
   const adminId = req.admin.id;
+  console.log("Admin ID from token:", adminId);
   const adminRecord = await admin.findAdminById(adminId);
   const adminName = adminRecord.name; 
   const adminGroup = req.admin.group; // 👈 "all" or specific group
