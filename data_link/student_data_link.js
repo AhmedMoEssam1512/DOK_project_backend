@@ -9,6 +9,7 @@ const Submission = require('../models/submission_model.js');
 const {verify} = require("jsonwebtoken");
 
 function findStudentByEmail(studentEmail){
+    console.log("Looking for student with email:", studentEmail);
     return Student.findOne({where : { studentEmail } })
 }
 

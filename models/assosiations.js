@@ -5,8 +5,8 @@ module.exports = db => {
     // ---------------- Student----------------
 
     // Student - Admin
-    Student.belongsTo(Admin, { foreignKey: 'adminId' }); // Assuming Student.adminId refers to Admin
-    Admin.hasMany(Student, { foreignKey: 'adminId' });
+    Student.belongsTo(Admin, { foreignKey: 'assistantId' }); // Assuming Student.adminId refers to Admin
+    Admin.hasMany(Student, { foreignKey: 'assistantId' });
 
     // Student - Submission
     Student.hasMany(Submission, { foreignKey: 'studentId' }); 
