@@ -1,24 +1,36 @@
 const express = require('express');
 const router = express.Router();
+const assignmentControllers = require('../controllers/assignment_controller');
 const auth = require('../middleware/auth_middleware');
-const assignControllers = require('../controllers/assignment_controller');
-const assignMiddleWare = require('../middleware/assignment_middleware');
-const quizMiddleware = require('../middleware/quiz_middleware');
+const assignmentMiddleware = require('../middleware/assignment_middleware');
 
-router.route('/createAssignment')
-    .post(auth.adminProtect, assignMiddleWare.checkField, assignControllers.createAssignment)
+// Assignment CRUD Operations
+router.route('/')
+  .post(auth.adminProtect, assignmentControllers.createAssignment)
+  .get(auth.adminProtect, assignmentControllers.getAllAssignments);
 
-router.route('/getAllAssignments')
-    .get(auth.protect, quizMiddleware.getGroup, assignControllers.getAllAssignments)
 
-router.route('/getAssignmentById/:assignId')
-    .get(auth.protect,assignMiddleWare.assignExists,assignMiddleWare.canSeeAssign,assignControllers.getAssignmentById)
+router.route('/:assignmentId')
+  .get(auth.adminProtect, assignmentMiddleware.assignExists, assignmentControllers.getAssignmentById)
+  .patch(auth.adminProtect, assignmentMiddleware.assignExists, assignmentControllers.updateAssignment)
+  .delete(auth.adminProtect, assignmentMiddleware.assignExists, assignmentControllers.deleteAssignment);
 
-router.route('/submitAssignment/:assignId')
-    .post(auth.protect, assignMiddleWare.assignExists, assignMiddleWare.canSeeAssign ,
-        assignMiddleWare.submittedBefore, quizMiddleware.verifySubmissionPDF ,assignControllers.submitAssignment)
+// Assignment Publishing Operations
+router.route('/:assignmentId/publish')
+  .patch(auth.adminProtect, assignmentMiddleware.assignExists, assignmentControllers.publishAssignment);
 
-router.route('/getUnsubmittedAssignments')
-    .get(auth.studentProtect, assignControllers.getUnsubmittedAssignments)
+
+// Assignment Submissions
+
+// Assignment Settings
+router.route('/:assignmentId/toggle-late-submission')
+  .patch(auth.adminProtect, assignmentMiddleware.assignExists, assignmentControllers.toggleLateSubmissionPolicy);
+
+// Assignment Statistics
+
+// Assignment Submission Status Functions
+
+// Student Assignment Routes
+
 
 module.exports = router;

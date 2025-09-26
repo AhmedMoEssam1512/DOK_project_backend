@@ -18,7 +18,7 @@ const createSession = asyncWrapper(async (req, res) => {
   const adminGroup = req.admin.group; // 👈 "all" or specific group
   const adminN = await admin.findAdminById(adminId);
   const adminName = adminN.name;
-  await admin.createSession(number, semester, dateAndTime, adminId, link);
+  const created = await admin.createSession(number, semester, dateAndTime, adminId, link);
 
    sse.notifyStudents(adminGroup, {
         event: "New Session Date",
@@ -28,11 +28,16 @@ const createSession = asyncWrapper(async (req, res) => {
             semester: semester,
             dateAndTime: dateAndTime,
             link: link
-        },
+        }, 
       });
   return res.status(201).json({
     status: "success",
-    data: { message: "Session created successfully" }
+    data: { message: "Session created successfully", id: created.sessionId, 
+      number: created.number, 
+      semester: created.semester,
+      dateAndTime: created.dateAndTime,
+      adminId: created.adminId,
+      link: created.link}
   })});
 
 const attendSession = asyncWrapper(async (req, res, next) => {
@@ -50,11 +55,15 @@ const attendSession = asyncWrapper(async (req, res, next) => {
     const studentData = await student.findStudentById(studentId);
     const sem = studentData.semester;
 
-    await student.createAttendance(studentId, sessionId, sem);
+    const studentAttend = await student.createAttendance(studentId, sessionId, sem);
 
     return res.status(200).json({
         status: "success",
-        data: { message: "Attendance recorded successfully" }
+        data: { message: "Attendance recorded successfully", attendanceId: studentAttend.attendanceId,
+            studentId: studentAttend.studentId,
+            sessionId: studentAttend.sessionId,
+            semester: studentAttend.semester
+        }
     });
 });
 
@@ -90,7 +99,9 @@ const startSession = asyncWrapper(async (req, res) => {
 
     return res.status(200).json({
         status: "success",
-        data: { message: "Session started and students notified" }
+        data: { message: "Session started and students notified", ssessionId: sessionsData.sessionId, 
+            link: sessionsData.link,
+            dateAndTime: sessionsData.dateAndTime }
     });
 });
 

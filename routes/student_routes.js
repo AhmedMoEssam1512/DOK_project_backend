@@ -31,6 +31,10 @@ router.route('/showSubmission/:id')
     .get(auth.studentProtect,submissionMiddleware.subExist ,studentMiddleWare.canSeeSubmission,studentControllers.showASubmission);
 
 router.route('/getQuizTrend')
-    .get(auth.studentProtect,studentControllers.getQuizTrend)   
+    .get(auth.studentProtect,studentControllers.getQuizTrend)
+
+router.route('/deleteSub/:id')
+    .delete(auth.studentProtect,submissionMiddleware.subExist ,studentMiddleWare.canSeeSubmission,
+        studentControllers.deleteSub)
 
 module.exports = router;

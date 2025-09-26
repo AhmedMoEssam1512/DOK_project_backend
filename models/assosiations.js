@@ -1,24 +1,24 @@
 module.exports = db => {
-    const { Student, Admin, Quiz, Assignment, Submission, Session, Attendance, Registration, Feed } = db;
+    const { Student, Admin, Quiz, Assignment, Submission, Session, Attendance, Registrations, Feed, Topic } = db;
 
     console.log("Setting up associations...");
     // ---------------- Student----------------
 
     // Student - Admin
-    Student.belongsTo(Admin, { foreignKey: 'adminId' }); // Assuming Student.adminId refers to Admin
-    Admin.hasMany(Student, { foreignKey: 'adminId' });
+    Student.belongsTo(Admin, { foreignKey: 'assistantId' }); // Assuming Student.assistantId refers to Admin
+    Admin.hasMany(Student, { foreignKey: 'assistantId' });
 
     // Student - Submission
-    Student.hasMany(Submission, { foreignKey: 'student' }); // Submission.student refers to Student.studentId
-    Submission.belongsTo(Student, { foreignKey: 'student' });
+    Student.hasMany(Submission, { foreignKey: 'studentId' }); 
+    Submission.belongsTo(Student, { foreignKey: 'studentId' });
 
     // Student - Attendance
     Student.hasMany(Attendance, { foreignKey: 'studentId' });
     Attendance.belongsTo(Student, { foreignKey: 'studentId' });
 
     // Student - Registrations
-    Student.hasOne(Registration, { foreignKey: 'userId' }); // Registrations.userId refers to Student.studentId
-    Registration.belongsTo(Student, { foreignKey: 'userId' });
+    Student.hasOne(Registrations, { foreignKey: 'userId' }); // Registrations.userId refers to Student.studentId
+    Registrations.belongsTo(Student, { foreignKey: 'userId' });
 
 
     //--------------------Admin---------------------
@@ -28,8 +28,8 @@ module.exports = db => {
     Feed.belongsTo(Admin, { foreignKey: 'adminId' });
 
     // Admin - Registration
-    Admin.hasMany(Registration, { foreignKey: 'adminId' }); 
-    Registration.belongsTo(Admin, { foreignKey: 'adminId' });
+    Admin.hasMany(Registrations, { foreignKey: 'adminId' }); 
+    Registrations.belongsTo(Admin, { foreignKey: 'adminId' });
 
     // Admin - Session     
     Admin.hasMany(Session, { foreignKey: 'adminId' }); 
@@ -43,19 +43,27 @@ module.exports = db => {
     Admin.hasMany(Assignment, { foreignKey: 'adminId' }); 
     Assignment.belongsTo(Admin, { foreignKey: 'adminId' });
 
-    // Admin - Submission
-    Admin.hasMany(Submission, { foreignKey: 'adminId' }); 
-    Submission.belongsTo(Admin, { foreignKey: 'adminId' });
+    // Note: gradedBy is now a STRING field storing admin name, not a foreign key
 
+    // Admin - Topic
+    Admin.hasMany(Topic, { foreignKey: 'adminId' });
+    Topic.belongsTo(Admin, { foreignKey: 'adminId' });
 
     // ---------------- Quiz - Submission ----------------
-    Quiz.hasMany(Submission, { foreignKey: 'QuizId' }); // Submission.QuizId refers to Quiz.quizId
-    Submission.belongsTo(Quiz, { foreignKey: 'QuizId' });
-
+    Quiz.hasMany(Submission, { foreignKey: 'quizId' }); 
+    Submission.belongsTo(Quiz, { foreignKey: 'quizId' });
 
     // ---------------- Assignment - Submission ----------------
-    Assignment.hasMany(Submission, { foreignKey: 'asslId' }); // Submission.assId refers to Assignment.asslId
+    Assignment.hasMany(Submission, { foreignKey: 'assId' }); 
     Submission.belongsTo(Assignment, { foreignKey: 'assId' });
+
+    // ---------------- Assignment - Topic ----------------
+    Assignment.belongsTo(Topic, { foreignKey: 'topicId', as: 'Topic' });
+    Topic.hasMany(Assignment, { foreignKey: 'topicId', as: 'Assignments' });
+
+    // ---------------- Quiz - Topic ----------------
+    Quiz.belongsTo(Topic, { foreignKey: 'topicId', as: 'Topic' });
+    Topic.hasMany(Quiz, { foreignKey: 'topicId', as: 'Quizzes' });
 
 
     // ---------------- Session - Attendance ----------------

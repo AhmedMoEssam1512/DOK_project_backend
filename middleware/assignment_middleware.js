@@ -54,8 +54,8 @@ const checkField = asyncWrapper(async (req, res, next) => {
 })
 
 const assignExists = asyncWrapper(async (req, res, next) => {
-    const { assignId } = req.params;
-    const assignData = await assignment.getAssignmentById(assignId);
+    const { assignmentId } = req.params;
+    const assignData = await assignment.getAssignmentById(assignmentId);
     if (!assignData) {
         return next(new AppError("Assignment not found", httpStatus.NOT_FOUND));
     }
@@ -67,7 +67,7 @@ const assignExists = asyncWrapper(async (req, res, next) => {
 const canSeeAssign = asyncWrapper(async (req, res, next) => {
     const userGroup = req.user.group ;
     const assignData = req.assignData;
-    const publisher = await admin.findAdminById(assignData.publisher);
+    const publisher = await admin.findAdminById(assignData.adminId);
     if (!publisher) {
         return next(new AppError("Publisher not found", httpStatus.NOT_FOUND));
     }
@@ -80,7 +80,7 @@ const canSeeAssign = asyncWrapper(async (req, res, next) => {
 });
 
 const submittedBefore = asyncWrapper(async (req, res, next) => {
-    const assId = req.params.assignId;
+    const assId = req.params.assignmentId;
     const studentId= req.user.id;
     const submission = await assignment.findSubmissionByQuizAndStudent(assId,studentId);
     if(submission){

@@ -26,8 +26,8 @@ const establishAdminConnection = asyncWrapper(async (req, res, next) => {
     },
   })}\n\n`);
 
-  // Add admin to the SSE clients pool
-  SSE.addAdminClient(res, req.admin.email, req.admin.name, req.admin.role, req.admin.group);
+  // Add admin to the SSE clients pool (✅ pass req)
+  SSE.addAdminClient(req, res, req.admin.email, req.admin.name, req.admin.role, req.admin.group);
 
   // Heartbeat to keep connection alive
   const hb = setInterval(() => {
@@ -37,7 +37,7 @@ const establishAdminConnection = asyncWrapper(async (req, res, next) => {
   // Handle connection close
   req.on("close", () => {
     clearInterval(hb);
-    SSE.removeClient(res); // 👈 you need this function in your pool manager
+    SSE.removeClient(res);
   });
 });
 
@@ -77,8 +77,8 @@ const establishStudentConnection = asyncWrapper(async (req, res) => {
     },
   })}\n\n`);
 
-  // Add student to the SSE clients pool
-  SSE.addStudentClient(res, found.studentEmail, found.studentName, found.group);
+  // Add student to the SSE clients pool (✅ pass req)
+  SSE.addStudentClient(req, res, found.studentEmail, found.studentName, found.group);
   console.log(`👨‍🎓 Added ${found.studentEmail} to SSE clients pool`);
 
   // Heartbeat to keep connection alive
@@ -95,7 +95,6 @@ const establishStudentConnection = asyncWrapper(async (req, res) => {
 
   console.log(`✅ SSE established and waiting for student ${found.studentEmail}`);
 });
-
 
 module.exports = {
   establishAdminConnection,

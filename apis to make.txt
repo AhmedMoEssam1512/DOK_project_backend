@@ -21,16 +21,16 @@ show student profile(admin) {A.Essam} [done]
 attend a session {Y.Essam} [done]
 view feed {Y.Essam} [done]
 assign group(owner) {A.Essam} [done]
-create quiz {A.Essam} [done]
-get all quizes {A.Essam} [done]
-get quiz {A.Essam} [done]
+create quiz {A.Essam & Tamer} [done]
+get all quizes {A.Essam & Tamer} [done]
+get quiz {A.Essam & Tamer} [done]
 start a quiz {both Essam} [done]
 get active quiz {A.Essam} [done]
 submit Active quiz {A.Essam} [done]
 submit quiz {A.Essam} [done]
-create assignment {A.Essam} [done]
-get all assignments {A.Essam} [done]
-get assignment {A.Essam} [done]
+create assignment {A.Essam & Tamer} [done]
+get all assignments {A.Essam & Tamer} [done]
+get assignment {A.Essam & Tamer} [done]
 submit assignment {A.Essam} [done]
 show pending submissions {A.Essam} [done]
 get submission by id {A.Essam} [done]
@@ -42,13 +42,20 @@ show submission {A.Essam} [done]
 leaderboard {Mustafa} [done]
 data analysis {Tamer} [done]    
 forget password {Mustafa} [done]
+Create Topic {Tamer} [done]
+Get Topic By id {Tamer} [done]
+Update Topic By id {Tamer} [done]
+Get All Topics {Tamer} [done]
+Delete Topic By id {Tamer} [done]
+Delete All Topics {Tamer} [done]
+add sse connection last event handler {A.Essam} [done]
+clear database(owner) {A.Essam} [done]
 
-library {Tamer}
+
 generate reports {Tamer}
-
 add the mailing functions {Mustafa}
 
-clear database {A.Essam}
+
 delete account {Y.Essam}
 1 api for each delete 
 

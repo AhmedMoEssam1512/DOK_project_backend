@@ -8,37 +8,35 @@ const Session = require('../models/session_model.js');
 const Attendance = require('../models/attendance_model.js');
 const Feed = require('../models/feed_model.js');
 const Registration = require('../models/registration_model.js');
+const Topic = require('../models/topic_model.js');
 const admins = require('../data_link/admin_data_link');
 const bcrypt = require('bcrypt');
 const AppError = require('../utils/app.error');
-const asyncWrapper = require('../middleware/asyncwrapper');
+const  asyncWrapper  = require('../middleware/asyncwrapper');
+
+
 
 const DOK_signUp= asyncWrapper( async (req, res) => {
     const { email, name, password, phonenumber, role = "teacher", permission = "all" } = req.body;
 
+    // hash password
     const encryptedPassword = await bcrypt.hash(String(password), 10);
 
-    const teacher =await Admin.create({
-      adminId: 1,
+    // create admin
+    await Admin.create({
+      adminId:1,
       email,
       name,
       password: encryptedPassword,
       phoneNumber: phonenumber,
-      group: "all", // matches model field
+      group: "all", 
       role,
       permission,
       verified: true,
     });
     return res.status(201).json({
       status: "success" ,
-      message: "Teacher created successfully",
-      data: {id:teacher.id, 
-             email: teacher.email, 
-             name: teacher.name, 
-             phoneNumber: teacher.phoneNumber, 
-             role: teacher.role, 
-             permission: teacher.permission
-            }
+      data: { message: "Teacher created successfully" }
     });
 })
 
@@ -48,13 +46,7 @@ const rejectAssistant = asyncWrapper(async (req, res) => {
     await admins.removeAssistant( email  );
     return res.status(200).json({
     status: "success",
-    message: `Assistant with email ${email} rejected and removed from database`,
-    data: {
-        id: assistant.id,
-        name: assistant.name,
-        email: assistant.email,
-        group: assistant.group
-    }
+    message: `Assistant with email ${email} rejected and removed from database`
   });
 });
 
@@ -64,13 +56,7 @@ const acceptAssistant = asyncWrapper(async (req, res) => {
     await admins.verifyAssistant( email );
     return res.status(200).json({
         status: "success",
-        message: `Assistant with email ${email} accepted`,
-        data: {
-        id: assistant.id,
-        name: assistant.name,
-        email: assistant.email,
-        group: assistant.group
-    }
+        message: `Assistant with email ${email} accepted`
     });
 })
 
@@ -92,13 +78,7 @@ const removeAssistant = asyncWrapper(async (req, res) => {
     const deleted = await admins.removeAssistant(email);
     return res.status(200).json({
         status: "success",
-        message: `Assistant with email ${email} removed successfully`,
-        data: {
-        id: assistant.id,
-        name: assistant.name,
-        email: assistant.email,
-        group: assistant.group
-    }
+        message: `Assistant with email ${email} removed successfully`
     })
 })
 
@@ -127,14 +107,32 @@ const assignGroupToAssistant = asyncWrapper(async (req, res) => {
     await assistant.save();
     return res.status(200).json({
         status: "success",
-        message: `Group ${group} assigned to assistant ${assistant.name} successfully`,
-        data: {
-        id: assistant.id,
-        name: assistant.name,
-        email: assistant.email,
-        group: assistant.group
-    }
+        message: `Group ${group} assigned to assistant ${assistant.name} successfully`
     });
+});
+
+const clearDatabase = asyncWrapper(async (req, res) => {
+    const semester = req.body.semester;
+    if (!semester || !['June', 'November'].includes(semester)) {
+        return res.status(400).json({
+            status: "error",
+            message: "Semester must be either 'June' or 'November'"
+        });
+    }
+    await Student.destroy({ where: {semester} });
+    await Quiz.destroy({ where: {semester} });
+    await Assignment.destroy({ where: {semester} });
+    await Submission.destroy({ where: {semester} });
+    await Session.destroy({ where: {semester} });
+    await Attendance.destroy({ where: {semester} });
+    await Feed.destroy({ where: {semester} });
+    await Registration.destroy({ where: {semester} });
+    await Topic.destroy({ where: {semester} });
+    return res.status(200).json({
+        status: "success",
+        message: `Database cleared for semester ${semester}`
+    });
+
 });
 
 module.exports = {
@@ -144,5 +142,6 @@ module.exports = {
     showPendingRegistration,
     removeAssistant,
     checkAssistantGroup,
+    clearDatabase,
     assignGroupToAssistant
 }

@@ -53,4 +53,10 @@ router.route('/markSubmission/:id')
     .patch(auth.adminProtect,subMiddleWare.subExist,subMiddleWare.canSeeSubmission,
         subMiddleWare.marked,subMiddleWare.checkData, adminControllers.markSubmission );
 
+router.route('/deleteSubmissionById/:id')
+    .delete(auth.adminProtect,subMiddleWare.subExist,subMiddleWare.canSeeSubmission, adminControllers.deleteSubByAdmin );
+
+router.route('/report/:topicId')
+    .get(auth.adminProtect, adminControllers.generateReport);
+
 module.exports = router;

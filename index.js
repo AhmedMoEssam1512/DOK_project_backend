@@ -9,7 +9,9 @@ const logInRoute = require('./routes/logIn_route');
 const feedRoute = require('./routes/feed_routes');
 const quizRoutes = require('./routes/quiz_routes');
 const assignmentRoutes = require('./routes/assignment_routes');
+const submissionRoutes = require('./routes/submission_routes');
 const sessionRoutes = require('./routes/session_routes');
+const topicRoutes = require('./routes/topic_routes');
 const leaderBoard = require('./routes/leader_board');
 
 const app = express();
@@ -32,7 +34,20 @@ app.use(express.json());
         console.error('❌ Unable to connect to the database:', error);
     }
 })();
+<<<<<<< HEAD
 const PORT = process.env.PORT;
+=======
+const PORT = process.env.PORT 
+// Start server
+sequelize.sync({ force: false })  
+  .then(() => {
+    console.log('✅ Database syncing');
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+  })
+  .catch(err => {
+    console.error('❌ Failed to sync DB:', err);
+  });
+>>>>>>> 5778a00626efa0bebfb8262ae946ac241c894278
 
 // Start server
 sequelize.sync({ alter: true })
@@ -52,7 +67,12 @@ app.use('/login', logInRoute);
 app.use('/feed', feedRoute);
 app.use('/quiz', quizRoutes);
 app.use('/assignment', assignmentRoutes);
+<<<<<<< HEAD
+=======
+app.use('/submission', submissionRoutes);
+>>>>>>> 5778a00626efa0bebfb8262ae946ac241c894278
 app.use('/session', sessionRoutes);
+app.use('/topic', topicRoutes);
 app.use('/leaderBoard', leaderBoard);
 
 /*
@@ -73,6 +93,7 @@ app.use((error, req, res, next) => {
         error.message = "Invalid email format";
     }
 
+<<<<<<< HEAD
     if (res.headersSent) {
         if (req.headers.accept === "text/event-stream") {
             res.write(`event: error\ndata: ${JSON.stringify({ error: error.message })}\n\n`);
@@ -86,3 +107,11 @@ app.use((error, req, res, next) => {
         data: { message: error.message }
     });
 });
+=======
+  // Normal REST API error response
+  res.status(error.statusCode || 400).json({
+    status: error.statusMessage || httpStatusCode.Error,
+    data: { message: error.message }
+  });
+});
+>>>>>>> 5778a00626efa0bebfb8262ae946ac241c894278

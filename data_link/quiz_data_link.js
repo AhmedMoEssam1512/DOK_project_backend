@@ -4,7 +4,7 @@ const Quiz = require('../models/quiz_model');
 const Admin = require('../models/admin_model');
 const Submission = require('../models/submission_model');
 
-Quiz.belongsTo(Admin, { foreignKey: "publisher" });
+Quiz.belongsTo(Admin, { foreignKey: "adminId" });
 
 
 function createQuiz(mark,publisher,quizPdf,date,semester,durationInMin) {
@@ -50,7 +50,7 @@ function findSubmissionByQuizAndStudent(quizId,studentId){
 
 
 module.exports = {
-     createQuiz,
+    createQuiz,
     getAllQuizzes,
     getAllQuizzesForGroup,
     getQuizById,

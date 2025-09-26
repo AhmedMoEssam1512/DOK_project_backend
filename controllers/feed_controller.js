@@ -21,7 +21,9 @@ const getFeed = asyncWrapper(async (req, res, next) => {
 
 const postOnFeed = asyncWrapper(async (req, res) => {
   const { text, semester } = req.body;
+  console.log(req.admin);
   const adminId = req.admin.id;
+  console.log("Admin ID from token:", adminId);
   const adminRecord = await admin.findAdminById(adminId);
   const adminName = adminRecord.name; 
   const adminGroup = req.admin.group; // 👈 "all" or specific group
@@ -45,7 +47,12 @@ const postOnFeed = asyncWrapper(async (req, res) => {
 
   return res.status(201).json({
     status: "success",
-    data: { message: "Post created & submitted successfully" }
+    data: { message: "Post created & submitted successfully", id: newPost.id,
+      text: newPost.text,
+      semester: newPost.semester,
+      group: adminGroup,
+      adminId: newPost.adminId,
+      createdAt: newPost.createdAt}
   });
 });
 

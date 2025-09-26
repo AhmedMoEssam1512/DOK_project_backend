@@ -53,36 +53,34 @@ const passwordEncryption = asyncWrapper( async (req,res,next) => {
 });
 
 const checkAuthurity = asyncWrapper(async (req, res, next) => {
-    const admin = req.admin; // must be set earlier by findAndCheckAdmin
-   const { studentEmail } = req.params;
+    const admin = req.admin; // must be set earlier by adminProtect
+    const { studentEmail } = req.params;
     const found = await student.findStudentByEmail(studentEmail);
     if (!found) {
-    return next(new AppError('student not found', 404));
-  }
-  if(String(found.assistantId) !== String(req.admin.id) && req.admin.id !== 1) {
-    console.log("found.assistantId : ", found.assistantId)
-    console.log("req.admin.id : ", req.admin.id)
-    return next(new AppError('You are not allowed to access this student', 403));
-  }
-  req.student = found;
-  console.log("student found : ", studentEmail)
+        return next(new AppError('student not found', 404));
+    }
+    // Only allow admins to manage students in their own group, except super admin (id = 1)
+    if (String(found.group) !== String(admin.group) && admin.id !== 1) {
+        return next(new AppError('You are not allowed to access this student', 403));
+    }
+    req.student = found;
+    console.log("student found : ", studentEmail)
     next();
 });
 
 const checkAuthurityByID = asyncWrapper(async (req, res, next) => {
-    const admin = req.admin; // must be set earlier by findAndCheckAdmin
-   const { studentId } = req.params;
+    const admin = req.admin; // must be set earlier by adminProtect
+    const { studentId } = req.params;
     const found = await student.findStudentById(studentId);
     if (!found) {
-    return next(new AppError('student not found', 404));
-  }
-  if(String(found.assistantId) !== String(req.admin.id) && req.admin.id !== 1) {
-    console.log("found.assistantId : ", found.assistantId)
-    console.log("req.admin.id : ", req.admin.id)
-    return next(new AppError('You are not allowed to access this student', 403));
-  }
-  req.student = found;
-  console.log("student found : ", studentId)
+        return next(new AppError('student not found', 404));
+    }
+    // Only allow admins to manage students in their own group, except super admin (id = 1)
+    if (String(found.group) !== String(admin.group) && admin.id !== 1) {
+        return next(new AppError('You are not allowed to access this student', 403));
+    }
+    req.student = found;
+    console.log("student found : ", studentId)
     next();
 });
 

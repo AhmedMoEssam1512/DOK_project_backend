@@ -9,6 +9,7 @@ const Submission = require('../models/submission_model.js');
 const {verify} = require("jsonwebtoken");
 
 function findStudentByEmail(studentEmail){
+    console.log("Looking for student with email:", studentEmail);
     return Student.findOne({where : { studentEmail } })
 }
 
@@ -63,8 +64,8 @@ function getGroupById(studentId){
     })
 }
 
-function showSubmissions(studentId){
-    return Submission.findAll({where:{studentId}})
+function showSubmissions(type, status, studentId){
+    return Submission.findAll({where:{type, status, studentId}})
 }
 
 function getTotalNumberOfStudents(){
@@ -114,6 +115,16 @@ async function getStudentRank(id) {
   }
 }
 
+async function addToScore(studentId, addedScore){
+    let stud = await Student.findOne({
+        where: {
+            studentId
+        }
+    })
+    stud.totalScore +=addedScore;
+    return stud.save();
+}
+
 
 module.exports={
     findStudentByEmail,
@@ -127,5 +138,13 @@ module.exports={
     getTotalNumberOfStudents,
     showLeaderBoard,
     getStudentScore,
-    getStudentRank
+    getStudentRank,
+    addToScore,
+    getStudentsByAdminId
+}
+
+function getStudentsByAdminId(adminId) {
+    return Student.findAll({
+        where: { assistantId: adminId }
+    });
 }

@@ -4,10 +4,10 @@ const Attendance = sequelize.define('Attendance', {
   attId: { type: DataTypes.INTEGER, 
     primaryKey: true, 
     autoIncrement: true  },
-  studentId: DataTypes.STRING,
+  studentId: DataTypes.INTEGER,
   recordedAt: DataTypes.DATE,
   semester: DataTypes.STRING,
-  sessionId: DataTypes.STRING
+  sessionId: DataTypes.INTEGER
 }, { tableName: 'attendance', timestamps: false });
 
 module.exports = Attendance;
