@@ -37,4 +37,10 @@ router.route('/deleteSub/:id')
     .delete(auth.studentProtect,submissionMiddleware.subExist ,studentMiddleWare.canSeeSubmission,
         studentControllers.deleteSub)
 
+router.route('/weeklyReport/:topicId')
+    .get(auth.studentProtect, studentControllers.getMyWeeklyReport)
+
+router.route('/weeklyReport')
+    .get(auth.studentProtect, studentControllers.getMyWeeklyReport)
+
 module.exports = router;

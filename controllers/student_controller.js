@@ -199,7 +199,165 @@ const getQuizTrend = asyncWrapper(async (req, res) => {
   return res.status(200).json({ status: 'success', data: { points, chartPoints } });
 })
 
+// ==================== GET MY WEEKLY REPORT FUNCTION ====================
 
+// Helper function to get student submission for assignment
+const getStudentSubmissionForAssignment = async (studentId, assignmentId) => {
+  const Submission = require('../models/submission_model');
+  return await Submission.findOne({
+      where: {
+          studentId: studentId,
+          assId: assignmentId,
+          type: 'assignment'
+      }
+  });
+};
+
+// Helper function to get student submission for quiz
+const getStudentSubmissionForQuiz = async (studentId, quizId) => {
+  const Submission = require('../models/submission_model');
+  return await Submission.findOne({
+      where: {
+          studentId: studentId,
+          quizId: quizId,
+          type: 'quiz'
+      }
+  });
+};
+
+const getMyWeeklyReport = asyncWrapper(async (req, res) => {
+    const { topicId } = req.params;
+    const studentId = req.student.id;
+    
+    try {
+        // Get student data
+        const studentData = await student.findStudentById(studentId);
+        if (!studentData) {
+            return res.status(404).json({
+                status: "error",
+                message: "Student not found"
+            });
+        }
+        
+        // Get topic details
+        const Topic = require('../models/topic_model');
+        let topic;
+        
+        if (topicId && topicId !== 'latest') {
+            // Get specific topic
+            topic = await Topic.findOne({
+                where: { topicId: topicId }
+            });
+        } else {
+            // Get latest topic
+            topic = await Topic.findOne({
+                order: [['createdAt', 'DESC']]
+            });
+        }
+        
+        if (!topic) {
+            return res.status(404).json({
+                status: "error",
+                message: "Topic not found"
+            });
+        }
+        
+        // Get assignments in this topic
+        const Assignment = require('../models/assignment_model');
+        const assignments = await Assignment.findAll({
+            where: { topicId: topic.topicId },
+            order: [['createdAt', 'ASC']]
+        });
+        
+        // Get quizzes in this topic
+        const Quiz = require('../models/quiz_model');
+        const quizzes = await Quiz.findAll({
+            where: { topicId: topic.topicId },
+            order: [['createdAt', 'ASC']]
+        });
+        
+        // Create report data
+        const reportData = {
+            topicTitle: topic.title,
+            studentName: studentData.studentName,
+            semester: topic.semester,
+            materials: []
+        };
+        
+        // Process assignments
+        for (let index = 0; index < assignments.length; index++) {
+            const assignment = assignments[index];
+            const submission = await getStudentSubmissionForAssignment(studentId, assignment.assignmentId);
+            
+            const assignmentData = {
+                type: 'assignment',
+                columnName: `Hw${index + 1}`,
+                title: assignment.title,
+                maxPoints: assignment.maxPoints,
+                status: submission && submission.marked === 'yes' ? 'Done' : 'Missing',
+                score: submission ? submission.score : null,
+                feedback: submission ? submission.feedback : null
+            };
+            
+            reportData.materials.push(assignmentData);
+        }
+        
+        // Process quizzes
+        for (let index = 0; index < quizzes.length; index++) {
+            const quiz = quizzes[index];
+            const submission = await getStudentSubmissionForQuiz(studentId, quiz.quizId);
+            
+            const topicOrder = topic.order || 1;
+            const quizColumnName = `Quiz${topicOrder}`;
+            
+            let percentage = 0;
+            let grade = 'U';
+            
+            if (submission && submission.score !== null) {
+                percentage = (submission.score / quiz.maxPoints) * 100;
+                
+                if (percentage >= 80) {
+                    grade = 'A*';
+                } else if (percentage >= 70) {
+                    grade = 'A';
+                } else if (percentage >= 60) {
+                    grade = 'B';
+                } else if (percentage >= 50) {
+                    grade = 'C';
+                } else {
+                    grade = 'U';
+                }
+            }
+            
+            const quizData = {
+                type: 'quiz',
+                columnName: quizColumnName,
+                title: quiz.title,
+                maxPoints: quiz.maxPoints,
+                score: submission ? submission.score : null,
+                percentage: submission ? percentage : null,
+                grade: submission ? grade : null,
+                feedback: submission ? submission.feedback : null
+            };
+            
+            reportData.materials.push(quizData);
+        }
+        
+        return res.status(200).json({
+            status: "success",
+            message: "Weekly report generated successfully",
+            data: reportData
+        });
+        
+    } catch (error) {
+        console.error('Error generating weekly report:', error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+});
 
 module.exports = {
     studentRegister,
@@ -209,5 +367,6 @@ module.exports = {
     showMySubmission,
     showASubmission,
     getQuizTrend,
-    deleteSub
+    deleteSub,
+    getMyWeeklyReport
 }
