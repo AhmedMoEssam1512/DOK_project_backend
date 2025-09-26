@@ -6,13 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="bdf69a77-c45e-4233-8243-3e1ac59ecacc" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4e7977ba-1ca4-44cb-a6b4-eef44df8bb0c.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/4e7977ba-1ca4-44cb-a6b4-eef44df8bb0c.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/admin.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/admin.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/dok.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/dok.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/student.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/student.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/admin.middleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/admin.middleware.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/dok.middleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/dok.middleware.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/student.middleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/student.middleware.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/database.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/database.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +44,11 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "mm8",
+    "database.data.extractors.current.export.id": "SQL Inserts",
+    "database.data.extractors.current.id": "SQL Inserts",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "S:/dok-web-frontend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -51,7 +56,7 @@
     "nodejs_package_manager_path": "npm",
     "onboarding.tips.debug.path": "C:/Users/thewo/Desktop/work/DOK/src/main.js",
     "settings.editor.selected.configurable": "preferences.lookFeel",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2025.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.3.5\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -60,13 +65,19 @@
     ]
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="S:\DOK_project_backend" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-WS-251.25410.117" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-WS-243.26053.12" />
       </set>
     </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="bdf69a77-c45e-4233-8243-3e1ac59ecacc" name="Changes" comment="" />
@@ -84,6 +95,14 @@
       <workItem from="1755608012611" duration="2762000" />
       <workItem from="1756029235248" duration="1328000" />
       <workItem from="1756030640624" duration="16342000" />
+      <workItem from="1758036231684" duration="663000" />
+      <workItem from="1758210363895" duration="3341000" />
+      <workItem from="1758306824796" duration="1727000" />
+      <workItem from="1758326607569" duration="710000" />
+      <workItem from="1758384601190" duration="3921000" />
+      <workItem from="1758446850033" duration="7300000" />
+      <workItem from="1758546519026" duration="724000" />
+      <workItem from="1758889509063" duration="2044000" />
     </task>
     <servers />
   </component>
