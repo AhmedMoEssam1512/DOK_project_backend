@@ -31,7 +31,7 @@ const topicExists = asyncWrapper(async (req, res, next) => {
 
 // Validate semester parameter
 const validateSemester = asyncWrapper(async (req, res, next) => {
-    const { semester } = req.query;
+    const { semester } = req.body;
 
     if (!semester) {
         return next(new AppError("Semester is required", 400));
