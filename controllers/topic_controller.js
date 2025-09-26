@@ -10,7 +10,7 @@ const AppError = require('../utils/app.error');
 // Create Topic
 const addTopic = asyncWrapper(async (req, res, next) => {
     const { title } = req.body;
-    const { semester } = req.query;
+    const { semester } = req.body;
     const adminId = req.admin.id;
 
     if (!title) {
