@@ -19,7 +19,7 @@ const submitQuiz = asyncWrapper(async (req, res) => {
     type: 'quiz',
     semester: quiz.semester,
     subDate: new Date(),
-    assistantId: studentData.assistantId || null
+    assistantId: studentData.assistantId
   };
   
   const submission = await Submission.create(submissionData);
@@ -34,7 +34,6 @@ const submitQuiz = asyncWrapper(async (req, res) => {
     score: submission.score ?? null,
     marked: submission.score != null ? 'yes' : 'no',
   };
-
   return res.status(201).json({
     status: "success",
     message: "Quiz submitted successfully",

@@ -139,5 +139,12 @@ module.exports={
     showLeaderBoard,
     getStudentScore,
     getStudentRank,
-    addToScore
+    addToScore,
+    getStudentsByAdminId
+}
+
+function getStudentsByAdminId(adminId) {
+    return Student.findAll({
+        where: { assistantId: adminId }
+    });
 }

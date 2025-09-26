@@ -18,17 +18,4 @@ router.route('/:quizId')
 router.route('/:quizId/publish')
   .patch(auth.adminProtect, quizMiddleware.quizExists, quizControllers.publishQuiz);
 
-
-
-// Quiz Submissions
-
-// Quiz Settings
-
-
-// Quiz Statistics
-
-// Quiz Submission Status Functions
-
-// Student Quiz Routes
-
 module.exports = router;

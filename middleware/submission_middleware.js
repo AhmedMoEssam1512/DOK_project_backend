@@ -136,9 +136,11 @@ const canSeeSubmission = asyncWrapper(async (req, res, next) => {
     return next(new AppError('Not authorized', 401));
   }
   // Super admin override
-  if (String(admin.adminId) === '1') {
+  if (String(admin.id) === '1') {
     return next();
   }
+  
+    console.log(admin);
     console.log(submission);
   if(String(admin.id) !== String(submission.assistantId)){
       return next(new AppError('cannot access this submission',401));
