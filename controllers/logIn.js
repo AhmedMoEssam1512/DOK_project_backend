@@ -26,6 +26,7 @@ const logIn = asyncWrapper(async (req, res, next) => {
         id: adminUser.adminId,
         email: adminUser.email,
         group: adminUser.group,
+        name: adminUser.name,
         type: "admin",
       },
       process.env.JWT_SECRET,
@@ -71,6 +72,7 @@ const logIn = asyncWrapper(async (req, res, next) => {
         id: studentUser.studentId,
         email: studentUser.studentEmail,
         group: studentUser.group,
+        name: studentUser.Name,
         type: "student",
       },
       process.env.JWT_SECRET,
@@ -101,4 +103,18 @@ const logIn = asyncWrapper(async (req, res, next) => {
   return next(AppError.create("Email not found", 404, httpStatus.Error));
 });
 
-module.exports = { logIn };
+const me = asyncWrapper(async (req, res, next) => {
+  const user = req.user; // Assuming req.user is set by authentication middleware
+  res.status(200).json({
+    status: "success",
+    message: "the user data",
+    data : {
+      id : user.id,
+      email : user.email,
+      name : user.name,
+      role : user.type,
+    }
+  });
+});
+
+module.exports = { logIn, me };
