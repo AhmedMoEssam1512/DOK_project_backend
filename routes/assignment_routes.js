@@ -5,6 +5,10 @@ const auth = require('../middleware/auth_middleware');
 const assignmentMiddleware = require('../middleware/assignment_middleware');
 
 // Assignment CRUD Operations
+
+router.route('/getUnsubmitted')
+    .get(auth.studentProtect, assignmentControllers.getUnsubmittedAssignments)
+
 router.route('/')
   .post(auth.adminProtect, assignmentControllers.createAssignment)
   .get(auth.adminProtect, assignmentControllers.getAllAssignments);
@@ -31,6 +35,5 @@ router.route('/:assignmentId/toggle-late-submission')
 // Assignment Submission Status Functions
 
 // Student Assignment Routes
-
 
 module.exports = router;

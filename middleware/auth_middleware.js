@@ -6,6 +6,7 @@ const  asyncwrapper  = require('./asyncwrapper');
 
 
 const adminProtect = asyncwrapper(async (req, res, next) => {
+  console.log("admin protect started")
   let token;
 
   // 1. Support for "Authorization: Bearer <token>"
@@ -44,7 +45,6 @@ const adminProtect = asyncwrapper(async (req, res, next) => {
 
 const studentProtect = async (req, res, next) => {
   let token;
-
   // 1. Support for "Authorization: Bearer <token>"
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];

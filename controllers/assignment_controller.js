@@ -2,8 +2,12 @@ const Assignment = require('../models/assignment_model');
 const Submission = require('../models/submission_model');
 const Topic = require('../models/topic_model');
 const  asyncWrapper  = require('../middleware/asyncwrapper');
+const student = require('../data_link/student_data_link');
+const assignment = require('../data_link/assignment_data_link');
+const submission = require('../data_link/assignment_data_link');
 const AppError = require('../utils/app.error');
 const admin = require('../data_link/admin_data_link');
+const { get } = require('../routes/assignment_routes');
 
 // ==================== ATTACHMENT HELPERS ====================
 // Detect attachment type from URL
@@ -297,6 +301,35 @@ const toggleLateSubmissionPolicy = asyncWrapper(async (req, res) => {
   });
 });
 
+const getUnsubmittedAssignments = asyncWrapper(async (req, res, next) => {
+  const studentId = req.student.id;
+  const studentProfile = await student.findStudentById(studentId);
+  const group = studentProfile.group;
+  const semester = studentProfile.semester;
+
+  // Fetch all assignments for the student's group
+  const allAssignments = await assignment.getAllAssignmentsByGroup(group);
+
+  // Filter out assignments that the student has already submitted
+  const unsubmittedAssignments = [];
+  for (const assignment of allAssignments) {
+    const existingSubmission = await submission.findSubmissionByAssignmentAndStudent(
+      assignment.assignmentId,
+      studentId
+    );
+    if (!existingSubmission) {
+      unsubmittedAssignments.push(assignment);
+    }
+  }
+
+  return res.status(200).json({
+    status: "success",
+    data: {
+      unsubmittedAssignments,
+    }
+  });
+});
+
 module.exports = {
     createAssignment,
     getAllAssignments,
@@ -305,4 +338,5 @@ module.exports = {
     deleteAssignment,
     publishAssignment,
     toggleLateSubmissionPolicy,
+    getUnsubmittedAssignments
 };

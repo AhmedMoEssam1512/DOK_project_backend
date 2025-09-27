@@ -44,10 +44,10 @@ function findSubmissionByQuizAndStudent(assignmentId, studentId){
     return Submission.findOne({ where: { assId: assignmentId, studentId } })
 }
 
-function findSubmissionByAssignmentAndStudent(assignId, studentId) {
+function findSubmissionByAssignmentAndStudent(assId, studentId) {
   return Submission.findOne({
     where: {
-      assignId,
+      assId,
       studentId,
       type: 'assignment'   // make sure it's assignment
     }
