@@ -10,7 +10,7 @@ const topicMiddleware = require('../middleware/topic_middleware');
 
 // Get all topics and add a new topic to the library
 router.route('/topics')
-    .get(auth.adminProtect, topicMiddleware.validateSemester, topicControllers.getAllTopics)
+    .get(auth.adminProtect,  topicControllers.getAllTopics)
     .post(auth.adminProtect, topicMiddleware.validateSemester, topicControllers.addTopic);
 
 // Topic by ID routes
