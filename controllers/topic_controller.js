@@ -35,7 +35,7 @@ const getAllTopics = asyncWrapper(async (req, res, next) => {
 
   
 
-    const topics = await Topic.findAll({ where: { adminId, isActive: true }, order: [['order', 'ASC']] });
+    const topics = await Topic.findAll({ where: { adminId, isActive: true }, order: [['order', 'DESC']] });
     res.status(200).json({ status: "success", data: { totalTopics: topics.length, topics } });
 });
 
