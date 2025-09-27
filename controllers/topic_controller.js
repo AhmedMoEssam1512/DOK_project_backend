@@ -30,7 +30,7 @@ const addTopic = asyncWrapper(async (req, res, next) => {
 
 // Get All Topics
 const getAllTopics = asyncWrapper(async (req, res, next) => {
-    const { semester } = req.query;
+    const { semester } = req.body;
     const adminId = req.admin.id;
 
     if (!semester) {
