@@ -33,14 +33,9 @@ const getAllTopics = asyncWrapper(async (req, res, next) => {
     const { semester } = req.body;
     const adminId = req.admin.id;
 
-    if (!semester) {
-        return next(new AppError("Semester is required", 400));
-    }
-    if (!['June', 'November'].includes(semester)) {
-        return next(new AppError("Semester must be either 'June' or 'November'", 400));
-    }
+  
 
-    const topics = await Topic.findAll({ where: { adminId, semester, isActive: true }, order: [['order', 'ASC']] });
+    const topics = await Topic.findAll({ where: { adminId, isActive: true }, order: [['order', 'ASC']] });
     res.status(200).json({ status: "success", data: { totalTopics: topics.length, topics } });
 });
 
@@ -50,12 +45,6 @@ const getTopicById = asyncWrapper(async (req, res, next) => {
     const { semester } = req.query;
     const adminId = req.admin.id;
 
-    if (!semester) {
-        return next(new AppError("Semester is required", 400));
-    }
-    if (!['June', 'November'].includes(semester)) {
-        return next(new AppError("Semester must be either 'June' or 'November'", 400));
-    }
 
     const topic = await Topic.findOne({ where: { topicId, adminId, semester, isActive: true } });
     if (!topic) {
